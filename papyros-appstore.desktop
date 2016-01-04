@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Papyros App Store
+Comment=App Store for Papyros
+Exec=papyros-appstore
+Icon=preferences-system
+Terminal=False
+Type=Application
+Categories=Papyros;Apps
+OnlyShowIn=Papyros
