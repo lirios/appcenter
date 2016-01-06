@@ -1,9 +1,8 @@
 [Desktop Entry]
 Name=Software
 Comment=App Store for Papyros
-Exec=papyros-appstore
+Exec=papyros-software
 Icon=software-store
 Terminal=False
 Type=Application
 Categories=Papyros;Apps
-OnlyShowIn=Papyros
