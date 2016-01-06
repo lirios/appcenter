@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
         app.setOrganizationName("Papyros");
 
         QString fileName = QStandardPaths::locate(QStandardPaths::GenericDataLocation,
-                                                  QStringLiteral("papyros-appstore/app/main.qml"));
+                                                  QStringLiteral("papyros-software/app/main.qml"));
 
         if (fileName.isEmpty()) {
                 qWarning() << "Failed to find the main QML file, aborting.";

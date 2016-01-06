@@ -36,16 +36,15 @@ set(QT_MIN_VERSION "5.4.0")
 # Find Qt5
 find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS
              Core
-             Gui
-             Widgets
              Qml
              Quick)
 
-install(FILES papyros-appstore.desktop
+install(FILES papyros-software.desktop
 		DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
 
 
 add_subdirectory(src)
+add_subdirectory(modules/Papyros/Software)
 
-# Display featute summary
+# Display feature summary
 feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)

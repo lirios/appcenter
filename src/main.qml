@@ -96,9 +96,4 @@ ApplicationWindow {
         visible: false
         title: "App Store Settings"
     }
-
-    Component.onCompleted : {
-        Units.multiplier = 5;
-    }
-
 }
