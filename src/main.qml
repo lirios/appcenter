@@ -1,6 +1,7 @@
 import QtQuick 2.4
 import Material 0.1
 import Material.ListItems 0.1 as ListItem
+import Papyros.Software 0.1
 
 ApplicationWindow {
     id: demo
@@ -94,5 +95,13 @@ ApplicationWindow {
         id: settings
         visible: false
         title: "App Store Settings"
+    }
+
+    XdgApp {
+        Component.onCompleted: {
+            listRemotes().forEach(function(remote) {
+                console.log(remote.name +", " + remote.title +", " + remote.url)
+            })
+        }
     }
 }

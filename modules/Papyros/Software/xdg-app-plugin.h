@@ -21,6 +21,33 @@
 
 #include <QObject>
 
+#undef signals
+extern "C"
+{
+    #include <xdg-app.h>
+}
+#define signals Q_SIGNALS
+
+class Remote: public QObject
+{
+    Q_OBJECT
+
+    Q_PROPERTY(QString name MEMBER m_name CONSTANT)
+    Q_PROPERTY(QString title MEMBER m_title CONSTANT)
+    Q_PROPERTY(QString url MEMBER m_url CONSTANT)
+
+public:
+    Remote(const QString &name, const QString &title, const QString &url, QObject *parent = nullptr)
+        : QObject(parent), m_name(name), m_title(title), m_url(url)
+    {
+        // Nothing needed here
+    }
+
+    QString m_name;
+    QString m_title;
+    QString m_url;
+};
+
 class XdgApp: public QObject
 {
     Q_OBJECT
@@ -28,12 +55,16 @@ class XdgApp: public QObject
 public:
     XdgApp(QObject *parent = nullptr);
 
-    // TODO: Make these objects return some sort of background transaction
-    Q_INVOKABLE void addRemote(QString repoName, QString url) const;
-    Q_INVOKABLE void installApp(QString remoteName, QString appName) const;
-    Q_INVOKABLE void updateApp(QString appName) const;
-    Q_INVOKABLE void installRuntime(QString remoteName, QString runtimeName) const;
-    Q_INVOKABLE QStringList listApps() const;
+    Q_INVOKABLE QList<QObject *> listRemotes();
+
+public slots:
+    void installationChanged();
+
+private:
+    bool initialize();
+
+    XdgAppInstallation *m_installation;
+    GFileMonitor *m_monitor;
 };
 
 #endif // XDG_APP_H
