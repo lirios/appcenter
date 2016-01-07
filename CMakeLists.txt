@@ -44,6 +44,8 @@ find_package(XdgApp 0.4.6 REQUIRED)
 
 find_package(Papyros REQUIRED)
 
+find_package(AppstreamQt REQUIRED)
+
 install(FILES papyros-software.desktop
 		DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
 

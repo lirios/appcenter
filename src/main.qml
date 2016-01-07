@@ -1,4 +1,5 @@
 import QtQuick 2.4
+import QtQuick.Controls 1.2
 import Material 0.1
 import Material.ListItems 0.1 as ListItem
 import Papyros.Software 0.1
@@ -19,6 +20,27 @@ ApplicationWindow {
 
     initialPage: TabbedPage {
         title: "Software"
+
+        Tab {
+            title: "Installed"
+
+            ListView {
+                anchors.fill: parent
+
+                model: software.installedApps
+                delegate: ListItem.Subtitled {
+                    action: Image {
+                        width: Units.dp(24)
+                        height: width
+                        anchors.centerIn: parent
+                        source: "image://desktoptheme/" + edit.iconName
+                    }
+                    text: edit.name
+                    subText: edit.summary
+                    valueText: edit.branch
+                }
+            }
+        }
 
         Tab {
             title: "Sources"

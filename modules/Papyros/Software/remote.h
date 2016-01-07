@@ -16,38 +16,34 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SOFTWARE_H
-#define SOFTWARE_H
+#ifndef REMOTE_H
+#define REMOTE_H
 
-#include "xdg-app-plugin.h"
+#include <QObject>
+#include <QString>
 
-#include <Papyros/QQuickList>
+#include "base.h"
 
-class Software: public QObject
+class Remote: public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(QObjectListModel *remotes READ remotes CONSTANT)
-    Q_PROPERTY(QObjectListModel *installedApps READ installedApps CONSTANT)
+    Q_PROPERTY(QString name MEMBER m_name CONSTANT)
+    Q_PROPERTY(QString title MEMBER m_title CONSTANT)
+    Q_PROPERTY(QString url MEMBER m_url CONSTANT)
 
 public:
-    Software(QObject *parent = nullptr);
-
-    QObjectListModel *remotes() {
-        return m_remotes.getModel();
+    Remote(XdgAppRemote *remote, QObject *parent = nullptr)
+        : QObject(parent)
+    {
+        m_name = xdg_app_remote_get_name(remote);
+        m_title = xdg_app_remote_get_title(remote);
+        m_url = xdg_app_remote_get_url(remote);
     }
 
-    QObjectListModel *installedApps() {
-        return m_installedApps.getModel();
-    }
-
-private slots:
-    void update();
-
-private:
-    XdgApp *m_xdgApp;
-    QQuickList<Remote> m_remotes;
-    QQuickList<Application> m_installedApps;
+    QString m_name;
+    QString m_title;
+    QString m_url;
 };
 
-#endif // SOFTWARE_H
+#endif // REMOTE_H

@@ -21,6 +21,9 @@
 #include <QStringList>
 #include <QDebug>
 
+#include "remote.h"
+#include "application.h"
+
 Software::Software(QObject *parent)
     : QObject(parent), m_xdgApp(new XdgApp())
 {
@@ -33,4 +36,5 @@ void Software::update()
 {
     qDebug() << "XdgApp has updates!";
     m_remotes = m_xdgApp->listRemotes();
+    m_installedApps = m_xdgApp->listInstalledApplications();
 }

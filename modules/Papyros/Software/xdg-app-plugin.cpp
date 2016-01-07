@@ -21,6 +21,9 @@
 #include <QStringList>
 #include <QDebug>
 
+#include "remote.h"
+#include "application.h"
+
 static void xdgAppChanged(GFileMonitor *monitor, GFile *child, GFile *other_file,
         GFileMonitorEvent event_type, XdgApp *xdgapp) {
     emit xdgapp->installationChanged();
@@ -75,12 +78,47 @@ QList<Remote *> XdgApp::listRemotes()
 	for (uint i = 0; i < xremotes->len; i++) {
 		XdgAppRemote *xremote = (XdgAppRemote *) g_ptr_array_index(xremotes, i);
 
-        QString name = xdg_app_remote_get_name(xremote);
-        QString title = xdg_app_remote_get_title(xremote);
-        QString url = xdg_app_remote_get_url(xremote);
-
-        remotes << new Remote(name, title, url, this);
+        remotes << new Remote(xremote, this);
 	}
 
 	return remotes;
+}
+
+QList<Application *> XdgApp::listInstalledApplications()
+{
+    QList<Application *> applications;
+
+    if (!initialize())
+        return applications;
+
+    // TODO: Do something with these
+    GCancellable *cancellable = nullptr;
+    GError *error = nullptr;
+
+    g_autoptr(GPtrArray) xrefs = xdg_app_installation_list_installed_refs(m_installation,
+            cancellable, &error);
+
+    if (xrefs == nullptr)
+		return applications;
+
+	for (uint i = 0; i < xrefs->len; i++) {
+		XdgAppInstalledRef *xref = (XdgAppInstalledRef *) g_ptr_array_index(xrefs, i);
+
+        /*
+    	 * Only show the current application in GNOME Software
+    	 *
+    	 * You can have multiple versions/branches of a particular app-id
+    	 * installed but only one of them is "current" where this means:
+    	 *  1) the default to launch unless you specify a version
+    	 *  2) The one that gets its exported files exported
+    	 */
+        if (!xdg_app_installed_ref_get_is_current(xref) &&
+    	    xdg_app_ref_get_kind(XDG_APP_REF(xref)) == XDG_APP_REF_KIND_APP) {
+    		continue;
+    	}
+
+        applications << new Application(xref, Application::Installed, this);
+	}
+
+	return applications;
 }

@@ -16,38 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SOFTWARE_H
-#define SOFTWARE_H
-
-#include "xdg-app-plugin.h"
-
-#include <Papyros/QQuickList>
-
-class Software: public QObject
+#undef signals
+extern "C"
 {
-    Q_OBJECT
-
-    Q_PROPERTY(QObjectListModel *remotes READ remotes CONSTANT)
-    Q_PROPERTY(QObjectListModel *installedApps READ installedApps CONSTANT)
-
-public:
-    Software(QObject *parent = nullptr);
-
-    QObjectListModel *remotes() {
-        return m_remotes.getModel();
-    }
-
-    QObjectListModel *installedApps() {
-        return m_installedApps.getModel();
-    }
-
-private slots:
-    void update();
-
-private:
-    XdgApp *m_xdgApp;
-    QQuickList<Remote> m_remotes;
-    QQuickList<Application> m_installedApps;
-};
-
-#endif // SOFTWARE_H
+    #include <xdg-app.h>
+}
+#define signals Q_SIGNALS

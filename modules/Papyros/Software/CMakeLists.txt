@@ -7,6 +7,7 @@ target_link_libraries(papyrossoftware
                       Qt5::Core
                       Qt5::Qml
                       Papyros::Papyros
+                      AppstreamQt
                       ${XdgApp_LIBRARIES})
 
 include_directories(${XdgApp_INCLUDE_DIRS})

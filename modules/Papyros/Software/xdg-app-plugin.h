@@ -22,32 +22,10 @@
 #include <QObject>
 #include <QString>
 
-#undef signals
-extern "C"
-{
-    #include <xdg-app.h>
-}
-#define signals Q_SIGNALS
+#include "base.h"
 
-class Remote: public QObject
-{
-    Q_OBJECT
-
-    Q_PROPERTY(QString name MEMBER m_name CONSTANT)
-    Q_PROPERTY(QString title MEMBER m_title CONSTANT)
-    Q_PROPERTY(QString url MEMBER m_url CONSTANT)
-
-public:
-    Remote(const QString &name, const QString &title, const QString &url, QObject *parent = nullptr)
-        : QObject(parent), m_name(name), m_title(title), m_url(url)
-    {
-        // Nothing needed here
-    }
-
-    QString m_name;
-    QString m_title;
-    QString m_url;
-};
+class Application;
+class Remote;
 
 class XdgApp: public QObject
 {
@@ -57,6 +35,7 @@ public:
     XdgApp(QObject *parent = nullptr);
 
     Q_INVOKABLE QList<Remote *> listRemotes();
+    Q_INVOKABLE QList<Application *> listInstalledApplications();
 
 signals:
     void installationChanged();
