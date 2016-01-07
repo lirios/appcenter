@@ -6,6 +6,7 @@ add_library(papyrossoftware SHARED ${SOURCES})
 target_link_libraries(papyrossoftware
                       Qt5::Core
                       Qt5::Qml
+                      Papyros::Papyros
                       ${XdgApp_LIBRARIES})
 
 include_directories(${XdgApp_INCLUDE_DIRS})

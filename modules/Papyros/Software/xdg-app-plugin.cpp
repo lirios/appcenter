@@ -23,7 +23,7 @@
 
 static void xdgAppChanged(GFileMonitor *monitor, GFile *child, GFile *other_file,
         GFileMonitorEvent event_type, XdgApp *xdgapp) {
-    xdgapp->installationChanged();
+    emit xdgapp->installationChanged();
 }
 
 XdgApp::XdgApp(QObject *parent)
@@ -35,7 +35,7 @@ XdgApp::XdgApp(QObject *parent)
 bool XdgApp::initialize()
 {
     // Don't reinitialize
-    if (m_installation)
+    if (m_installation != nullptr)
         return true;
 
     // TODO: Do something with these
@@ -55,14 +55,9 @@ bool XdgApp::initialize()
     return true;
 }
 
-void XdgApp::installationChanged()
+QList<Remote *> XdgApp::listRemotes()
 {
-    // TODO: Something changed, now do something!
-}
-
-QList<QObject *> XdgApp::listRemotes()
-{
-    QList<QObject *> remotes;
+    QList<Remote *> remotes;
 
     if (!initialize())
         return remotes;

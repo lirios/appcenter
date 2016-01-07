@@ -20,6 +20,7 @@
 #define XDG_APP_H
 
 #include <QObject>
+#include <QString>
 
 #undef signals
 extern "C"
@@ -55,16 +56,16 @@ class XdgApp: public QObject
 public:
     XdgApp(QObject *parent = nullptr);
 
-    Q_INVOKABLE QList<QObject *> listRemotes();
+    Q_INVOKABLE QList<Remote *> listRemotes();
 
-public slots:
+signals:
     void installationChanged();
 
 private:
     bool initialize();
 
-    XdgAppInstallation *m_installation;
-    GFileMonitor *m_monitor;
+    XdgAppInstallation *m_installation = nullptr;
+    GFileMonitor *m_monitor = nullptr;
 };
 
 #endif // XDG_APP_H

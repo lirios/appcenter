@@ -17,91 +17,25 @@ ApplicationWindow {
         tabHighlightColor: "white"
     }
 
-    //Each will be an array populated in C++ that holds the apps in that category
-    property var categories: [ games, utils, accessories, internet, videomusic, uniaccess, other ]
-
-    property var categoryTitles: [ "Games", "Utilities", "Accessories", "Internet", "Music and Video", "Universal Access", "Other" ]
-
-    initialPage: mainPage
-
-    TabbedPage {
-        id: mainPage
-
+    initialPage: TabbedPage {
         title: "Software"
 
-        actionBar.maxActionCount: navDrawer.enabled ? 3 : 4
+        Tab {
+            title: "Sources"
 
-        actions: [
-            Action {
-                iconName: "action/search"
-                name: "Search"
-                //onTriggered: TODO: Implement a Material searchbar
-            },
-            Action {
-                iconName: "action/settings"
-                name: "Settings"
-                hoverAnimation: true
-                onTriggered: {
-                    pageStack.push(settings)
-                 }
-            }
-        ]
-
-        backAction: navDrawer.action
-
-        NavigationDrawer {
-            id: navDrawer
-
-            enabled: mainPage.width < Units.dp(500)
-
-            Flickable {
+            ListView {
                 anchors.fill: parent
 
-                contentHeight: Math.max(content.implicitHeight, height)
-
-                Column {
-                    id: content
-                    anchors.fill: parent
-
-                    Repeater {
-                        model: categories
-
-
-                                delegate: ListItem.Standard {
-                                    text: modelData
-                                    selected: modelData == demo.selectedComponent
-                                    onClicked: {
-                                        demo.selectedComponent = modelData
-                                        navDrawer.close()
-                                    }
-                                }
-                            }
+                model: software.remotes
+                delegate: ListItem.Subtitled {
+                    text: edit.title ? "%1 (%2)".arg(edit.title).edit(edit.name) : edit.name
+                    subText: edit.url
                 }
             }
         }
-
-        //Tabs
-        Repeater {
-            model: !navDrawer.enabled ? categoryTitles : 0
-
-            delegate: Tab {
-                title: modelData
-                // TODO: filter by category // onclick:
-            }
-        }
     }
 
-    Page {
-        id: settings
-        visible: false
-        title: "App Store Settings"
-    }
-
-    XdgApp {
-        Component.onCompleted: {
-            listRemotes().forEach(function(remote) {
-                console.log(remote.name +", " + remote.title +", " + remote.url)
-            })
-        }
+    Software {
+        id: software
     }
 }
