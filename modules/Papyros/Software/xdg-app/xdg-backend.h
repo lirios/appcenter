@@ -16,42 +16,29 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SOFTWARE_H
-#define SOFTWARE_H
+#ifndef XDG_BACKEND_H
+#define XDG_BACKEND_H
 
-#include <QObject>
+#include "backend.h"
 
-#include <Papyros/QQuickList>
+#include "base.h"
 
-class Application;
-class Remote;
-class SoftwareBackend;
 
-class Software: public QObject
+class XdgAppBackend: public SoftwareBackend
 {
     Q_OBJECT
 
-    Q_PROPERTY(QObjectListModel *remotes READ remotes CONSTANT)
-    Q_PROPERTY(QObjectListModel *installedApps READ installedApps CONSTANT)
-
 public:
-    Software(QObject *parent = nullptr);
+    XdgAppBackend(QObject *parent = nullptr);
 
-    QObjectListModel *remotes() {
-        return m_remotes.getModel();
-    }
-
-    QObjectListModel *installedApps() {
-        return m_installedApps.getModel();
-    }
-
-private slots:
-    void update();
+    Q_INVOKABLE QList<Remote *> listRemotes() override;
+    Q_INVOKABLE QList<Application *> listInstalledApplications() override;
 
 private:
-    QList<SoftwareBackend *> m_backends;
-    QQuickList<Remote> m_remotes;
-    QQuickList<Application> m_installedApps;
+    bool initialize();
+
+    XdgAppInstallation *m_installation = nullptr;
+    GFileMonitor *m_monitor = nullptr;
 };
 
-#endif // SOFTWARE_H
+#endif // XDG_BACKEND_H

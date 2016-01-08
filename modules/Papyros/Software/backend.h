@@ -16,36 +16,26 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef XDG_APP_H
-#define XDG_APP_H
+#ifndef BACKEND_H
+#define BACKEND_H
 
 #include <QObject>
-#include <QString>
-
-#include "base.h"
 
 class Application;
-class XdgApplication;
 class Remote;
 
-class XdgApp: public QObject
+class SoftwareBackend: public QObject
 {
     Q_OBJECT
 
 public:
-    XdgApp(QObject *parent = nullptr);
+    SoftwareBackend(QObject *parent = nullptr) : QObject(parent) {}
 
-    Q_INVOKABLE QList<Remote *> listRemotes();
-    Q_INVOKABLE QList<Application *> listInstalledApplications();
+    Q_INVOKABLE virtual QList<Remote *> listRemotes() = 0;
+    Q_INVOKABLE virtual QList<Application *> listInstalledApplications() = 0;
 
 signals:
-    void installationChanged();
-
-private:
-    bool initialize();
-
-    XdgAppInstallation *m_installation = nullptr;
-    GFileMonitor *m_monitor = nullptr;
+    void updated();
 };
 
-#endif // XDG_APP_H
+#endif // BACKEND_H

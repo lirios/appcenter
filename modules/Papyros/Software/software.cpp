@@ -21,20 +21,31 @@
 #include <QStringList>
 #include <QDebug>
 
+#include "xdg-app/xdg-backend.h"
 #include "remote.h"
 #include "application.h"
 
 Software::Software(QObject *parent)
-    : QObject(parent), m_xdgApp(new XdgApp())
+    : QObject(parent)
 {
-    QObject::connect(m_xdgApp, &XdgApp::installationChanged, this, &Software::update);
+    m_backends << new XdgAppBackend(this);
+
+    Q_FOREACH(SoftwareBackend *backend, m_backends) {
+        // TODO: Only update the data from this backend instead of all backends
+        QObject::connect(backend, &SoftwareBackend::updated, this, &Software::update);
+    }
 
     update();
 }
 
 void Software::update()
 {
-    qDebug() << "XdgApp has updates!";
-    m_remotes = m_xdgApp->listRemotes();
-    m_installedApps = m_xdgApp->listInstalledApplications();
+    // TODO: Update the lists so only new objects are added and old objects removed
+    m_remotes.clear();
+    m_installedApps.clear();
+
+    Q_FOREACH(SoftwareBackend *backend, m_backends) {
+        m_remotes << backend->listRemotes();
+        m_installedApps << backend->listInstalledApplications();
+    }
 }

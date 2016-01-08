@@ -1,7 +1,6 @@
 #include "plugin.h"
 
 #include "software.h"
-#include "xdg-app-plugin.h"
 #include "remote.h"
 #include "application.h"
 

@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-#include "xdg-app-plugin.h"
+#include "xdg-backend.h"
 
 #include <QProcess>
 #include <QStringList>
@@ -27,17 +27,17 @@
 #include "xdg-app/xdg-application.h"
 
 static void xdgAppChanged(GFileMonitor *monitor, GFile *child, GFile *other_file,
-        GFileMonitorEvent event_type, XdgApp *xdgapp) {
-    emit xdgapp->installationChanged();
+        GFileMonitorEvent event_type, XdgAppBackend *xdgapp) {
+    emit xdgapp->updated();
 }
 
-XdgApp::XdgApp(QObject *parent)
-    : QObject(parent)
+XdgAppBackend::XdgAppBackend(QObject *parent)
+    : SoftwareBackend(parent)
 {
     // Nothing needed here yet.
 }
 
-bool XdgApp::initialize()
+bool XdgAppBackend::initialize()
 {
     // Don't reinitialize
     if (m_installation != nullptr)
@@ -60,7 +60,7 @@ bool XdgApp::initialize()
     return true;
 }
 
-QList<Remote *> XdgApp::listRemotes()
+QList<Remote *> XdgAppBackend::listRemotes()
 {
     QList<Remote *> remotes;
 
@@ -86,7 +86,7 @@ QList<Remote *> XdgApp::listRemotes()
 	return remotes;
 }
 
-QList<Application *> XdgApp::listInstalledApplications()
+QList<Application *> XdgAppBackend::listInstalledApplications()
 {
     QList<Application *> applications;
 
