@@ -21,10 +21,6 @@
 
 #include <QObject>
 #include <QString>
-#include <AppstreamQt/database.h>
-#include <AppstreamQt/component.h>
-
-#include "base.h"
 
 class Application: public QObject
 {
@@ -32,12 +28,11 @@ class Application: public QObject
 
     Q_PROPERTY(State state MEMBER m_state CONSTANT)
     Q_PROPERTY(Type type MEMBER m_type CONSTANT)
-    Q_PROPERTY(QString branch MEMBER m_branch CONSTANT)
-    Q_PROPERTY(QString origin MEMBER m_origin CONSTANT)
     Q_PROPERTY(QString name MEMBER m_name CONSTANT)
     Q_PROPERTY(QString summary MEMBER m_summary CONSTANT)
-    Q_PROPERTY(QString arch MEMBER m_arch CONSTANT)
     Q_PROPERTY(QString iconName READ iconName CONSTANT)
+    Q_PROPERTY(QString latestVersion READ latestVersion CONSTANT)
+    Q_PROPERTY(QString installedVersion READ installedVersion CONSTANT)
 
 public:
     enum State {
@@ -49,78 +44,16 @@ public:
         Runtime
     };
 
-    Application(XdgAppInstalledRef *app_ref, State state, QObject *parent = nullptr)
-        : QObject(parent)
-    {
-        m_state = state;
-        m_branch = xdg_app_ref_get_branch(XDG_APP_REF(app_ref));
-        m_origin = xdg_app_installed_ref_get_origin(app_ref);
-        m_name = xdg_app_ref_get_name(XDG_APP_REF(app_ref));
-        m_arch = xdg_app_ref_get_arch(XDG_APP_REF(app_ref));
+    Application(QObject *parent = nullptr) : QObject(parent) {}
 
-        QString desktopId;
+    virtual QString iconName() const = 0;
+    virtual QString latestVersion() const = 0;
+    virtual QString installedVersion() const = 0;
 
-    	switch (xdg_app_ref_get_kind(XDG_APP_REF(app_ref))) {
-    	case XDG_APP_REF_KIND_APP:
-            m_type = Application::App;
-
-            desktopId = m_name + ".desktop";
-    		break;
-    	case XDG_APP_REF_KIND_RUNTIME:
-            m_type = Application::Runtime;
-            m_summary = "Framework for applications";
-
-            desktopId = m_name + ".runtime";
-    		break;
-    	default:
-    		// TODO: Handle errors here!
-            break;
-    	}
-
-        QString deployDir = xdg_app_installed_ref_get_deploy_dir(app_ref);
-        QString desktopPath = deployDir + "/files/share/applications";
-        QString appdataPath = deployDir + "/files/share/appdata";
-
-        m_component = findComponent(QStringList() << desktopPath << appdataPath,
-            desktopId);
-    }
-
-    QString iconName() const
-    {
-        return m_type == Application::Runtime ? "application-x-executable"
-                                              : m_component.icon();
-    }
-
-    QUrl iconUrl(const QSize& size) const
-    {
-        return m_component.iconUrl(size);
-    }
-
-    static Appstream::Component findComponent(QStringList paths, QString id)
-    {
-        Q_FOREACH(QString path, paths) {
-            Appstream::Database database(path);
-            if (!database.open())
-                return Appstream::Component();
-
-            Appstream::Component component = database.componentById(id);
-
-            if (component.isValid())
-                return component;
-        }
-
-        return Appstream::Component();
-    }
-
-    Appstream::Component m_component;
     State m_state;
     Type m_type;
-    QString m_branch;
-    QString m_origin;
     QString m_name;
     QString m_summary;
-    QString m_iconName;
-    QString m_arch;
 };
 
 #endif // APPLICATION_H

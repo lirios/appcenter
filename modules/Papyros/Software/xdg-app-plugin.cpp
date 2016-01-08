@@ -1,6 +1,8 @@
 /*
  * Papyros Software - The app store for Papyros
+ *
  * Copyright (C) 2016 Michael Spencer <sonrisesoftware@gmail.com>
+ * Copyright (C) 2015 Richard Hughes <richard@hughsie.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +24,7 @@
 #include <QDebug>
 
 #include "remote.h"
-#include "application.h"
+#include "xdg-app/xdg-application.h"
 
 static void xdgAppChanged(GFileMonitor *monitor, GFile *child, GFile *other_file,
         GFileMonitorEvent event_type, XdgApp *xdgapp) {
@@ -117,7 +119,7 @@ QList<Application *> XdgApp::listInstalledApplications()
     		continue;
     	}
 
-        applications << new Application(xref, Application::Installed, this);
+        applications << new XdgApplication(xref, Application::Installed, this);
 	}
 
 	return applications;

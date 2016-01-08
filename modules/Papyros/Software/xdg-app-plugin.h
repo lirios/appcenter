@@ -25,6 +25,7 @@
 #include "base.h"
 
 class Application;
+class XdgApplication;
 class Remote;
 
 class XdgApp: public QObject

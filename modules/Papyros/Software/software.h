@@ -23,6 +23,8 @@
 
 #include <Papyros/QQuickList>
 
+class Application;
+
 class Software: public QObject
 {
     Q_OBJECT
