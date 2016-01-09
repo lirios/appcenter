@@ -26,3 +26,11 @@ void Application::refineFromAppstream(Appstream::Component component)
     REFINE_PROPERTY(m_summary, component.comment());
     REFINE_PROPERTY(m_iconName, component.m_iconName);
 }
+
+bool Application::launch() const
+{
+    if (m_state != Application::Installed)
+        return false;
+
+    return m_backend->launchApplication(this);
+}

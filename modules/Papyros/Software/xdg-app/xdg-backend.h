@@ -34,6 +34,9 @@ public:
     Q_INVOKABLE QList<Remote *> listRemotes() override;
     Q_INVOKABLE QList<Application *> listInstalledApplications() override;
 
+public slots:
+    bool launchApplication(const Application *app) override;
+
 private:
     bool initialize();
 

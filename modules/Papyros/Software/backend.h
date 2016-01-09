@@ -34,6 +34,9 @@ public:
     Q_INVOKABLE virtual QList<Remote *> listRemotes() = 0;
     Q_INVOKABLE virtual QList<Application *> listInstalledApplications() = 0;
 
+public slots:
+    virtual bool launchApplication(const Application *app) = 0;
+
 signals:
     void updated();
 };

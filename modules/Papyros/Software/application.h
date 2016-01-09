@@ -23,6 +23,7 @@
 #include <QString>
 
 #include "appstream/component.h"
+#include "backend.h"
 
 class Application: public QObject
 {
@@ -30,6 +31,7 @@ class Application: public QObject
 
     Q_PROPERTY(State state MEMBER m_state CONSTANT)
     Q_PROPERTY(Type type MEMBER m_type CONSTANT)
+    Q_PROPERTY(QString id MEMBER m_id CONSTANT)
     Q_PROPERTY(QString name MEMBER m_name CONSTANT)
     Q_PROPERTY(QString summary MEMBER m_summary CONSTANT)
     Q_PROPERTY(QString iconName MEMBER m_iconName CONSTANT)
@@ -48,7 +50,7 @@ public:
     };
     Q_ENUM(Type)
 
-    Application(QObject *parent = nullptr) : QObject(parent) {}
+    Application(SoftwareBackend *backend) : QObject(backend), m_backend(backend) {}
 
     void refineFromAppstream(Appstream::Component component);
 
@@ -57,9 +59,16 @@ public:
 
     State m_state;
     Type m_type;
+    QString m_id;
     QString m_name;
     QString m_summary;
     QString m_iconName;
+
+public slots:
+    bool launch() const;
+
+private:
+    SoftwareBackend *m_backend;
 };
 
 #endif // APPLICATION_H

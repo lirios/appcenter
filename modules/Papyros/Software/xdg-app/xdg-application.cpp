@@ -21,14 +21,18 @@
 
 #include "appstream/store.h"
 
-XdgApplication::XdgApplication(XdgAppInstalledRef *app_ref, State state, QObject *parent)
-    : Application(parent)
+XdgApplication::XdgApplication(XdgAppInstalledRef *app_ref, State state, SoftwareBackend *backend)
+    : Application(backend)
 {
     m_state = state;
+    m_id = xdg_app_ref_get_name(XDG_APP_REF(app_ref));
     m_branch = xdg_app_ref_get_branch(XDG_APP_REF(app_ref));
     m_origin = xdg_app_installed_ref_get_origin(app_ref);
-    m_name = xdg_app_ref_get_name(XDG_APP_REF(app_ref));
+    m_name = m_id;
     m_arch = xdg_app_ref_get_arch(XDG_APP_REF(app_ref));
+
+    if (m_branch.isEmpty())
+        m_branch = "master";
 
     QString desktopId;
 

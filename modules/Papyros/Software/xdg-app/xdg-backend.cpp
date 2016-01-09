@@ -124,3 +124,18 @@ QList<Application *> XdgAppBackend::listInstalledApplications()
 
 	return applications;
 }
+
+bool XdgAppBackend::launchApplication(const Application *app)
+{
+    if (!initialize())
+        return false;
+
+    const XdgApplication *xapp = qobject_cast<const XdgApplication *>(app);
+
+    // TODO: Do something with these
+    GCancellable *cancellable = nullptr;
+    GError *error = nullptr;
+
+    return xdg_app_installation_launch(m_installation, qPrintable(xapp->m_id), NULL,
+            qPrintable(xapp->m_branch), NULL, cancellable, &error);
+}

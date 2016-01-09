@@ -35,7 +35,7 @@ class XdgApplication: public Application
     Q_PROPERTY(QString arch MEMBER m_arch CONSTANT)
 
 public:
-    XdgApplication(XdgAppInstalledRef *app_ref, State state, QObject *parent = nullptr);
+    XdgApplication(XdgAppInstalledRef *app_ref, State state, SoftwareBackend *backend);
 
     QString installedVersion() const override
     {
