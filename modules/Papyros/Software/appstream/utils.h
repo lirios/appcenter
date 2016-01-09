@@ -16,23 +16,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "application.h"
+#ifndef APPSTREAM_UTILS_H
+#define APPSTREAM_UTILS_H
 
-#define REFINE_PROPERTY(name, value) if (!value.isEmpty()) name = value;
-#define REFINE_LIST_PROPERTY(name, value) name << value;
+#include <QObject>
 
-void Application::refineFromAppstream(Appstream::Component component)
+#include <QString>
+#include <QDomElement>
+
+namespace Appstream
 {
-    REFINE_PROPERTY(m_name, component.name());
-    REFINE_PROPERTY(m_summary, component.comment());
-    REFINE_PROPERTY(m_iconName, component.m_iconName);
-    REFINE_LIST_PROPERTY(m_screenshots, component.m_screenshots);
+
+QStringList stringsByTagName(QDomElement element, QString tagName);
+
 }
 
-bool Application::launch() const
-{
-    if (m_state != Application::Installed)
-        return false;
-
-    return m_backend->launchApplication(this);
-}
+#endif // APPSTREAM_UTILS_H

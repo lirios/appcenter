@@ -27,6 +27,7 @@
 #include <QHash>
 
 #include "url.h"
+#include "screenshot.h"
 
 namespace Appstream
 {
@@ -72,6 +73,7 @@ public:
     QStringList m_extends;
     QList<Url> m_urls;
     QString m_iconName;
+    QList<Screenshot *> m_screenshots;
 
 private:
     bool loadFromAppdataFile(QString filename);

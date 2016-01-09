@@ -22,6 +22,8 @@
 #include <QObject>
 #include <QString>
 
+#include <Papyros/QQuickList>
+
 #include "appstream/component.h"
 #include "backend.h"
 
@@ -37,6 +39,7 @@ class Application: public QObject
     Q_PROPERTY(QString iconName MEMBER m_iconName CONSTANT)
     Q_PROPERTY(QString latestVersion READ latestVersion CONSTANT)
     Q_PROPERTY(QString installedVersion READ installedVersion CONSTANT)
+    Q_PROPERTY(QObjectListModel *screenshots READ screenshots CONSTANT)
 
 public:
     enum State {
@@ -57,12 +60,17 @@ public:
     virtual QString latestVersion() const = 0;
     virtual QString installedVersion() const = 0;
 
+    QObjectListModel *screenshots() {
+        return m_screenshots.getModel();
+    }
+
     State m_state;
     Type m_type;
     QString m_id;
     QString m_name;
     QString m_summary;
     QString m_iconName;
+    QQuickList<Appstream::Screenshot> m_screenshots;
 
 public slots:
     bool launch() const;

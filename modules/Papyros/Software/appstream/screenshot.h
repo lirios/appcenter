@@ -17,43 +17,39 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "url.h"
+#ifndef SCREENSHOT_H
+#define SCREENSHOT_H
 
-#include <QDir>
-#include <QFileInfo>
-#include <QLocale>
-#include <QDir>
-#include <QDebug>
+#include <QObject>
 
-using namespace Appstream;
+#include <QString>
+#include <QHash>
+#include <QDomElement>
 
-
-Url::Url(QString url, Type type)
-        : m_url(url), m_type(type)
+namespace Appstream
 {
-    // Nothing needed here
+
+class Screenshot: public QObject
+{
+    Q_OBJECT
+
+    Q_PROPERTY(QString url MEMBER m_url CONSTANT)
+    
+public:
+    enum Type {
+        Normal, Default, Unknown
+    };
+
+    Screenshot(QDomElement element, QObject *parent = nullptr);
+
+    // bool operator==(const Screenshot &other) const;
+
+    QString m_url;
+    Type m_type;
+    int m_priority;
+    QHash<QString,QString> m_captions;
+};
+
 }
 
-Url::Url(QString url, QString type)
-        : m_url(url)
-{
-    if (type == "homepage")
-        m_type = Url::Homepage;
-    else if (type == "bugtracker")
-        m_type = Url::BugTracker;
-    else if (type == "faq")
-        m_type = Url::FAQ;
-    else if (type == "donation")
-        m_type = Url::Donation;
-    else if (type == "help")
-        m_type = Url::Help;
-    else if (type == "missing")
-        m_type = Url::Missing;
-    else
-       m_type = Url::Unknown;
-}
-
-bool Url::operator==(const Url &other) const
-{
-    return m_type == other.m_type && m_url == other.m_url;
-}
+#endif // SCREENSHOT_H

@@ -17,43 +17,29 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "url.h"
+#include "screenshot.h"
 
-#include <QDir>
-#include <QFileInfo>
-#include <QLocale>
-#include <QDir>
+#include "utils.h"
+
 #include <QDebug>
 
 using namespace Appstream;
 
-
-Url::Url(QString url, Type type)
-        : m_url(url), m_type(type)
+Screenshot::Screenshot(QDomElement element, QObject *parent)
+    : QObject(parent)
 {
-    // Nothing needed here
-}
-
-Url::Url(QString url, QString type)
-        : m_url(url)
-{
-    if (type == "homepage")
-        m_type = Url::Homepage;
-    else if (type == "bugtracker")
-        m_type = Url::BugTracker;
-    else if (type == "faq")
-        m_type = Url::FAQ;
-    else if (type == "donation")
-        m_type = Url::Donation;
-    else if (type == "help")
-        m_type = Url::Help;
-    else if (type == "missing")
-        m_type = Url::Missing;
+    QStringList images = stringsByTagName(element, "image");
+    if (!images.isEmpty())
+        m_url = images.first();
     else
-       m_type = Url::Unknown;
-}
+        m_url = element.text();
 
-bool Url::operator==(const Url &other) const
-{
-    return m_type == other.m_type && m_url == other.m_url;
+    QString type = element.attribute("type");
+
+    if (type == "default")
+        m_type = Screenshot::Default;
+    else if (type == "normal")
+        m_type = Screenshot::Normal;
+    else
+       m_type = Screenshot::Unknown;
 }

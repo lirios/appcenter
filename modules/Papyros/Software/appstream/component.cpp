@@ -26,6 +26,8 @@
 #include <QDebug>
 #include <QSettings>
 
+#include "utils.h"
+
 #define MERGE_FIELD(other, fieldName) if (fieldName.isEmpty()) fieldName = other.fieldName;
 #define MERGE_LIST_FIELD(other, fieldName) mergeLists(fieldName, other.fieldName);
 #define MERGE_HASH_FIELD(other, fieldName) mergeHashes(fieldName, other.fieldName);
@@ -59,19 +61,6 @@ void mergeHashes(QHash<T, E> &hash1, const QHash<T, E> &hash2)
         if (!hash1.contains(key))
             hash1[key] = hash2[key];
     }
-}
-
-QStringList stringsByTagName(QDomElement element, QString tagName) {
-    QStringList strings;
-
-    QDomNodeList nodes = element.elementsByTagName(tagName);
-    for (int i = 0; i < nodes.count(); i++) {
-        QDomElement subElement = nodes.at(i).toElement();
-        if (!subElement.isNull())
-            strings << subElement.text();
-    }
-
-    return strings;
 }
 
 bool hasSuffix(QString filename, QStringList suffices)
@@ -162,6 +151,7 @@ void Component::merge(const Component &other)
     MERGE_HASH_FIELD(other, m_developerNames);
     MERGE_HASH_FIELD(other, m_keywords);
     MERGE_FIELD(other, m_iconName);
+    MERGE_LIST_FIELD(other, m_screenshots);
 }
 
 bool Component::loadFromFile(QString filename)
@@ -231,7 +221,7 @@ bool Component::loadFromAppdataFile(QString filename)
         } else if (tagName == "architectures") {
             m_architectures << stringsByTagName(element, "architecture");
         } else if (tagName == "keywords") {
-            QDomNodeList keywords = doc.elementsByTagName("keyword");
+            QDomNodeList keywords = element.elementsByTagName("keyword");
             for (int i = 0; i < keywords.count(); i++) {
                 QDomElement keyword = keywords.at(i).toElement();
                 if (!keyword.isNull()) {
@@ -264,7 +254,14 @@ bool Component::loadFromAppdataFile(QString filename)
         } else if (tagName == "extends") {
             m_extends << text;
         } else if (tagName == "screenshots") {
-            qDebug() << "WARNING: screenshots not parsed";
+            QDomNodeList screenshots = element.elementsByTagName("screenshot");
+            for (int i = 0; i < screenshots.count(); i++) {
+                QDomElement screenshot = screenshots.at(i).toElement();
+                // TODO: New object created without parent
+                if (!screenshot.isNull())
+                    m_screenshots << new Screenshot(screenshot);
+            }
+            m_screenshots << new Screenshot(element);
         } else if (tagName == "releases") {
             qDebug() << "WARNING: releases not parsed";
         } else if (tagName == "provides") {

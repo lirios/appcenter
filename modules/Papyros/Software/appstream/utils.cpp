@@ -16,23 +16,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "application.h"
+#include "utils.h"
 
-#define REFINE_PROPERTY(name, value) if (!value.isEmpty()) name = value;
-#define REFINE_LIST_PROPERTY(name, value) name << value;
-
-void Application::refineFromAppstream(Appstream::Component component)
+QStringList Appstream::stringsByTagName(QDomElement element, QString tagName)
 {
-    REFINE_PROPERTY(m_name, component.name());
-    REFINE_PROPERTY(m_summary, component.comment());
-    REFINE_PROPERTY(m_iconName, component.m_iconName);
-    REFINE_LIST_PROPERTY(m_screenshots, component.m_screenshots);
-}
+    QStringList strings;
 
-bool Application::launch() const
-{
-    if (m_state != Application::Installed)
-        return false;
+    QDomNodeList nodes = element.elementsByTagName(tagName);
+    for (int i = 0; i < nodes.count(); i++) {
+        QDomElement subElement = nodes.at(i).toElement();
+        if (!subElement.isNull())
+            strings << subElement.text();
+    }
 
-    return m_backend->launchApplication(this);
+    return strings;
 }
