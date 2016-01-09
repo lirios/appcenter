@@ -22,7 +22,7 @@
 #include <QDebug>
 
 #include "xdg-app/xdg-backend.h"
-#include "remote.h"
+#include "source.h"
 #include "application.h"
 
 Software::Software(QObject *parent)
@@ -41,11 +41,11 @@ Software::Software(QObject *parent)
 void Software::update()
 {
     // TODO: Update the lists so only new objects are added and old objects removed
-    m_remotes.clear();
+    m_sources.clear();
     m_installedApps.clear();
 
     Q_FOREACH(SoftwareBackend *backend, m_backends) {
-        m_remotes << backend->listRemotes();
+        m_sources << backend->listSources();
         m_installedApps << backend->listInstalledApplications();
     }
 }

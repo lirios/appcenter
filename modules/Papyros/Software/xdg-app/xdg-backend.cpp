@@ -23,8 +23,8 @@
 #include <QStringList>
 #include <QDebug>
 
-#include "remote.h"
-#include "xdg-app/xdg-application.h"
+#include "xdg-remote.h"
+#include "xdg-application.h"
 
 static void xdgAppChanged(GFileMonitor *monitor, GFile *child, GFile *other_file,
         GFileMonitorEvent event_type, XdgAppBackend *xdgapp) {
@@ -60,12 +60,12 @@ bool XdgAppBackend::initialize()
     return true;
 }
 
-QList<Remote *> XdgAppBackend::listRemotes()
+QList<SoftwareSource *> XdgAppBackend::listSources()
 {
-    QList<Remote *> remotes;
+    QList<SoftwareSource *> sources;
 
     if (!initialize())
-        return remotes;
+        return sources;
 
     // TODO: Do something with these
     GCancellable *cancellable = nullptr;
@@ -75,15 +75,15 @@ QList<Remote *> XdgAppBackend::listRemotes()
             cancellable, &error);
 
     if (xremotes == nullptr)
-		return remotes;
+		return sources;
 
 	for (uint i = 0; i < xremotes->len; i++) {
 		XdgAppRemote *xremote = (XdgAppRemote *) g_ptr_array_index(xremotes, i);
 
-        remotes << new Remote(xremote, this);
+        sources << new Remote(xremote, this);
 	}
 
-	return remotes;
+	return sources;
 }
 
 QList<Application *> XdgAppBackend::listInstalledApplications()

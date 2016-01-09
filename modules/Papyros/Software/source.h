@@ -16,15 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef REMOTE_H
-#define REMOTE_H
+#ifndef SOURCE_H
+#define SOURCE_H
 
 #include <QObject>
 #include <QString>
 
-#include "base.h"
-
-class Remote: public QObject
+class SoftwareSource: public QObject
 {
     Q_OBJECT
 
@@ -33,17 +31,11 @@ class Remote: public QObject
     Q_PROPERTY(QString url MEMBER m_url CONSTANT)
 
 public:
-    Remote(XdgAppRemote *remote, QObject *parent = nullptr)
-        : QObject(parent)
-    {
-        m_name = xdg_app_remote_get_name(remote);
-        m_title = xdg_app_remote_get_title(remote);
-        m_url = xdg_app_remote_get_url(remote);
-    }
+    SoftwareSource(QObject *parent = nullptr) : QObject(parent) {}
 
     QString m_name;
     QString m_title;
     QString m_url;
 };
 
-#endif // REMOTE_H
+#endif // SOURCE_H

@@ -16,32 +16,36 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef XDG_BACKEND_H
-#define XDG_BACKEND_H
+#ifndef REMOTE_H
+#define REMOTE_H
 
-#include "backend.h"
+#include "source.h"
+
+#include <QObject>
+#include <QString>
 
 #include "base.h"
 
-
-class XdgAppBackend: public SoftwareBackend
+class Remote: public SoftwareSource
 {
     Q_OBJECT
 
+    Q_PROPERTY(QString name MEMBER m_name CONSTANT)
+    Q_PROPERTY(QString title MEMBER m_title CONSTANT)
+    Q_PROPERTY(QString url MEMBER m_url CONSTANT)
+
 public:
-    XdgAppBackend(QObject *parent = nullptr);
+    Remote(XdgAppRemote *remote, QObject *parent = nullptr)
+        : SoftwareSource(parent)
+    {
+        m_name = xdg_app_remote_get_name(remote);
+        m_title = xdg_app_remote_get_title(remote);
+        m_url = xdg_app_remote_get_url(remote);
+    }
 
-    Q_INVOKABLE QList<SoftwareSource *> listSources() override;
-    Q_INVOKABLE QList<Application *> listInstalledApplications() override;
-
-public slots:
-    bool launchApplication(const Application *app) override;
-
-private:
-    bool initialize();
-
-    XdgAppInstallation *m_installation = nullptr;
-    GFileMonitor *m_monitor = nullptr;
+    QString m_name;
+    QString m_title;
+    QString m_url;
 };
 
-#endif // XDG_BACKEND_H
+#endif // REMOTE_H

@@ -22,7 +22,7 @@
 #include <QObject>
 
 class Application;
-class Remote;
+class SoftwareSource;
 
 class SoftwareBackend: public QObject
 {
@@ -31,7 +31,7 @@ class SoftwareBackend: public QObject
 public:
     SoftwareBackend(QObject *parent = nullptr) : QObject(parent) {}
 
-    Q_INVOKABLE virtual QList<Remote *> listRemotes() = 0;
+    Q_INVOKABLE virtual QList<SoftwareSource *> listSources() = 0;
     Q_INVOKABLE virtual QList<Application *> listInstalledApplications() = 0;
 
 public slots:

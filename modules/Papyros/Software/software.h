@@ -24,21 +24,21 @@
 #include <Papyros/QQuickList>
 
 class Application;
-class Remote;
+class SoftwareSource;
 class SoftwareBackend;
 
 class Software: public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(QObjectListModel *remotes READ remotes CONSTANT)
+    Q_PROPERTY(QObjectListModel *sources READ sources CONSTANT)
     Q_PROPERTY(QObjectListModel *installedApps READ installedApps CONSTANT)
 
 public:
     Software(QObject *parent = nullptr);
 
-    QObjectListModel *remotes() {
-        return m_remotes.getModel();
+    QObjectListModel *sources() {
+        return m_sources.getModel();
     }
 
     QObjectListModel *installedApps() {
@@ -50,7 +50,7 @@ private slots:
 
 private:
     QList<SoftwareBackend *> m_backends;
-    QQuickList<Remote> m_remotes;
+    QQuickList<SoftwareSource> m_sources;
     QQuickList<Application> m_installedApps;
 };
 
