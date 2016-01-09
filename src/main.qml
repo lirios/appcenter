@@ -16,10 +16,11 @@ ApplicationWindow {
         primaryColor: "blue"
         accentColor: "red"
         tabHighlightColor: "white"
+        backgroundColor: "white"
     }
 
     initialPage: TabbedPage {
-        title: "Software"
+        title: "App Center"
 
         Tab {
             title: "Installed"
@@ -30,14 +31,20 @@ ApplicationWindow {
                 model: software.installedApps
                 delegate: ListItem.Subtitled {
                     action: Image {
-                        width: Units.dp(24)
+                        width: Units.dp(48)
                         height: width
                         anchors.centerIn: parent
-                        source: "image://desktoptheme/" + edit.iconName
+                        source: edit.iconName.indexOf("/") == 0
+                                ? edit.iconName : "image://desktoptheme/" + edit.iconName
+                        sourceSize {
+                            width: Units.dp(48)
+                            height: width
+                        }
                     }
                     text: edit.name
                     subText: edit.summary
                     valueText: edit.branch
+                    onClicked: pageStack.push(Qt.resolvedUrl("ApplicationPage.qml"), {app: edit})
                 }
             }
         }
