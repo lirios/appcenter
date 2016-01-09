@@ -16,43 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef XDG_APPLICATION_H
-#define XDG_APPLICATION_H
-
 #include "application.h"
 
-#include <QObject>
-#include <QString>
+#define REFINE_PROPERTY(name, value) if (!value.isEmpty()) name = value;
 
-#include "base.h"
-
-class XdgApplication: public Application
+void Application::refineFromAppstream(Appstream::Component component)
 {
-    Q_OBJECT
-
-    Q_PROPERTY(QString branch MEMBER m_branch CONSTANT)
-    Q_PROPERTY(QString origin MEMBER m_origin CONSTANT)
-    Q_PROPERTY(QString arch MEMBER m_arch CONSTANT)
-
-public:
-    XdgApplication(XdgAppInstalledRef *app_ref, State state, QObject *parent = nullptr);
-
-    QString installedVersion() const override
-    {
-        return m_branch;
-    }
-
-    QString latestVersion() const override
-    {
-        return "UNKNOWN";
-    }
-
-    QString m_branch;
-    QString m_origin;
-    QString m_arch;
-
-public slots:
-    void install();
-};
-
-#endif // XDG_APPLICATION_H
+    REFINE_PROPERTY(m_name, component.name());
+    REFINE_PROPERTY(m_summary, component.comment());
+    REFINE_PROPERTY(m_iconName, component.m_iconName);
+}

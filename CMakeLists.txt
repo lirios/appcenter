@@ -37,14 +37,11 @@ set(QT_MIN_VERSION "5.4.0")
 find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS
              Core
              Qml
-             Quick)
+             Quick
+             Xml)
 
-# Find xdg-app
-find_package(XdgApp 0.4.6 REQUIRED)
-
+find_package(XdgApp REQUIRED)
 find_package(Papyros REQUIRED)
-
-find_package(AppstreamQt REQUIRED)
 
 install(FILES papyros-software.desktop
 		DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)

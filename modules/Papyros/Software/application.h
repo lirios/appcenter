@@ -22,6 +22,8 @@
 #include <QObject>
 #include <QString>
 
+#include "appstream/component.h"
+
 class Application: public QObject
 {
     Q_OBJECT
@@ -30,7 +32,7 @@ class Application: public QObject
     Q_PROPERTY(Type type MEMBER m_type CONSTANT)
     Q_PROPERTY(QString name MEMBER m_name CONSTANT)
     Q_PROPERTY(QString summary MEMBER m_summary CONSTANT)
-    Q_PROPERTY(QString iconName READ iconName CONSTANT)
+    Q_PROPERTY(QString iconName MEMBER m_iconName CONSTANT)
     Q_PROPERTY(QString latestVersion READ latestVersion CONSTANT)
     Q_PROPERTY(QString installedVersion READ installedVersion CONSTANT)
 
@@ -38,15 +40,18 @@ public:
     enum State {
         Installed
     };
+    Q_ENUM(State)
 
     enum Type {
         App,
         Runtime
     };
+    Q_ENUM(Type)
 
     Application(QObject *parent = nullptr) : QObject(parent) {}
 
-    virtual QString iconName() const = 0;
+    void refineFromAppstream(Appstream::Component component);
+
     virtual QString latestVersion() const = 0;
     virtual QString installedVersion() const = 0;
 
@@ -54,6 +59,7 @@ public:
     Type m_type;
     QString m_name;
     QString m_summary;
+    QString m_iconName;
 };
 
 #endif // APPLICATION_H

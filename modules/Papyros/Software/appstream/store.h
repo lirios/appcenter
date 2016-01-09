@@ -16,43 +16,28 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef XDG_APPLICATION_H
-#define XDG_APPLICATION_H
-
-#include "application.h"
+#ifndef STORE_H
+#define STORE_H
 
 #include <QObject>
-#include <QString>
 
-#include "base.h"
+#include "component.h"
 
-class XdgApplication: public Application
+namespace Appstream
 {
-    Q_OBJECT
 
-    Q_PROPERTY(QString branch MEMBER m_branch CONSTANT)
-    Q_PROPERTY(QString origin MEMBER m_origin CONSTANT)
-    Q_PROPERTY(QString arch MEMBER m_arch CONSTANT)
+class Store
+{
 
 public:
-    XdgApplication(XdgAppInstalledRef *app_ref, State state, QObject *parent = nullptr);
+    bool load(QString path);
 
-    QString installedVersion() const override
-    {
-        return m_branch;
-    }
+    Component componentById(QString id) const;
 
-    QString latestVersion() const override
-    {
-        return "UNKNOWN";
-    }
-
-    QString m_branch;
-    QString m_origin;
-    QString m_arch;
-
-public slots:
-    void install();
+private:
+    QList<Component> m_components;
 };
 
-#endif // XDG_APPLICATION_H
+}
+
+#endif // STORE_H

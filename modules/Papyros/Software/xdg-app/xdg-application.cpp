@@ -19,7 +19,7 @@
 
 #include "xdg-application.h"
 
-#include <AppstreamQt/database.h>
+#include "appstream/store.h"
 
 XdgApplication::XdgApplication(XdgAppInstalledRef *app_ref, State state, QObject *parent)
     : Application(parent)
@@ -40,6 +40,7 @@ XdgApplication::XdgApplication(XdgAppInstalledRef *app_ref, State state, QObject
         break;
     case XDG_APP_REF_KIND_RUNTIME:
         m_type = Application::Runtime;
+        m_iconName = "application-x-executable";
         m_summary = "Framework for applications";
 
         desktopId = m_name + ".runtime";
@@ -53,24 +54,13 @@ XdgApplication::XdgApplication(XdgAppInstalledRef *app_ref, State state, QObject
     QString desktopPath = deployDir + "/files/share/applications";
     QString appdataPath = deployDir + "/files/share/appdata";
 
-    m_component = findComponent(QStringList() << desktopPath << appdataPath,
-        desktopId);
-}
+    Appstream::Store store;
+    store.load(desktopPath);
+    store.load(appdataPath);
 
-Appstream::Component XdgApplication::findComponent(QStringList paths, QString id)
-{
-    Q_FOREACH(QString path, paths) {
-        Appstream::Database database(path);
-        if (!database.open())
-            return Appstream::Component();
-
-        Appstream::Component component = database.componentById(id);
-
-        if (component.isValid())
-            return component;
-    }
-
-    return Appstream::Component();
+    Appstream::Component component = store.componentById(desktopId);
+    if (!component.isNull())
+        refineFromAppstream(component);
 }
 
 void XdgApplication::install()

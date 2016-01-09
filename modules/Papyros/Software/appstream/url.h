@@ -1,6 +1,7 @@
 /*
  * Papyros Software - The app store for Papyros
  * Copyright (C) 2016 Michael Spencer <sonrisesoftware@gmail.com>
+ * Copyright (C) 2013-2015 Richard Hughes <richard@hughsie.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,43 +17,32 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef XDG_APPLICATION_H
-#define XDG_APPLICATION_H
-
-#include "application.h"
+#ifndef URL_H
+#define URL_H
 
 #include <QObject>
+
 #include <QString>
 
-#include "base.h"
-
-class XdgApplication: public Application
+namespace Appstream
 {
-    Q_OBJECT
 
-    Q_PROPERTY(QString branch MEMBER m_branch CONSTANT)
-    Q_PROPERTY(QString origin MEMBER m_origin CONSTANT)
-    Q_PROPERTY(QString arch MEMBER m_arch CONSTANT)
-
+class Url
+{
 public:
-    XdgApplication(XdgAppInstalledRef *app_ref, State state, QObject *parent = nullptr);
+    enum Type {
+        Homepage, BugTracker, FAQ, Donation, Help, Missing, Unknown
+    };
 
-    QString installedVersion() const override
-    {
-        return m_branch;
-    }
+    Url(QString url, Type type);
+    Url(QString url, QString type);
 
-    QString latestVersion() const override
-    {
-        return "UNKNOWN";
-    }
+    bool operator==(const Url &other) const;
 
-    QString m_branch;
-    QString m_origin;
-    QString m_arch;
-
-public slots:
-    void install();
+    QString m_url;
+    Type m_type;
 };
 
-#endif // XDG_APPLICATION_H
+}
+
+#endif // URL_H
