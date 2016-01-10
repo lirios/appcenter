@@ -36,6 +36,7 @@ public:
 
 public slots:
     bool launchApplication(const Application *app) override;
+    bool downloadUpdates() override;
 
 private:
     bool initialize();

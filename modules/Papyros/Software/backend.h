@@ -36,6 +36,7 @@ public:
 
 public slots:
     virtual bool launchApplication(const Application *app) = 0;
+    virtual bool downloadUpdates() = 0;
 
 signals:
     void updated();

@@ -26,9 +26,26 @@
 #include "xdg-remote.h"
 #include "xdg-application.h"
 
+struct XdgAppHelper
+{
+    XdgApplication *app;
+};
+
 static void xdgAppChanged(GFileMonitor *monitor, GFile *child, GFile *other_file,
         GFileMonitorEvent event_type, XdgAppBackend *xdgapp) {
     emit xdgapp->updated();
+}
+
+static void xdgAppProgressCallback(const char *rawStatus, uint progress, bool estimating,
+        void *userData)
+{
+    QString status = rawStatus;
+	XdgAppHelper *helper = static_cast<XdgAppHelper *>(userData);
+
+    Q_ASSERT(helper->app);
+
+    qDebug() << "Progress callback for" << helper->app->m_id << status << progress << estimating;
+    // TODO: Do something more!
 }
 
 XdgAppBackend::XdgAppBackend(QObject *parent)
@@ -138,4 +155,44 @@ bool XdgAppBackend::launchApplication(const Application *app)
 
     return xdg_app_installation_launch(m_installation, qPrintable(xapp->m_id), NULL,
             qPrintable(xapp->m_branch), NULL, cancellable, &error);
+}
+
+bool XdgAppBackend::downloadUpdates()
+{
+    if (!initialize())
+        return false;
+
+    // TODO: Do something with these
+    GCancellable *cancellable = nullptr;
+    GError *error = nullptr;
+
+    /* get all the updates available from all remotes */
+	g_autoptr(GPtrArray) xrefs = xdg_app_installation_list_installed_refs_for_update(
+            m_installation, cancellable, &error);
+
+	if (xrefs == nullptr)
+		return false;
+
+    if (xrefs->len == 0)
+        qDebug() << "Nothing to download!";
+
+	for (uint i = 0; i < xrefs->len; i++) {
+		XdgAppInstalledRef *xref = (XdgAppInstalledRef *) g_ptr_array_index(xrefs, i);
+
+        XdgApplication *app = nullptr;
+
+        XdgAppHelper helper = {app};
+
+        qDebug() << "Updating" << xdg_app_ref_get_name(XDG_APP_REF(xref));
+		XdgAppInstalledRef *xref2 = xdg_app_installation_update(m_installation,
+                XDG_APP_UPDATE_FLAGS_NO_DEPLOY, xdg_app_ref_get_kind(XDG_APP_REF(xref)),
+                xdg_app_ref_get_name(XDG_APP_REF(xref)), xdg_app_ref_get_arch(XDG_APP_REF(xref)),
+                xdg_app_ref_get_branch(XDG_APP_REF(xref)),
+                (XdgAppProgressCallback) xdgAppProgressCallback,
+                &helper, cancellable, &error);
+		if (xref2 == nullptr)
+			return false;
+	}
+
+	return true;
 }

@@ -45,6 +45,9 @@ public:
         return m_installedApps.getModel();
     }
 
+public slots:
+    void downloadUpdates();
+
 private slots:
     void update();
 

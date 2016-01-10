@@ -38,6 +38,14 @@ Software::Software(QObject *parent)
     update();
 }
 
+void Software::downloadUpdates()
+{
+    // TODO: Run this in the background
+    foreach(SoftwareBackend *backend, m_backends) {
+        backend->downloadUpdates();
+    }
+}
+
 void Software::update()
 {
     // TODO: Update the lists so only new objects are added and old objects removed
