@@ -40,6 +40,7 @@ class Application: public QObject
     Q_PROPERTY(QString latestVersion READ latestVersion CONSTANT)
     Q_PROPERTY(QString installedVersion READ installedVersion CONSTANT)
     Q_PROPERTY(QObjectListModel *screenshots READ screenshots CONSTANT)
+    Q_PROPERTY(bool updatesAvailable READ updatesAvailable CONSTANT)
 
 public:
     enum State {
@@ -59,6 +60,7 @@ public:
 
     virtual QString latestVersion() const = 0;
     virtual QString installedVersion() const = 0;
+    virtual bool updatesAvailable() const = 0;
 
     QObjectListModel *screenshots() {
         return m_screenshots.getModel();

@@ -16,19 +16,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef APPSTREAM_UTILS_H
-#define APPSTREAM_UTILS_H
+#include "utils.h"
 
-#include <QObject>
-
-#include <QString>
-#include <QDomElement>
-
-namespace Appstream
+QStringList stringsByTagName(QDomElement element, QString tagName)
 {
+    QStringList strings;
 
-QStringList stringsByTagName(QDomElement element, QString tagName);
+    QDomNodeList nodes = element.elementsByTagName(tagName);
+    for (int i = 0; i < nodes.count(); i++) {
+        QDomElement subElement = nodes.at(i).toElement();
+        if (!subElement.isNull())
+            strings << subElement.text();
+    }
 
+    return strings;
 }
-
-#endif // APPSTREAM_UTILS_H

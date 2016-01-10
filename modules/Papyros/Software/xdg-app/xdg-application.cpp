@@ -31,6 +31,9 @@ XdgApplication::XdgApplication(XdgAppInstalledRef *app_ref, State state, Softwar
     m_name = m_id;
     m_arch = xdg_app_ref_get_arch(XDG_APP_REF(app_ref));
 
+    m_currentCommit = xdg_app_ref_get_commit(XDG_APP_REF(app_ref));
+	m_latestCommit = xdg_app_installed_ref_get_latest_commit(app_ref);
+
     if (m_branch.isEmpty())
         m_branch = "master";
 
@@ -44,7 +47,7 @@ XdgApplication::XdgApplication(XdgAppInstalledRef *app_ref, State state, Softwar
         break;
     case XDG_APP_REF_KIND_RUNTIME:
         m_type = Application::Runtime;
-        m_iconName = "application-x-executable";
+        m_iconName = "package-x-generic";
         m_summary = "Framework for applications";
 
         desktopId = m_name + ".runtime";

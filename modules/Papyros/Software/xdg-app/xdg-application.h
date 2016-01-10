@@ -47,9 +47,16 @@ public:
         return "UNKNOWN";
     }
 
+    bool updatesAvailable() const override
+    {
+        return m_currentCommit != m_latestCommit;
+    }
+
     QString m_branch;
     QString m_origin;
     QString m_arch;
+    QString m_currentCommit;
+    QString m_latestCommit;
 
 public slots:
     void install();
