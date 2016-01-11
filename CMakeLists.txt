@@ -1,4 +1,4 @@
-project(io.papyros.appstore)
+project(io.papyros.AppCenter)
 
 cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)
 
@@ -43,9 +43,11 @@ find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS
 find_package(XdgApp REQUIRED)
 find_package(Papyros REQUIRED)
 
-install(FILES papyros-software.desktop
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/${PROJECT_NAME}.desktop
 		DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
 
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/${PROJECT_NAME}.appdata.xml
+        DESTINATION ${CMAKE_INSTALL_METAINFODIR})
 
 add_subdirectory(src)
 add_subdirectory(modules/Papyros/Software)
