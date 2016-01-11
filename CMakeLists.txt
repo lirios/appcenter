@@ -5,21 +5,17 @@ cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-# Instruct CMake to run moc automatically when needed
+# Instruct CMake to run moc and rrc automatically when needed
 set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
 
-# ECM
+# Extra CMake files
 find_package(ECM 0.0.11 REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR})
 
-# Installation directories
 include(KDEInstallDirs)
-
-# Other macros
 include(KDECMakeSettings)
 include(KDECompilerSettings)
-
-# Macro to print feature summary
 include(FeatureSummary)
 
 # Build flags
@@ -43,9 +39,9 @@ find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS
 find_package(XdgApp REQUIRED)
 find_package(Papyros REQUIRED)
 
+# Install the desktop and appdata files
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/${PROJECT_NAME}.desktop
-		DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
-
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/${PROJECT_NAME}.appdata.xml
         DESTINATION ${CMAKE_INSTALL_METAINFODIR})
 

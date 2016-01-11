@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
         app.setOrganizationName("Papyros");
 
         #if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
-            app.setDesktopFileName("io.papyros.AppCenter");
+            app.setDesktopFileName("io.papyros.AppCenter.desktop");
         #endif
 
         // Set the X11 WML_CLASS so X11 desktops can find the desktop file
