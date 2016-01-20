@@ -20,12 +20,12 @@ Page {
 
         ColumnLayout {
             id: column
-            width: scrollView.width - 2 * anchors.margins
+            width: Math.min(Units.dp(800), scrollView.width - 2 * anchors.margins)
 
             spacing: Units.dp(16)
 
             anchors {
-                left: parent.left
+                horizontalCenter: parent.horizontalCenter
                 top: parent.top
                 margins: Units.dp(16)
             }
@@ -40,8 +40,7 @@ Page {
                     Layout.fillHeight: true
                     Layout.preferredWidth: height
 
-                    source: app.iconName.indexOf('/') == 0
-                            ? app.iconName : "image://desktoptheme/"+ app.iconName
+                    source: appIcon(app.iconName)
 
                     sourceSize {
                         width: image.width
@@ -60,6 +59,7 @@ Page {
                     Label {
                         text: app.summary
                         style: "subheading"
+                        color: Theme.light.subTextColor
                     }
                 }
 
@@ -112,7 +112,7 @@ Page {
                         delegate: Image {
                             source: edit.url
 
-                            Layout.preferredWidth: Units.dp(180)
+                            Layout.preferredWidth: Units.dp(120)
                             Layout.preferredHeight: width * sourceSize.height/sourceSize.width
 
                             Ink {

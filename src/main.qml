@@ -7,17 +7,29 @@ import Papyros.Software 0.1
 ApplicationWindow {
     id: demo
 
-    title: "App Store"
+    title: "App Center"
 
     // Necessary when loading the window from C++
     visible: true
 
     theme {
         primaryColor: "blue"
-        accentColor: "red"
+        accentColor: "blue"
         tabHighlightColor: "white"
-        backgroundColor: "white"
+        // backgroundColor: "white"
     }
+
+    function appIcon(name) {
+        if (name == '')
+            name = 'application-x-executable'
+
+        if (name.indexOf('/') == 0)
+            return name
+        else
+            return 'image://desktoptheme/' + name
+    }
+
+    Component.onCompleted: welcomeDialog.open()
 
     Action {
         id: searchAction
@@ -65,11 +77,22 @@ ApplicationWindow {
 
         actions: [searchAction]
 
-        Icon {
-            opacity: 0.5
-            name: "action/shop"
-            size: Units.dp(96)
+        Column {
             anchors.centerIn: parent
+            spacing: Units.dp(16)
+            opacity: 0.5
+
+            Icon {
+                name: "action/shop"
+                size: Units.dp(96)
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+
+            Label {
+                text: "Installing new applications is not supported yet"
+                style: "title"
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
         }
     }
 
@@ -88,8 +111,7 @@ ApplicationWindow {
                     width: Units.dp(48)
                     height: width
                     anchors.centerIn: parent
-                    source: edit.iconName.indexOf("/") == 0
-                            ? edit.iconName : "image://desktoptheme/" + edit.iconName
+                    source: appIcon(edit.iconName)
                     sourceSize {
                         width: Units.dp(48)
                         height: width
@@ -122,5 +144,46 @@ ApplicationWindow {
 
     Software {
         id: software
+    }
+
+    Dialog {
+        id: welcomeDialog
+        // title: "Welcome!"
+
+        Column {
+            spacing: Units.dp(16)
+
+            Item {
+                width: parent.width
+                height: Units.dp(16)
+            }
+
+            Image {
+                anchors.horizontalCenter: parent.horizontalCenter
+                source: appIcon('software-store')
+                sourceSize {
+                    width: Units.dp(96)
+                    height: width
+                }
+            }
+
+            Label {
+                style: "title"
+                text: "Welcome to App Center"
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+
+            Label {
+                horizontalAlignment: Text.AlignJustify
+                width: Units.dp(280)
+                wrapMode: Text.Wrap
+                style: "dialog"
+                color: Theme.light.subTextColor
+                text: "App Center lets you install all the software you need, all from one place. See our recommendations, browse the categories, or search for the applications you want."
+            }
+        }
+
+        positiveButtonText: "Get Started"
+        negativeButton.visible: false
     }
 }
