@@ -1,6 +1,6 @@
 import QtQuick 2.4
 import QtQuick.Controls 1.2
-import Material 0.1
+import Material 0.2
 import Material.ListItems 0.1 as ListItem
 import Papyros.Software 0.1
 
