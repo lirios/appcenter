@@ -5,7 +5,7 @@
 #include <QDebug>
 #include <QIcon>
 #include <QDir>
-#include <KQuickConfig>
+#include <Papyros/KQuickConfig>
 
 #define TR(x) QT_TRANSLATE_NOOP("Command line parser", QStringLiteral(x))
 
@@ -26,7 +26,10 @@ int main(int argc, char *argv[])
     // TODO: Figure out why this is necessary
     QIcon::setThemeName("Paper");
 
-    QQmlApplicationEngine engine(QUrl(QStringLiteral("qrc://qml/main.qml")));
+    // TODO: Remove after we add a QML module directly to Papyros.Core
+    qmlRegisterType<KQuickConfig>("Papyros.Core", 0, 1, "KQuickConfig");
+
+    QQmlApplicationEngine engine(QUrl(QStringLiteral("qrc:/qml/main.qml")));
 
     return app.exec();
 }

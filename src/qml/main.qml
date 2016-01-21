@@ -3,6 +3,7 @@ import QtQuick.Controls 1.2
 import Material 0.2
 import Material.ListItems 0.1 as ListItem
 import Papyros.Software 0.1
+import Papyros.Core 0.1
 
 ApplicationWindow {
     id: demo
@@ -29,7 +30,10 @@ ApplicationWindow {
             return 'image://desktoptheme/' + name
     }
 
-    Component.onCompleted: welcomeDialog.open()
+    Component.onCompleted: {
+        if (session.shownWelcome == "false")
+            welcomeDialog.open()
+    }
 
     Action {
         id: searchAction
@@ -148,7 +152,6 @@ ApplicationWindow {
 
     Dialog {
         id: welcomeDialog
-        // title: "Welcome!"
 
         Column {
             spacing: Units.dp(16)
@@ -185,5 +188,17 @@ ApplicationWindow {
 
         positiveButtonText: "Get Started"
         negativeButton.visible: false
+
+        onAccepted: session.shownWelcome = "true"
+    }
+
+    KQuickConfig {
+        id: session
+        file: "papyros-appcenter"
+        group: "session"
+
+        defaults: {
+            "shownWelcome": "false"
+        }
     }
 }
