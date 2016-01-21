@@ -23,16 +23,16 @@
 
 #include "base.h"
 
-
-class XdgAppBackend: public SoftwareBackend
+class XdgAppBackend : public SoftwareBackend
 {
     Q_OBJECT
 
 public:
     XdgAppBackend(QObject *parent = nullptr);
 
-    Q_INVOKABLE QList<SoftwareSource *> listSources() override;
-    Q_INVOKABLE QList<Application *> listInstalledApplications() override;
+    QList<SoftwareSource *> listSources() override;
+    QList<Application *> listAvailableApplications() override;
+    QList<Application *> listInstalledApplications() override;
 
 public slots:
     bool launchApplication(const Application *app) override;

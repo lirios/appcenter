@@ -24,15 +24,16 @@
 class Application;
 class SoftwareSource;
 
-class SoftwareBackend: public QObject
+class SoftwareBackend : public QObject
 {
     Q_OBJECT
 
 public:
     SoftwareBackend(QObject *parent = nullptr) : QObject(parent) {}
 
-    Q_INVOKABLE virtual QList<SoftwareSource *> listSources() = 0;
-    Q_INVOKABLE virtual QList<Application *> listInstalledApplications() = 0;
+    virtual QList<SoftwareSource *> listSources() = 0;
+    virtual QList<Application *> listAvailableApplications() = 0;
+    virtual QList<Application *> listInstalledApplications() = 0;
 
 public slots:
     virtual bool launchApplication(const Application *app) = 0;

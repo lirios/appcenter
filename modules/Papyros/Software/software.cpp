@@ -25,12 +25,11 @@
 #include "source.h"
 #include "application.h"
 
-Software::Software(QObject *parent)
-    : QObject(parent)
+Software::Software(QObject *parent) : QObject(parent)
 {
     m_backends << new XdgAppBackend(this);
 
-    Q_FOREACH(SoftwareBackend *backend, m_backends) {
+    foreach (SoftwareBackend *backend, m_backends) {
         // TODO: Only update the data from this backend instead of all backends
         QObject::connect(backend, &SoftwareBackend::updated, this, &Software::update);
     }
@@ -41,9 +40,22 @@ Software::Software(QObject *parent)
 void Software::downloadUpdates()
 {
     // TODO: Run this in the background
-    foreach(SoftwareBackend *backend, m_backends) {
+    foreach (SoftwareBackend *backend, m_backends) {
         backend->downloadUpdates();
     }
+}
+
+void Software::refreshAvailableApps()
+{
+    QList<Application *> availableApps;
+
+    // TODO: Run this in the background
+    foreach (SoftwareBackend *backend, m_backends) {
+        availableApps << backend->listAvailableApplications();
+    }
+
+    // TODO: Update the list so only new objects are added and old objects removed
+    m_availableApps = availableApps;
 }
 
 void Software::update()
@@ -52,7 +64,7 @@ void Software::update()
     m_sources.clear();
     m_installedApps.clear();
 
-    Q_FOREACH(SoftwareBackend *backend, m_backends) {
+    foreach (SoftwareBackend *backend, m_backends) {
         m_sources << backend->listSources();
         m_installedApps << backend->listInstalledApplications();
     }

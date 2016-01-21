@@ -24,6 +24,12 @@
 #include <QString>
 #include <QDomElement>
 
+#include "autocast.h"
+
+#define G_FOREACH(item, array)                                                                     \
+    for (uint keep = 1, index = 0; keep && index < (array)->len; keep = !keep, index++)            \
+        for (item = auto_cast(g_ptr_array_index(array, index)); keep; keep = !keep)
+
 QStringList stringsByTagName(QDomElement element, QString tagName);
 
 #endif // APPSTREAM_UTILS_H

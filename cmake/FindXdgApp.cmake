@@ -10,6 +10,7 @@ include(LibFindMacros)
 # Dependencies
 libfind_package(XdgApp Glib)
 libfind_package(XdgApp GObject)
+libfind_package(XdgApp GIO)
 
 # Use pkg-config to get hints about paths
 libfind_pkg_check_modules(XdgApp_PKGCONF xdg-app)
@@ -28,6 +29,6 @@ find_library(XdgApp_LIBRARY
 
 # Set the include dir variables and the libraries and let libfind_process do the rest.
 # NOTE: Singular variables for this library, plural for libraries this this lib depends on.
-set(XdgApp_PROCESS_INCLUDES XdgApp_INCLUDE_DIR Glib_INCLUDE_DIR GObject_INCLUDE_DIR)
-set(XdgApp_PROCESS_LIBS XdgApp_LIBRARY Glib_LIBRARY GObject_LIBRARY)
+set(XdgApp_PROCESS_INCLUDES XdgApp_INCLUDE_DIR Glib_INCLUDE_DIR GObject_INCLUDE_DIR GIO_INCLUDE_DIR)
+set(XdgApp_PROCESS_LIBS XdgApp_LIBRARY Glib_LIBRARY GObject_LIBRARY GIO_LIBRARY)
 libfind_process(XdgApp)

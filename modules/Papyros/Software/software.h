@@ -27,26 +27,26 @@ class Application;
 class SoftwareSource;
 class SoftwareBackend;
 
-class Software: public QObject
+class Software : public QObject
 {
     Q_OBJECT
 
     Q_PROPERTY(QObjectListModel *sources READ sources CONSTANT)
+    Q_PROPERTY(QObjectListModel *availableApps READ availableApps CONSTANT)
     Q_PROPERTY(QObjectListModel *installedApps READ installedApps CONSTANT)
 
 public:
     Software(QObject *parent = nullptr);
 
-    QObjectListModel *sources() {
-        return m_sources.getModel();
-    }
+    QObjectListModel *sources() { return m_sources.getModel(); }
 
-    QObjectListModel *installedApps() {
-        return m_installedApps.getModel();
-    }
+    QObjectListModel *availableApps() { return m_availableApps.getModel(); }
+
+    QObjectListModel *installedApps() { return m_installedApps.getModel(); }
 
 public slots:
     void downloadUpdates();
+    void refreshAvailableApps();
 
 private slots:
     void update();
@@ -54,6 +54,7 @@ private slots:
 private:
     QList<SoftwareBackend *> m_backends;
     QQuickList<SoftwareSource> m_sources;
+    QQuickList<Application> m_availableApps;
     QQuickList<Application> m_installedApps;
 };
 

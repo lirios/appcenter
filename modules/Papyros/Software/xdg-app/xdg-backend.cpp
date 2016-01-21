@@ -25,22 +25,23 @@
 
 #include "xdg-remote.h"
 #include "xdg-application.h"
+#include "utils.h"
 
-struct XdgAppHelper
-{
+struct XdgAppHelper {
     XdgApplication *app;
 };
 
 static void xdgAppChanged(GFileMonitor *monitor, GFile *child, GFile *other_file,
-        GFileMonitorEvent event_type, XdgAppBackend *xdgapp) {
+                          GFileMonitorEvent event_type, XdgAppBackend *xdgapp)
+{
     emit xdgapp->updated();
 }
 
 static void xdgAppProgressCallback(const char *rawStatus, uint progress, bool estimating,
-        void *userData)
+                                   void *userData)
 {
     QString status = rawStatus;
-	XdgAppHelper *helper = static_cast<XdgAppHelper *>(userData);
+    XdgAppHelper *helper = static_cast<XdgAppHelper *>(userData);
 
     Q_ASSERT(helper->app);
 
@@ -48,8 +49,7 @@ static void xdgAppProgressCallback(const char *rawStatus, uint progress, bool es
     // TODO: Do something more!
 }
 
-XdgAppBackend::XdgAppBackend(QObject *parent)
-    : SoftwareBackend(parent)
+XdgAppBackend::XdgAppBackend(QObject *parent) : SoftwareBackend(parent)
 {
     // Nothing needed here yet.
 }
@@ -66,13 +66,15 @@ bool XdgAppBackend::initialize()
 
     m_installation = xdg_app_installation_new_user(cancellable, &error);
 
-    if (m_installation == nullptr) return false;
+    if (m_installation == nullptr)
+        return false;
 
     m_monitor = xdg_app_installation_create_monitor(m_installation, cancellable, &error);
 
-    if (m_monitor == nullptr) return false;
+    if (m_monitor == nullptr)
+        return false;
 
-	g_signal_connect(m_monitor, "changed", G_CALLBACK(xdgAppChanged), this);
+    g_signal_connect(m_monitor, "changed", G_CALLBACK(xdgAppChanged), this);
 
     return true;
 }
@@ -88,19 +90,77 @@ QList<SoftwareSource *> XdgAppBackend::listSources()
     GCancellable *cancellable = nullptr;
     GError *error = nullptr;
 
-    g_autoptr(GPtrArray) xremotes = xdg_app_installation_list_remotes(m_installation,
-            cancellable, &error);
+    g_autoptr(GPtrArray) xremotes =
+            xdg_app_installation_list_remotes(m_installation, cancellable, &error);
 
     if (xremotes == nullptr)
-		return sources;
+        return sources;
 
-	for (uint i = 0; i < xremotes->len; i++) {
-		XdgAppRemote *xremote = (XdgAppRemote *) g_ptr_array_index(xremotes, i);
-
+    G_FOREACH(XdgAppRemote * xremote, xremotes)
+    {
         sources << new Remote(xremote, this);
-	}
+    }
 
-	return sources;
+    return sources;
+}
+
+QList<Application *> XdgAppBackend::listAvailableApplications()
+{
+    // uint cache_age = 30 * 60;
+
+    QList<Application *> applications;
+
+    if (!initialize())
+        return applications;
+
+    // TODO: Do something with these
+    GCancellable *cancellable = nullptr;
+    GError *error = nullptr;
+
+    g_autoptr(GPtrArray) xremotes =
+            xdg_app_installation_list_remotes(m_installation, cancellable, &error);
+
+    qDebug() << (xremotes == nullptr);
+
+    if (xremotes == nullptr)
+        return applications;
+
+    G_FOREACH(XdgAppRemote * xremote, xremotes)
+    {
+        g_autoptr(GError) error_local = NULL;
+
+        /* is the timestamp new enough */
+        // TODO: Figure this out
+        // g_autoptr(GFile) file_timestamp = xdg_app_remote_get_appstream_timestamp(xremote, NULL);
+        // uint file_age = gs_utils_get_file_age(file_timestamp);
+        // if (file_age < cache_age) {
+        //     QString filename = g_file_get_path(file_timestamp);
+        //     qDebug() << filename << "is only" << file_age << "seconds old, so ignoring refresh";
+        //     continue;
+        // }
+
+        /* download new data */
+        bool result = xdg_app_installation_update_appstream_sync(
+                m_installation, xdg_app_remote_get_name(xremote), NULL, /* arch */
+                NULL,                                                   /* out_changed */
+                cancellable, &error_local);
+        if (!result) {
+            if (g_error_matches(error_local, G_IO_ERROR, G_IO_ERROR_FAILED)) {
+                qDebug() << "Failed to get AppStream metadata:" << error_local->message;
+                continue;
+            }
+
+            qWarning() << "Failed to get AppStream metadata:" << error_local->message;
+            return applications;
+        }
+
+        /* add the new AppStream repo to the shared store */
+        g_autoptr(GFile) file = xdg_app_remote_get_appstream_dir(xremote, NULL);
+        QString appstreamFilename = g_file_get_path(file);
+        qDebug() << "Using AppStream metadata found at: " << appstreamFilename;
+    }
+
+    return applications;
 }
 
 QList<Application *> XdgAppBackend::listInstalledApplications()
@@ -114,32 +174,31 @@ QList<Application *> XdgAppBackend::listInstalledApplications()
     GCancellable *cancellable = nullptr;
     GError *error = nullptr;
 
-    g_autoptr(GPtrArray) xrefs = xdg_app_installation_list_installed_refs(m_installation,
-            cancellable, &error);
+    g_autoptr(GPtrArray) xrefs =
+            xdg_app_installation_list_installed_refs(m_installation, cancellable, &error);
 
     if (xrefs == nullptr)
-		return applications;
+        return applications;
 
-	for (uint i = 0; i < xrefs->len; i++) {
-		XdgAppInstalledRef *xref = (XdgAppInstalledRef *) g_ptr_array_index(xrefs, i);
-
+    G_FOREACH(XdgAppInstalledRef * xref, xrefs)
+    {
         /*
-    	 * Only show the current application in GNOME Software
-    	 *
-    	 * You can have multiple versions/branches of a particular app-id
-    	 * installed but only one of them is "current" where this means:
-    	 *  1) the default to launch unless you specify a version
-    	 *  2) The one that gets its exported files exported
-    	 */
+         * Only show the current application in GNOME Software
+         *
+         * You can have multiple versions/branches of a particular app-id
+         * installed but only one of them is "current" where this means:
+         *  1) the default to launch unless you specify a version
+         *  2) The one that gets its exported files exported
+         */
         if (!xdg_app_installed_ref_get_is_current(xref) &&
-    	    xdg_app_ref_get_kind(XDG_APP_REF(xref)) == XDG_APP_REF_KIND_APP) {
-    		continue;
-    	}
+            xdg_app_ref_get_kind(XDG_APP_REF(xref)) == XDG_APP_REF_KIND_APP) {
+            continue;
+        }
 
         applications << new XdgApplication(xref, Application::Installed, this);
-	}
+    }
 
-	return applications;
+    return applications;
 }
 
 bool XdgAppBackend::launchApplication(const Application *app)
@@ -154,7 +213,7 @@ bool XdgAppBackend::launchApplication(const Application *app)
     GError *error = nullptr;
 
     return xdg_app_installation_launch(m_installation, qPrintable(xapp->m_id), NULL,
-            qPrintable(xapp->m_branch), NULL, cancellable, &error);
+                                       qPrintable(xapp->m_branch), NULL, cancellable, &error);
 }
 
 bool XdgAppBackend::downloadUpdates()
@@ -167,32 +226,30 @@ bool XdgAppBackend::downloadUpdates()
     GError *error = nullptr;
 
     /* get all the updates available from all remotes */
-	g_autoptr(GPtrArray) xrefs = xdg_app_installation_list_installed_refs_for_update(
+    g_autoptr(GPtrArray) xrefs = xdg_app_installation_list_installed_refs_for_update(
             m_installation, cancellable, &error);
 
-	if (xrefs == nullptr)
-		return false;
+    if (xrefs == nullptr)
+        return false;
 
     if (xrefs->len == 0)
         qDebug() << "Nothing to download!";
 
-	for (uint i = 0; i < xrefs->len; i++) {
-		XdgAppInstalledRef *xref = (XdgAppInstalledRef *) g_ptr_array_index(xrefs, i);
-
+    G_FOREACH(XdgAppInstalledRef * xref, xrefs)
+    {
         XdgApplication *app = nullptr;
 
         XdgAppHelper helper = {app};
 
         qDebug() << "Updating" << xdg_app_ref_get_name(XDG_APP_REF(xref));
-		XdgAppInstalledRef *xref2 = xdg_app_installation_update(m_installation,
-                XDG_APP_UPDATE_FLAGS_NO_DEPLOY, xdg_app_ref_get_kind(XDG_APP_REF(xref)),
-                xdg_app_ref_get_name(XDG_APP_REF(xref)), xdg_app_ref_get_arch(XDG_APP_REF(xref)),
-                xdg_app_ref_get_branch(XDG_APP_REF(xref)),
-                (XdgAppProgressCallback) xdgAppProgressCallback,
-                &helper, cancellable, &error);
-		if (xref2 == nullptr)
-			return false;
-	}
+        XdgAppInstalledRef *xref2 = xdg_app_installation_update(
+                m_installation, XDG_APP_UPDATE_FLAGS_NO_DEPLOY,
+                xdg_app_ref_get_kind(XDG_APP_REF(xref)), xdg_app_ref_get_name(XDG_APP_REF(xref)),
+                xdg_app_ref_get_arch(XDG_APP_REF(xref)), xdg_app_ref_get_branch(XDG_APP_REF(xref)),
+                (XdgAppProgressCallback)xdgAppProgressCallback, &helper, cancellable, &error);
+        if (xref2 == nullptr)
+            return false;
+    }
 
-	return true;
+    return true;
 }
