@@ -7,10 +7,9 @@ import Papyros.Software 0.1 as Software
 
 Page {
     property var app
+    property int selectedImageIndex
 
     title: app.name
-
-    property int selectedImageIndex
 
     Flickable {
         id: scrollView
@@ -35,17 +34,12 @@ Page {
 
                 spacing: Units.dp(16)
 
-                Image {
+                IconItem {
                     id: image
                     Layout.fillHeight: true
                     Layout.preferredWidth: height
 
-                    source: appIcon(app.iconName)
-
-                    sourceSize {
-                        width: image.width
-                        height: width
-                    }
+                    icon: app.icon
                 }
 
                 ColumnLayout {

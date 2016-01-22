@@ -25,6 +25,7 @@
 #include <QDomDocument>
 #include <QString>
 #include <QHash>
+#include <QIcon>
 
 #include "url.h"
 #include "screenshot.h"
@@ -34,16 +35,9 @@ namespace Appstream
 
 class Component
 {
+    friend class Store;
 
 public:
-    enum SourceKind {
-        Appstream,
-        Appdata,
-        Metainfo,
-        Desktop,
-        Unknown
-    };
-
     void merge(const Component &other);
 
     bool loadFromFile(QString filename);
@@ -56,6 +50,7 @@ public:
 
     QString m_id;
     QString m_kind;
+    QString m_bundle;
     int m_priority = -1;
     QStringList m_packageNames;
     QStringList m_categories;
@@ -72,21 +67,22 @@ public:
     QStringList m_compulsoryForDesktops;
     QStringList m_extends;
     QList<Url> m_urls;
-    QString m_iconName;
     QList<Screenshot *> m_screenshots;
+    QIcon m_icon;
 
 private:
     bool loadFromAppdataFile(QString filename);
     bool loadFromDesktopFile(QString filename);
 
+    bool loadFromAppdata(QDomElement element, QString iconPath);
+
     void addKeyword(QString keyword, QString locale);
 
-    QHash<QString,QString> m_names;
-    QHash<QString,QString> m_comments;
-    QHash<QString,QString> m_developerNames;
-    QHash<QString,QStringList> m_keywords;
+    QHash<QString, QString> m_names;
+    QHash<QString, QString> m_comments;
+    QHash<QString, QString> m_developerNames;
+    QHash<QString, QStringList> m_keywords;
 };
-
 }
 
 #endif // COMPONENT_H

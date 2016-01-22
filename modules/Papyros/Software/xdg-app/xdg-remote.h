@@ -26,7 +26,7 @@
 
 #include "base.h"
 
-class Remote: public SoftwareSource
+class Remote : public SoftwareSource
 {
     Q_OBJECT
 
@@ -35,8 +35,7 @@ class Remote: public SoftwareSource
     Q_PROPERTY(QString url MEMBER m_url CONSTANT)
 
 public:
-    Remote(XdgAppRemote *remote, QObject *parent = nullptr)
-        : SoftwareSource(parent)
+    Remote(XdgAppRemote *remote, QObject *parent = nullptr) : SoftwareSource(parent)
     {
         m_name = xdg_app_remote_get_name(remote);
         m_title = xdg_app_remote_get_title(remote);

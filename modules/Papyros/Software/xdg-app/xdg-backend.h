@@ -23,6 +23,12 @@
 
 #include "base.h"
 
+struct AppstreamSource
+{
+    QString origin;
+    QString appstreamFilename;
+};
+
 class XdgAppBackend : public SoftwareBackend
 {
     Q_OBJECT
@@ -37,12 +43,14 @@ public:
 public slots:
     bool launchApplication(const Application *app) override;
     bool downloadUpdates() override;
+    bool refreshAvailableApplications() override;
 
 private:
     bool initialize();
 
     XdgAppInstallation *m_installation = nullptr;
     GFileMonitor *m_monitor = nullptr;
+    QList<AppstreamSource> m_appstreamPaths;
 };
 
 #endif // XDG_BACKEND_H

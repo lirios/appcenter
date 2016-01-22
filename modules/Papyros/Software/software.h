@@ -50,6 +50,7 @@ public slots:
 
 private slots:
     void update();
+    void availableApplicationsChanged();
 
 private:
     QList<SoftwareBackend *> m_backends;

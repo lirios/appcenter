@@ -4,6 +4,7 @@ import Material 0.2
 import Material.ListItems 0.1 as ListItem
 import Papyros.Software 0.1
 import Papyros.Core 0.1
+import QtQuick.Window 2.2
 
 ApplicationWindow {
     id: demo
@@ -17,17 +18,6 @@ ApplicationWindow {
         primaryColor: "blue"
         accentColor: "blue"
         tabHighlightColor: "white"
-        // backgroundColor: "white"
-    }
-
-    function appIcon(name) {
-        if (name == '')
-            name = 'application-x-executable'
-
-        if (name.indexOf('/') == 0)
-            return name
-        else
-            return 'image://desktoptheme/' + name
     }
 
     Component.onCompleted: {
@@ -81,21 +71,39 @@ ApplicationWindow {
 
         actions: [searchAction]
 
-        Column {
-            anchors.centerIn: parent
-            spacing: Units.dp(16)
-            opacity: 0.5
+        // Column {
+        //     anchors.centerIn: parent
+        //     spacing: Units.dp(16)
+        //     opacity: 0.5
+        //
+        //     Icon {
+        //         name: "action/shop"
+        //         size: Units.dp(96)
+        //         anchors.horizontalCenter: parent.horizontalCenter
+        //     }
+        //
+        //     Label {
+        //         text: "Installing new applications is not supported yet"
+        //         style: "title"
+        //         anchors.horizontalCenter: parent.horizontalCenter
+        //     }
+        // }
 
-            Icon {
-                name: "action/shop"
-                size: Units.dp(96)
-                anchors.horizontalCenter: parent.horizontalCenter
-            }
+        ListView {
+            anchors.fill: parent
 
-            Label {
-                text: "Installing new applications is not supported yet"
-                style: "title"
-                anchors.horizontalCenter: parent.horizontalCenter
+            model: software.availableApps
+            delegate: ListItem.Subtitled {
+                action: IconItem {
+                    width: Units.dp(48)
+                    height: width
+                    anchors.centerIn: parent
+                    icon: edit.icon
+                }
+                text: edit.name
+                subText: edit.summary
+                valueText: edit.branch
+                onClicked: pageStack.push(Qt.resolvedUrl("ApplicationPage.qml"), {app: edit})
             }
         }
     }
@@ -111,15 +119,11 @@ ApplicationWindow {
 
             model: software.installedApps
             delegate: ListItem.Subtitled {
-                action: Image {
+                action: IconItem {
                     width: Units.dp(48)
                     height: width
                     anchors.centerIn: parent
-                    source: appIcon(edit.iconName)
-                    sourceSize {
-                        width: Units.dp(48)
-                        height: width
-                    }
+                    icon: edit.icon
                 }
                 text: edit.name
                 subText: edit.summary
@@ -138,16 +142,12 @@ ApplicationWindow {
         ListView {
             anchors.fill: parent
 
-            model: software.remotes
+            model: software.sources
             delegate: ListItem.Subtitled {
-                text: edit.title ? "%1 (%2)".arg(edit.title).edit(edit.name) : edit.name
+                text: edit.title ? "%1 (%2)".arg(edit.title).arg(edit.name) : edit.name
                 subText: edit.url
             }
         }
-    }
-
-    Software {
-        id: software
     }
 
     Dialog {
@@ -161,13 +161,11 @@ ApplicationWindow {
                 height: Units.dp(16)
             }
 
-            Image {
+            IconItem {
                 anchors.horizontalCenter: parent.horizontalCenter
-                source: appIcon('software-store')
-                sourceSize {
-                    width: Units.dp(96)
-                    height: width
-                }
+                icon: 'software-store'
+                width: Units.dp(96)
+                height: width
             }
 
             Label {
@@ -190,6 +188,10 @@ ApplicationWindow {
         negativeButton.visible: false
 
         onAccepted: session.shownWelcome = "true"
+    }
+
+    Software {
+        id: software
     }
 
     KQuickConfig {

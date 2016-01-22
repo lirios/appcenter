@@ -18,14 +18,17 @@
 
 #include "application.h"
 
-#define REFINE_PROPERTY(name, value) if (!value.isEmpty()) name = value;
+#define REFINE_PROPERTY(name, value)                                                               \
+    if (!value.isNull())                                                                           \
+        name = value;
 #define REFINE_LIST_PROPERTY(name, value) name << value;
 
 void Application::refineFromAppstream(Appstream::Component component)
 {
+    REFINE_PROPERTY(m_id, component.m_id);
     REFINE_PROPERTY(m_name, component.name());
     REFINE_PROPERTY(m_summary, component.comment());
-    REFINE_PROPERTY(m_iconName, component.m_iconName);
+    REFINE_PROPERTY(m_icon, component.m_icon);
     REFINE_LIST_PROPERTY(m_screenshots, component.m_screenshots);
 }
 

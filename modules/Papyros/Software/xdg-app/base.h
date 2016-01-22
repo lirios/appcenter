@@ -17,8 +17,7 @@
  */
 
 #undef signals
-extern "C"
-{
-    #include <xdg-app.h>
+extern "C" {
+#include <xdg-app.h>
 }
 #define signals Q_SIGNALS

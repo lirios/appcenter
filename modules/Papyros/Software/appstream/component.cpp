@@ -27,101 +27,35 @@
 #include <QSettings>
 
 #include "utils.h"
+#include "store.h"
 
-#define MERGE_FIELD(other, fieldName) if (fieldName.isEmpty()) fieldName = other.fieldName;
+#define MERGE_FIELD(other, fieldName)                                                              \
+    if (fieldName.isNull())                                                                        \
+        fieldName = other.fieldName;
 #define MERGE_LIST_FIELD(other, fieldName) mergeLists(fieldName, other.fieldName);
 #define MERGE_HASH_FIELD(other, fieldName) mergeHashes(fieldName, other.fieldName);
 
 using namespace Appstream;
 
-template<typename T>
-void mergeLists(QList<T> &list1, const QList<T> &list2)
+QString defaultLocale() { return QLocale::system().name(); }
+
+template <typename T>
+T lookupLocale(QHash<QString, T> hash, QString locale)
 {
-    Q_FOREACH(T item, list2) {
-        if (!list1.contains(item))
-            list1 << item;
-    }
-}
-
-template<typename T, typename E>
-void mergeHashes(QHash<T, QList<E>> &hash1, const QHash<T, QList<E>> &hash2)
-{
-    Q_FOREACH(T key, hash2.keys()) {
-        if (hash1.contains(key))
-            hash1[key] << hash2[key];
-        else
-            hash1[key] = hash2[key];
-    }
-}
-
-template<typename T, typename E>
-void mergeHashes(QHash<T, E> &hash1, const QHash<T, E> &hash2)
-{
-    Q_FOREACH(T key, hash2.keys()) {
-        if (!hash1.contains(key))
-            hash1[key] = hash2[key];
-    }
-}
-
-bool hasSuffix(QString filename, QStringList suffices)
-{
-    Q_FOREACH(QString suffix, suffices) {
-        if (filename.endsWith(suffix))
-            return true;
-    }
-
-    return false;
-}
-
-Component::SourceKind kindFromFilename(QString filename)
-{
-    if (hasSuffix(filename, {"xml.gz", "yml", "yml.gz"}))
-        return Component::Appstream;
-    else if (hasSuffix(filename, {"appdata.xml", "appdata.xml.in", "xml"}))
-        return Component::Appdata;
-    else if (hasSuffix(filename, {"metainfo.xml", "metainfo.xml.in"}))
-        return Component::Metainfo;
-    else if (hasSuffix(filename, {"desktop", "desktop.in"}))
-        return Component::Desktop;
-    else
-        return Component::Unknown;
-}
-
-bool loadDocumentFromFile(QDomDocument *document, QString filename)
-{
-    QFile file(filename);
-
-    if (!file.open(QIODevice::ReadOnly))
-        return false;
-    if (!document->setContent(&file)) {
-        file.close();
-        return false;
-    }
-    file.close();
-    return true;
-}
-
-QString defaultLocale() {
-    return QLocale::system().name();
-}
-
-template<typename T>
-T lookupLocale(QHash<QString, T> hash, QString locale) {
     QStringList locales = {QLocale::system().name(), QLocale::c().name()};
     if (!locale.isEmpty())
         locales.insert(0, locale);
-    qDebug() << locales << hash.keys();
-    Q_FOREACH(QString possibleLocale, locales) {
+    foreach (QString possibleLocale, locales) {
         if (hash.contains(possibleLocale))
             return hash[possibleLocale];
     }
     return T();
 }
 
-template<typename T>
+template <typename T>
 void removeItems(QList<T> *list, QList<T> sublist)
 {
-    Q_FOREACH(T item, sublist) {
+    Q_FOREACH (T item, sublist) {
         list->removeAll(item);
     }
 }
@@ -130,7 +64,8 @@ void Component::merge(const Component &other)
 {
     MERGE_FIELD(other, m_id);
     MERGE_FIELD(other, m_kind);
-    if (m_priority == -1) m_priority = other.m_priority;
+    if (m_priority == -1)
+        m_priority = other.m_priority;
     MERGE_LIST_FIELD(other, m_packageNames);
     MERGE_LIST_FIELD(other, m_categories);
     MERGE_LIST_FIELD(other, m_architectures);
@@ -150,17 +85,17 @@ void Component::merge(const Component &other)
     MERGE_HASH_FIELD(other, m_comments);
     MERGE_HASH_FIELD(other, m_developerNames);
     MERGE_HASH_FIELD(other, m_keywords);
-    MERGE_FIELD(other, m_iconName);
+    MERGE_FIELD(other, m_icon);
     MERGE_LIST_FIELD(other, m_screenshots);
 }
 
 bool Component::loadFromFile(QString filename)
 {
     switch (kindFromFilename(filename)) {
-    case Component::Appdata:
-    case Component::Metainfo:
+    case Appstream::Appdata:
+    case Appstream::Metainfo:
         return loadFromAppdataFile(filename);
-    case Component::Desktop:
+    case Appstream::Desktop:
         return loadFromDesktopFile(filename);
     default:
         return false;
@@ -181,6 +116,11 @@ bool Component::loadFromAppdataFile(QString filename)
     if (appNode.isNull())
         return false;
 
+    return loadFromAppdata(appNode, "");
+}
+
+bool Component::loadFromAppdata(QDomElement appNode, QString iconPath)
+{
     for (QDomNode node = appNode.firstChild(); !node.isNull(); node = node.nextSibling()) {
         QDomElement element = node.toElement();
 
@@ -203,27 +143,34 @@ bool Component::loadFromAppdataFile(QString filename)
             m_packageNames << text;
         } else if (tagName == "bundle") {
             // TODO: Parse and add the bundle
+            m_bundle = text;
         } else if (tagName == "name") {
             QString language = element.attribute("xml:lang");
+            if (language.isEmpty())
+                language = "C";
             m_names[language] = text;
         } else if (tagName == "summary") {
             QString language = element.attribute("xml:lang");
+            if (language.isEmpty())
+                language = "C";
             m_comments[language] = text;
         } else if (tagName == "developer_name") {
             QString language = element.attribute("xml:lang");
+            if (language.isEmpty())
+                language = "C";
             m_developerNames[language] = text;
         } else if (tagName == "description") {
             qDebug() << "WARNING: description not parsed";
         } else if (tagName == "icon") {
-            qDebug() << "WARNING: icon not parsed";
+            QString fileName = iconPath + "/" + text;
+            QSize size(element.attribute("width").toInt(), element.attribute("height").toInt());
+            m_icon.addFile(fileName, size);
         } else if (tagName == "categories") {
             m_categories << stringsByTagName(element, "category");
         } else if (tagName == "architectures") {
             m_architectures << stringsByTagName(element, "architecture");
         } else if (tagName == "keywords") {
-            QDomNodeList keywords = element.elementsByTagName("keyword");
-            for (int i = 0; i < keywords.count(); i++) {
-                QDomElement keyword = keywords.at(i).toElement();
+            FOREACH_ELEMENT (QDomElement keyword, element.elementsByTagName("keyword")) {
                 if (!keyword.isNull()) {
                     QString language = element.attribute("xml:lang");
                     addKeyword(keyword.text(), language);
@@ -254,9 +201,7 @@ bool Component::loadFromAppdataFile(QString filename)
         } else if (tagName == "extends") {
             m_extends << text;
         } else if (tagName == "screenshots") {
-            QDomNodeList screenshots = element.elementsByTagName("screenshot");
-            for (int i = 0; i < screenshots.count(); i++) {
-                QDomElement screenshot = screenshots.at(i).toElement();
+            FOREACH_ELEMENT (QDomElement screenshot, element.elementsByTagName("screenshot")) {
                 // TODO: New object created without parent
                 if (!screenshot.isNull())
                     m_screenshots << new Screenshot(screenshot);
@@ -288,7 +233,7 @@ bool Component::loadFromDesktopFile(QString filename)
 
     settings.beginGroup("Desktop Entry");
 
-    Q_FOREACH(QString key, settings.allKeys()) {
+    Q_FOREACH (QString key, settings.allKeys()) {
         QString value = settings.value(key).toString();
 
         // qDebug() << key << value;
@@ -302,12 +247,13 @@ bool Component::loadFromDesktopFile(QString filename)
         } else if (key == "Icon") {
             QFileInfo info(value);
 
-            if (info.isAbsolute())
-                m_iconName = value;
-            else if (hasSuffix(value, {"png", "xpm", "svg"}))
-                m_iconName = info.completeBaseName();
-            else
-                m_iconName = value;
+            if (info.isAbsolute()) {
+                m_icon.addFile(value);
+            } else {
+                if (hasSuffix(value, {"png", "xpm", "svg"}))
+                    value = info.completeBaseName();
+                m_icon = QIcon::fromTheme(value);
+            }
         } else if (key == "Categories") {
             QStringList categories = value.split(";");
             QStringList ignoredCategories = {"GTK", "Qt", "KDE", "GNOME"};
@@ -343,7 +289,8 @@ bool Component::loadFromDesktopFile(QString filename)
     return true;
 }
 
-void Component::addKeyword(QString keyword, QString locale) {
+void Component::addKeyword(QString keyword, QString locale)
+{
     QStringList keywords = m_keywords.contains(locale) ? m_keywords[locale] : QStringList();
 
     keywords << keyword;
@@ -351,18 +298,13 @@ void Component::addKeyword(QString keyword, QString locale) {
     m_keywords[locale] = keywords;
 }
 
-QString Component::name(QString locale) const {
-    return lookupLocale(m_names, locale);
-}
+QString Component::name(QString locale) const { return lookupLocale(m_names, locale); }
 
-QString Component::comment(QString locale) const {
-    return lookupLocale(m_comments, locale);
-}
+QString Component::comment(QString locale) const { return lookupLocale(m_comments, locale); }
 
-QString Component::developerName(QString locale) const {
+QString Component::developerName(QString locale) const
+{
     return lookupLocale(m_developerNames, locale);
 }
 
-QStringList Component::keywords(QString locale) const {
-    return lookupLocale(m_keywords, locale);
-}
+QStringList Component::keywords(QString locale) const { return lookupLocale(m_keywords, locale); }

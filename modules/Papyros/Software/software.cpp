@@ -20,6 +20,7 @@
 #include <QProcess>
 #include <QStringList>
 #include <QDebug>
+#include <QtConcurrent>
 
 #include "xdg-app/xdg-backend.h"
 #include "source.h"
@@ -32,9 +33,14 @@ Software::Software(QObject *parent) : QObject(parent)
     foreach (SoftwareBackend *backend, m_backends) {
         // TODO: Only update the data from this backend instead of all backends
         QObject::connect(backend, &SoftwareBackend::updated, this, &Software::update);
+        QObject::connect(backend, &SoftwareBackend::availableApplicationsChanged, this,
+                         &Software::availableApplicationsChanged);
     }
 
     update();
+    availableApplicationsChanged();
+
+    refreshAvailableApps();
 }
 
 void Software::downloadUpdates()
@@ -47,15 +53,20 @@ void Software::downloadUpdates()
 
 void Software::refreshAvailableApps()
 {
-    QList<Application *> availableApps;
+    QtConcurrent::run([this]() {
+        foreach (SoftwareBackend *backend, m_backends) {
+            backend->refreshAvailableApplications();
+        }
+    });
+}
 
-    // TODO: Run this in the background
+void Software::availableApplicationsChanged()
+{
+    m_availableApps.clear();
+
     foreach (SoftwareBackend *backend, m_backends) {
-        availableApps << backend->listAvailableApplications();
+        m_availableApps << backend->listAvailableApplications();
     }
-
-    // TODO: Update the list so only new objects are added and old objects removed
-    m_availableApps = availableApps;
 }
 
 void Software::update()

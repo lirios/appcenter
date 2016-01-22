@@ -18,6 +18,8 @@
 
 #include "utils.h"
 
+#include <QFile>
+
 QStringList stringsByTagName(QDomElement element, QString tagName)
 {
     QStringList strings;
@@ -30,4 +32,28 @@ QStringList stringsByTagName(QDomElement element, QString tagName)
     }
 
     return strings;
+}
+
+bool loadDocumentFromFile(QDomDocument *document, QString filename)
+{
+    QFile file(filename);
+
+    if (!file.open(QIODevice::ReadOnly))
+        return false;
+    if (!document->setContent(&file)) {
+        file.close();
+        return false;
+    }
+    file.close();
+    return true;
+}
+
+bool hasSuffix(QString filename, QStringList suffices)
+{
+    foreach (QString suffix, suffices) {
+        if (filename.endsWith(suffix))
+            return true;
+    }
+
+    return false;
 }

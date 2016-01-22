@@ -21,13 +21,14 @@
 
 #include <QObject>
 #include <QString>
+#include <QIcon>
 
 #include <Papyros/QQuickList>
 
 #include "appstream/component.h"
 #include "backend.h"
 
-class Application: public QObject
+class Application : public QObject
 {
     Q_OBJECT
 
@@ -36,19 +37,22 @@ class Application: public QObject
     Q_PROPERTY(QString id MEMBER m_id CONSTANT)
     Q_PROPERTY(QString name MEMBER m_name CONSTANT)
     Q_PROPERTY(QString summary MEMBER m_summary CONSTANT)
-    Q_PROPERTY(QString iconName MEMBER m_iconName CONSTANT)
+    Q_PROPERTY(QIcon icon READ icon CONSTANT)
     Q_PROPERTY(QString latestVersion READ latestVersion CONSTANT)
     Q_PROPERTY(QString installedVersion READ installedVersion CONSTANT)
     Q_PROPERTY(QObjectListModel *screenshots READ screenshots CONSTANT)
     Q_PROPERTY(bool updatesAvailable READ updatesAvailable CONSTANT)
 
 public:
-    enum State {
-        Installed
+    enum State
+    {
+        Installed,
+        Available
     };
     Q_ENUM(State)
 
-    enum Type {
+    enum Type
+    {
         App,
         Runtime
     };
@@ -62,8 +66,14 @@ public:
     virtual QString installedVersion() const = 0;
     virtual bool updatesAvailable() const = 0;
 
-    QObjectListModel *screenshots() {
-        return m_screenshots.getModel();
+    QObjectListModel *screenshots() { return m_screenshots.getModel(); }
+
+    QIcon icon()
+    {
+        if (m_icon.isNull())
+            return QIcon::fromTheme("application-x-executable");
+        else
+            return m_icon;
     }
 
     State m_state;
@@ -71,7 +81,7 @@ public:
     QString m_id;
     QString m_name;
     QString m_summary;
-    QString m_iconName;
+    QIcon m_icon;
     QQuickList<Appstream::Screenshot> m_screenshots;
 
 public slots:

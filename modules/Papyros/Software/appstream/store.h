@@ -26,6 +26,17 @@
 namespace Appstream
 {
 
+enum SourceKind
+{
+    Appstream,
+    Appdata,
+    Metainfo,
+    Desktop,
+    Unknown
+};
+
+SourceKind kindFromFilename(QString filename);
+
 class Store
 {
 
@@ -34,10 +45,14 @@ public:
 
     Component componentById(QString id) const;
 
+    QList<Component> allComponents() const { return m_components; }
+
 private:
+    void addComponent(Component component);
+    bool loadFromAppstreamFile(QString filename, QString iconPath);
+
     QList<Component> m_components;
 };
-
 }
 
 #endif // STORE_H

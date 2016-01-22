@@ -21,10 +21,10 @@
 
 #include "appstream/store.h"
 
-XdgApplication::XdgApplication(XdgAppInstalledRef *app_ref, State state, SoftwareBackend *backend)
-    : Application(backend)
+XdgApplication::XdgApplication(XdgAppInstalledRef *app_ref, SoftwareBackend *backend)
+        : Application(backend)
 {
-    m_state = state;
+    m_state = Application::Installed;
     m_id = xdg_app_ref_get_name(XDG_APP_REF(app_ref));
     m_branch = xdg_app_ref_get_branch(XDG_APP_REF(app_ref));
     m_origin = xdg_app_installed_ref_get_origin(app_ref);
@@ -32,7 +32,7 @@ XdgApplication::XdgApplication(XdgAppInstalledRef *app_ref, State state, Softwar
     m_arch = xdg_app_ref_get_arch(XDG_APP_REF(app_ref));
 
     m_currentCommit = xdg_app_ref_get_commit(XDG_APP_REF(app_ref));
-	m_latestCommit = xdg_app_installed_ref_get_latest_commit(app_ref);
+    m_latestCommit = xdg_app_installed_ref_get_latest_commit(app_ref);
 
     if (m_branch.isEmpty())
         m_branch = "master";
@@ -47,7 +47,7 @@ XdgApplication::XdgApplication(XdgAppInstalledRef *app_ref, State state, Softwar
         break;
     case XDG_APP_REF_KIND_RUNTIME:
         m_type = Application::Runtime;
-        m_iconName = "package-x-generic";
+        m_icon = QIcon::fromTheme("package-x-generic");
         m_summary = "Framework for applications";
 
         desktopId = m_name + ".runtime";
@@ -70,15 +70,30 @@ XdgApplication::XdgApplication(XdgAppInstalledRef *app_ref, State state, Softwar
         refineFromAppstream(component);
 }
 
+XdgApplication::XdgApplication(Appstream::Component component, QString origin,
+                               SoftwareBackend *backend)
+        : Application(backend)
+{
+    m_state = Application::Available;
+    m_origin = origin;
+
+    QStringList bundle = component.m_bundle.split('/');
+
+    m_branch = bundle[bundle.length() - 1];
+    m_arch = bundle[bundle.length() - 2];
+
+    refineFromAppstream(component);
+}
+
 void XdgApplication::install()
 {
     /* install */
-	// xref = xdg_app_installation_install (plugin->priv->installation,
-	// 				     gs_app_get_origin (app),
-	// 				     XDG_APP_REF_KIND_APP,
-	// 				     gs_app_get_id (app),
-	// 				     gs_app_get_metadata_item (app, "XgdApp::arch"),
-	// 				     gs_app_get_metadata_item (app, "XgdApp::branch"),
-	// 				     gs_plugin_xdg_app_progress_cb, &helper,
-	// 				     cancellable, error);
+    // xref = xdg_app_installation_install (plugin->priv->installation,
+    // 				     gs_app_get_origin (app),
+    // 				     XDG_APP_REF_KIND_APP,
+    // 				     gs_app_get_id (app),
+    // 				     gs_app_get_metadata_item (app, "XgdApp::arch"),
+    // 				     gs_app_get_metadata_item (app, "XgdApp::branch"),
+    // 				     gs_plugin_xdg_app_progress_cb, &helper,
+    // 				     cancellable, error);
 }

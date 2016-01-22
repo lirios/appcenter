@@ -22,7 +22,7 @@
 #include <QObject>
 #include <QString>
 
-class SoftwareSource: public QObject
+class SoftwareSource : public QObject
 {
     Q_OBJECT
 

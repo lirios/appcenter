@@ -25,8 +25,9 @@
 #include <QString>
 
 #include "base.h"
+#include "appstream/component.h"
 
-class XdgApplication: public Application
+class XdgApplication : public Application
 {
     Q_OBJECT
 
@@ -35,22 +36,14 @@ class XdgApplication: public Application
     Q_PROPERTY(QString arch MEMBER m_arch CONSTANT)
 
 public:
-    XdgApplication(XdgAppInstalledRef *app_ref, State state, SoftwareBackend *backend);
+    XdgApplication(XdgAppInstalledRef *app_ref, SoftwareBackend *backend);
+    XdgApplication(Appstream::Component component, QString origin, SoftwareBackend *backend);
 
-    QString installedVersion() const override
-    {
-        return m_branch;
-    }
+    QString installedVersion() const override { return m_branch; }
 
-    QString latestVersion() const override
-    {
-        return "UNKNOWN";
-    }
+    QString latestVersion() const override { return "UNKNOWN"; }
 
-    bool updatesAvailable() const override
-    {
-        return m_currentCommit != m_latestCommit;
-    }
+    bool updatesAvailable() const override { return m_currentCommit != m_latestCommit; }
 
     QString m_branch;
     QString m_origin;

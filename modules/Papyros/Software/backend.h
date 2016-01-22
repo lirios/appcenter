@@ -32,15 +32,17 @@ public:
     SoftwareBackend(QObject *parent = nullptr) : QObject(parent) {}
 
     virtual QList<SoftwareSource *> listSources() = 0;
-    virtual QList<Application *> listAvailableApplications() = 0;
     virtual QList<Application *> listInstalledApplications() = 0;
+    virtual QList<Application *> listAvailableApplications() = 0;
 
 public slots:
     virtual bool launchApplication(const Application *app) = 0;
     virtual bool downloadUpdates() = 0;
+    virtual bool refreshAvailableApplications() = 0;
 
 signals:
     void updated();
+    void availableApplicationsChanged();
 };
 
 #endif // BACKEND_H

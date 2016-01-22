@@ -28,13 +28,19 @@ endif()
 
 # Minimum version requirements
 set(QT_MIN_VERSION "5.4.0")
+set(KF5_MIN_VERSION "5.8.0")
 
 # Find Qt5
 find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS
              Core
+             Gui
              Qml
              Quick
-             Xml)
+             Xml
+             Concurrent)
+
+find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
+             Archive)
 
 find_package(XdgApp REQUIRED)
 find_package(Papyros REQUIRED)

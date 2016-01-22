@@ -27,7 +27,10 @@
 #include "xdg-application.h"
 #include "utils.h"
 
-struct XdgAppHelper {
+#include "appstream/store.h"
+
+struct XdgAppHelper
+{
     XdgApplication *app;
 };
 
@@ -96,8 +99,7 @@ QList<SoftwareSource *> XdgAppBackend::listSources()
     if (xremotes == nullptr)
         return sources;
 
-    G_FOREACH(XdgAppRemote * xremote, xremotes)
-    {
+    G_FOREACH (XdgAppRemote *xremote, xremotes) {
         sources << new Remote(xremote, this);
     }
 
@@ -106,8 +108,6 @@ QList<SoftwareSource *> XdgAppBackend::listSources()
 
 QList<Application *> XdgAppBackend::listAvailableApplications()
 {
-    // uint cache_age = 30 * 60;
-
     QList<Application *> applications;
 
     if (!initialize())
@@ -120,44 +120,24 @@ QList<Application *> XdgAppBackend::listAvailableApplications()
     g_autoptr(GPtrArray) xremotes =
             xdg_app_installation_list_remotes(m_installation, cancellable, &error);
 
-    qDebug() << (xremotes == nullptr);
-
     if (xremotes == nullptr)
         return applications;
 
-    G_FOREACH(XdgAppRemote * xremote, xremotes)
-    {
-        g_autoptr(GError) error_local = NULL;
-
-        /* is the timestamp new enough */
-        // TODO: Figure this out
-        // g_autoptr(GFile) file_timestamp = xdg_app_remote_get_appstream_timestamp(xremote, NULL);
-        // uint file_age = gs_utils_get_file_age(file_timestamp);
-        // if (file_age < cache_age) {
-        //     QString filename = g_file_get_path(file_timestamp);
-        //     qDebug() << filename << "is only" << file_age << "seconds old, so ignoring refresh";
-        //     continue;
-        // }
-
-        /* download new data */
-        bool result = xdg_app_installation_update_appstream_sync(
-                m_installation, xdg_app_remote_get_name(xremote), NULL, /* arch */
-                NULL,                                                   /* out_changed */
-                cancellable, &error_local);
-        if (!result) {
-            if (g_error_matches(error_local, G_IO_ERROR, G_IO_ERROR_FAILED)) {
-                qDebug() << "Failed to get AppStream metadata:" << error_local->message;
-                continue;
-            }
-
-            qWarning() << "Failed to get AppStream metadata:" << error_local->message;
-            return applications;
-        }
-
+    G_FOREACH (XdgAppRemote *xremote, xremotes) {
         /* add the new AppStream repo to the shared store */
         g_autoptr(GFile) file = xdg_app_remote_get_appstream_dir(xremote, NULL);
         QString appstreamFilename = g_file_get_path(file);
-        qDebug() << "Using AppStream metadata found at: " << appstreamFilename;
+
+        QString origin = xdg_app_remote_get_name(xremote);
+
+        qDebug() << "Using AppStream metadata found at: " << appstreamFilename << origin;
+
+        Appstream::Store store;
+        store.load(appstreamFilename);
+
+        foreach (Appstream::Component component, store.allComponents()) {
+            applications << new XdgApplication(component, origin, this);
+        }
     }
 
     return applications;
@@ -180,8 +160,7 @@ QList<Application *> XdgAppBackend::listInstalledApplications()
     if (xrefs == nullptr)
         return applications;
 
-    G_FOREACH(XdgAppInstalledRef * xref, xrefs)
-    {
+    G_FOREACH (XdgAppInstalledRef *xref, xrefs) {
         /*
          * Only show the current application in GNOME Software
          *
@@ -190,12 +169,14 @@ QList<Application *> XdgAppBackend::listInstalledApplications()
          *  1) the default to launch unless you specify a version
          *  2) The one that gets its exported files exported
          */
+        qDebug() << xdg_app_installed_ref_get_is_current(xref);
         if (!xdg_app_installed_ref_get_is_current(xref) &&
             xdg_app_ref_get_kind(XDG_APP_REF(xref)) == XDG_APP_REF_KIND_APP) {
+            qDebug() << "Skipping!";
             continue;
         }
 
-        applications << new XdgApplication(xref, Application::Installed, this);
+        applications << new XdgApplication(xref, this);
     }
 
     return applications;
@@ -235,8 +216,7 @@ bool XdgAppBackend::downloadUpdates()
     if (xrefs->len == 0)
         qDebug() << "Nothing to download!";
 
-    G_FOREACH(XdgAppInstalledRef * xref, xrefs)
-    {
+    G_FOREACH (XdgAppInstalledRef *xref, xrefs) {
         XdgApplication *app = nullptr;
 
         XdgAppHelper helper = {app};
@@ -246,10 +226,62 @@ bool XdgAppBackend::downloadUpdates()
                 m_installation, XDG_APP_UPDATE_FLAGS_NO_DEPLOY,
                 xdg_app_ref_get_kind(XDG_APP_REF(xref)), xdg_app_ref_get_name(XDG_APP_REF(xref)),
                 xdg_app_ref_get_arch(XDG_APP_REF(xref)), xdg_app_ref_get_branch(XDG_APP_REF(xref)),
-                (XdgAppProgressCallback)xdgAppProgressCallback, &helper, cancellable, &error);
+                (XdgAppProgressCallback) xdgAppProgressCallback, &helper, cancellable, &error);
         if (xref2 == nullptr)
             return false;
     }
 
+    return true;
+}
+
+bool XdgAppBackend::refreshAvailableApplications()
+{
+    // uint cache_age = 30 * 60;
+
+    if (!initialize())
+        return false;
+
+    // TODO: Do something with these
+    GCancellable *cancellable = nullptr;
+    GError *error = nullptr;
+
+    g_autoptr(GPtrArray) xremotes =
+            xdg_app_installation_list_remotes(m_installation, cancellable, &error);
+
+    if (xremotes == nullptr)
+        return false;
+
+    G_FOREACH (XdgAppRemote *xremote, xremotes) {
+        g_autoptr(GError) error_local = NULL;
+
+        /* is the timestamp new enough */
+        // TODO: Figure this out
+        // g_autoptr(GFile) file_timestamp = xdg_app_remote_get_appstream_timestamp(xremote, NULL);
+        // uint file_age = gs_utils_get_file_age(file_timestamp);
+        // if (file_age < cache_age) {
+        //     QString filename = g_file_get_path(file_timestamp);
+        //     qDebug() << filename << "is only" << file_age << "seconds old, so ignoring refresh";
+        //     continue;
+        // }
+
+        /* download new data */
+        bool result = xdg_app_installation_update_appstream_sync(
+                m_installation, xdg_app_remote_get_name(xremote), NULL, /* arch */
+                NULL,                                                   /* out_changed */
+                cancellable, &error_local);
+        if (!result) {
+            if (g_error_matches(error_local, G_IO_ERROR, G_IO_ERROR_FAILED)) {
+                qDebug() << "Failed to get AppStream metadata:" << error_local->message;
+                continue;
+            }
+
+            qWarning() << "Failed to get AppStream metadata, aborting:" << error_local->message;
+            return false;
+        }
+    }
+
+    qDebug() << "Finished updating applications!";
+
+    emit availableApplicationsChanged();
     return true;
 }

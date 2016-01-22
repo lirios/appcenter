@@ -5,8 +5,11 @@ add_library(papyrossoftware SHARED ${SOURCES})
 
 target_link_libraries(papyrossoftware
                       Qt5::Core
+                      Qt5::Gui
                       Qt5::Qml
                       Qt5::Xml
+                      Qt5::Concurrent
+                      KF5::Archive
                       Papyros::Papyros
                       ${XdgApp_LIBRARIES})
 
