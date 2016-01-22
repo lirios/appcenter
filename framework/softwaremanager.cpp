@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-#include "software.h"
+#include "softwaremanager.h"
 
 #include <QProcess>
 #include <QStringList>
@@ -26,32 +26,34 @@
 #include "source.h"
 #include "application.h"
 
-Software::Software(QObject *parent) : QObject(parent)
+SoftwareManager::SoftwareManager(QObject *parent) : QObject(parent)
 {
     m_backends << new XdgAppBackend(this);
 
     foreach (SoftwareBackend *backend, m_backends) {
         // TODO: Only update the data from this backend instead of all backends
-        QObject::connect(backend, &SoftwareBackend::updated, this, &Software::update);
+        QObject::connect(backend, &SoftwareBackend::updated, this, &SoftwareManager::update);
         QObject::connect(backend, &SoftwareBackend::availableApplicationsChanged, this,
-                         &Software::availableApplicationsChanged);
+                         &SoftwareManager::availableApplicationsChanged);
     }
 
     update();
     availableApplicationsChanged();
 
     refreshAvailableApps();
+    downloadUpdates();
 }
 
-void Software::downloadUpdates()
+void SoftwareManager::downloadUpdates()
 {
-    // TODO: Run this in the background
-    foreach (SoftwareBackend *backend, m_backends) {
-        backend->downloadUpdates();
-    }
+    QtConcurrent::run([this]() {
+        foreach (SoftwareBackend *backend, m_backends) {
+            backend->downloadUpdates();
+        }
+    });
 }
 
-void Software::refreshAvailableApps()
+void SoftwareManager::refreshAvailableApps()
 {
     QtConcurrent::run([this]() {
         foreach (SoftwareBackend *backend, m_backends) {
@@ -60,7 +62,7 @@ void Software::refreshAvailableApps()
     });
 }
 
-void Software::availableApplicationsChanged()
+void SoftwareManager::availableApplicationsChanged()
 {
     m_availableApps.clear();
 
@@ -69,7 +71,7 @@ void Software::availableApplicationsChanged()
     }
 }
 
-void Software::update()
+void SoftwareManager::update()
 {
     // TODO: Update the lists so only new objects are added and old objects removed
     m_sources.clear();

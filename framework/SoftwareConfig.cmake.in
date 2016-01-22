@@ -1,0 +1,12 @@
+@PACKAGE_INIT@
+
+find_dependency(Qt5Core @QT_MIN_VERSION@)
+find_dependency(Qt5Gui @QT_MIN_VERSION@)
+find_dependency(Qt5Xml @QT_MIN_VERSION@)
+find_dependency(Qt5Concurrent @QT_MIN_VERSION@)
+find_dependency(KF5Archive @KF5_MIN_VERSION@)
+
+find_dependency(XdgApp)
+find_dependency(Papyros)
+
+include("${CMAKE_CURRENT_LIST_DIR}/SoftwareTargets.cmake")

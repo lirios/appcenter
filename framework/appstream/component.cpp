@@ -204,9 +204,9 @@ bool Component::loadFromAppdata(QDomElement appNode, QString iconPath)
             FOREACH_ELEMENT (QDomElement screenshot, element.elementsByTagName("screenshot")) {
                 // TODO: New object created without parent
                 if (!screenshot.isNull())
-                    m_screenshots << new Screenshot(screenshot);
+                    m_screenshots << Screenshot(screenshot);
             }
-            m_screenshots << new Screenshot(element);
+            m_screenshots << Screenshot(element);
         } else if (tagName == "releases") {
             qDebug() << "WARNING: releases not parsed";
         } else if (tagName == "provides") {

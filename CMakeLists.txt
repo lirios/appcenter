@@ -1,6 +1,18 @@
 project(io.papyros.AppCenter)
 
-cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.0.0 FATAL_ERROR)
+
+# Silence CMake warnings
+if(POLICY CMP0063)
+    cmake_policy(SET CMP0063 NEW)
+endif()
+
+# Set version
+set(PROJECT_VERSION "0.1.0")
+set(PROJECT_VERSION_MAJOR 0)
+set(PROJECT_VERSION_MINOR 1)
+set(PROJECT_VERSION_PATCH 0)
+set(PROJECT_SOVERSION 0)
 
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -51,8 +63,10 @@ install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/${PROJECT_NAME}.desktop
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/${PROJECT_NAME}.appdata.xml
         DESTINATION ${CMAKE_INSTALL_METAINFODIR})
 
-add_subdirectory(src)
-add_subdirectory(modules/Papyros/Software)
+add_subdirectory(app)
+# add_subdirectory(daemon)
+add_subdirectory(declarative)
+add_subdirectory(framework)
 
 # Display feature summary
 feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)

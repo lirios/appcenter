@@ -23,11 +23,13 @@
 
 #include <Papyros/QQuickList>
 
+#include <software/software_export.h>
+
 class Application;
 class SoftwareSource;
 class SoftwareBackend;
 
-class Software : public QObject
+class SOFTWARE_EXPORT SoftwareManager : public QObject
 {
     Q_OBJECT
 
@@ -36,7 +38,7 @@ class Software : public QObject
     Q_PROPERTY(QObjectListModel *installedApps READ installedApps CONSTANT)
 
 public:
-    Software(QObject *parent = nullptr);
+    SoftwareManager(QObject *parent = nullptr);
 
     QObjectListModel *sources() { return m_sources.getModel(); }
 

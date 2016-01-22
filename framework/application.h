@@ -25,10 +25,14 @@
 
 #include <Papyros/QQuickList>
 
-#include "appstream/component.h"
-#include "backend.h"
+#include <software/software_export.h>
 
-class Application : public QObject
+#include "appstream/component.h"
+#include "appstream/screenshot.h"
+#include "backend.h"
+#include "screenshot.h"
+
+class SOFTWARE_EXPORT Application : public QObject
 {
     Q_OBJECT
 
@@ -82,7 +86,7 @@ public:
     QString m_name;
     QString m_summary;
     QIcon m_icon;
-    QQuickList<Appstream::Screenshot> m_screenshots;
+    QQuickList<Screenshot> m_screenshots;
 
 public slots:
     bool launch() const;

@@ -1,6 +1,7 @@
 /*
  * Papyros Software - The app store for Papyros
  * Copyright (C) 2016 Michael Spencer <sonrisesoftware@gmail.com>
+ * Copyright (C) 2013-2015 Richard Hughes <richard@hughsie.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,26 +17,39 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SOURCE_H
-#define SOURCE_H
+#ifndef SCREENSHOT_H
+#define SCREENSHOT_H
 
 #include <QObject>
-#include <QString>
 
-class SoftwareSource : public QObject
+#include <QString>
+#include <QHash>
+#include <QDomElement>
+
+#include <software/software_export.h>
+
+#include "appstream/screenshot.h"
+
+class SOFTWARE_EXPORT Screenshot : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(QString name MEMBER m_name CONSTANT)
-    Q_PROPERTY(QString title MEMBER m_title CONSTANT)
     Q_PROPERTY(QString url MEMBER m_url CONSTANT)
+    Q_PROPERTY(Type type MEMBER m_type CONSTANT)
+    Q_PROPERTY(int priority MEMBER m_priority CONSTANT)
 
 public:
-    SoftwareSource(QObject *parent = nullptr) : QObject(parent) {}
+    typedef Appstream::Screenshot::Type Type;
+    Q_ENUM(Type)
 
-    QString m_name;
-    QString m_title;
+    Screenshot(Appstream::Screenshot, QObject *parent = nullptr);
+
+    // bool operator==(const Screenshot &other) const;
+
     QString m_url;
+    Type m_type;
+    int m_priority;
+    QHash<QString, QString> m_captions;
 };
 
-#endif // SOURCE_H
+#endif // SCREENSHOT_H

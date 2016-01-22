@@ -67,7 +67,7 @@ public:
     QStringList m_compulsoryForDesktops;
     QStringList m_extends;
     QList<Url> m_urls;
-    QList<Screenshot *> m_screenshots;
+    QList<Screenshot> m_screenshots;
     QIcon m_icon;
 
 private:

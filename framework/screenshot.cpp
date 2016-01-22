@@ -17,39 +17,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SCREENSHOT_H
-#define SCREENSHOT_H
+#include "screenshot.h"
 
-#include <QObject>
+#include "utils.h"
 
-#include <QString>
-#include <QHash>
-#include <QDomElement>
+#include <QDebug>
 
-namespace Appstream
+Screenshot::Screenshot(Appstream::Screenshot screenshot, QObject *parent) : QObject(parent)
 {
-
-class Screenshot: public QObject
-{
-    Q_OBJECT
-
-    Q_PROPERTY(QString url MEMBER m_url CONSTANT)
-    
-public:
-    enum Type {
-        Normal, Default, Unknown
-    };
-
-    Screenshot(QDomElement element, QObject *parent = nullptr);
-
-    // bool operator==(const Screenshot &other) const;
-
-    QString m_url;
-    Type m_type;
-    int m_priority;
-    QHash<QString,QString> m_captions;
-};
-
+    m_url = screenshot.m_url;
+    m_type = screenshot.m_type;
+    m_priority = screenshot.m_priority;
+    m_captions = screenshot.m_captions;
 }
-
-#endif // SCREENSHOT_H

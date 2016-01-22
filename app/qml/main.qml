@@ -190,7 +190,7 @@ ApplicationWindow {
         onAccepted: session.shownWelcome = "true"
     }
 
-    Software {
+    SoftwareManager {
         id: software
     }
 

@@ -1,6 +1,7 @@
 /*
  * Papyros Software - The app store for Papyros
  * Copyright (C) 2016 Michael Spencer <sonrisesoftware@gmail.com>
+ * Copyright (C) 2013-2015 Richard Hughes <richard@hughsie.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,26 +17,33 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "application.h"
+#include "screenshot.h"
 
-#define REFINE_PROPERTY(name, value)                                                               \
-    if (!value.isNull())                                                                           \
-        name = value;
-#define REFINE_LIST_PROPERTY(name, value) name << value;
+#include "utils.h"
 
-void Application::refineFromAppstream(Appstream::Component component)
+#include <QDebug>
+
+using namespace Appstream;
+
+Screenshot::Screenshot(QDomElement element)
 {
-    REFINE_PROPERTY(m_id, component.m_id);
-    REFINE_PROPERTY(m_name, component.name());
-    REFINE_PROPERTY(m_summary, component.comment());
-    REFINE_PROPERTY(m_icon, component.m_icon);
-    REFINE_LIST_PROPERTY(m_screenshots, component.m_screenshots);
+    QStringList images = stringsByTagName(element, "image");
+    if (!images.isEmpty())
+        m_url = images.first();
+    else
+        m_url = element.text();
+
+    QString type = element.attribute("type");
+
+    if (type == "default")
+        m_type = Screenshot::Default;
+    else if (type == "normal")
+        m_type = Screenshot::Normal;
+    else
+        m_type = Screenshot::Unknown;
 }
 
-bool Application::launch() const
+bool Screenshot::operator==(const Screenshot &other) const
 {
-    if (m_state != Application::Installed)
-        return false;
-
-    return m_backend->launchApplication(this);
+    return m_type == other.m_type && m_url == other.m_url;
 }
