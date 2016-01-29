@@ -4,7 +4,7 @@ add_executable(papyros-appcenter ${SOURCES})
 target_link_libraries(papyros-appcenter
                       Qt5::Quick
                       KF5::Archive
-                      Papyros::Papyros)
+                      Papyros::Core)
 
 install(TARGETS papyros-appcenter
         DESTINATION ${CMAKE_INSTALL_BINDIR})
