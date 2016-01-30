@@ -47,12 +47,16 @@ public:
     QObjectListModel *installedApps() { return m_installedApps.getModel(); }
 
 public slots:
+    void refresh();
     void downloadUpdates();
     void refreshAvailableApps();
 
 private slots:
     void update();
     void availableApplicationsChanged();
+
+signals:
+    void updatesDownloaded(bool hasUpdates);
 
 private:
     QList<SoftwareBackend *> m_backends;

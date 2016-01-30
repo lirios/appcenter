@@ -57,11 +57,11 @@ XdgAppBackend::XdgAppBackend(QObject *parent) : SoftwareBackend(parent)
     // Nothing needed here yet.
 }
 
-bool XdgAppBackend::initialize()
+void XdgAppBackend::initialize() throw(InitializationFailedException)
 {
     // Don't reinitialize
     if (m_installation != nullptr)
-        return true;
+        return;
 
     // TODO: Do something with these
     GCancellable *cancellable = nullptr;
@@ -70,24 +70,21 @@ bool XdgAppBackend::initialize()
     m_installation = xdg_app_installation_new_user(cancellable, &error);
 
     if (m_installation == nullptr)
-        return false;
+        throw InitializationFailedException(error);
 
     m_monitor = xdg_app_installation_create_monitor(m_installation, cancellable, &error);
 
     if (m_monitor == nullptr)
-        return false;
+        throw InitializationFailedException(error);
 
     g_signal_connect(m_monitor, "changed", G_CALLBACK(xdgAppChanged), this);
-
-    return true;
 }
 
 QList<SoftwareSource *> XdgAppBackend::listSources()
 {
-    QList<SoftwareSource *> sources;
+    initialize();
 
-    if (!initialize())
-        return sources;
+    QList<SoftwareSource *> sources;
 
     // TODO: Do something with these
     GCancellable *cancellable = nullptr;
@@ -108,10 +105,9 @@ QList<SoftwareSource *> XdgAppBackend::listSources()
 
 QList<Application *> XdgAppBackend::listAvailableApplications()
 {
-    QList<Application *> applications;
+    initialize();
 
-    if (!initialize())
-        return applications;
+    QList<Application *> applications;
 
     // TODO: Do something with these
     GCancellable *cancellable = nullptr;
@@ -145,10 +141,9 @@ QList<Application *> XdgAppBackend::listAvailableApplications()
 
 QList<Application *> XdgAppBackend::listInstalledApplications()
 {
-    QList<Application *> applications;
+    initialize();
 
-    if (!initialize())
-        return applications;
+    QList<Application *> applications;
 
     // TODO: Do something with these
     GCancellable *cancellable = nullptr;
@@ -184,8 +179,7 @@ QList<Application *> XdgAppBackend::listInstalledApplications()
 
 bool XdgAppBackend::launchApplication(const Application *app)
 {
-    if (!initialize())
-        return false;
+    initialize();
 
     const XdgApplication *xapp = qobject_cast<const XdgApplication *>(app);
 
@@ -199,10 +193,8 @@ bool XdgAppBackend::launchApplication(const Application *app)
 
 bool XdgAppBackend::downloadUpdates()
 {
-    if (!initialize())
-        return false;
+    initialize();
 
-    // TODO: Do something with these
     GCancellable *cancellable = nullptr;
     GError *error = nullptr;
 
@@ -211,13 +203,15 @@ bool XdgAppBackend::downloadUpdates()
             m_installation, cancellable, &error);
 
     if (xrefs == nullptr)
-        return false;
+        throw GLibException("Unable to get list of updates", error);
 
     if (xrefs->len == 0)
-        qDebug() << "Nothing to download!";
+        return false;
+
+    qDebug() << "Downloading" << xrefs->len << "updates";
 
     G_FOREACH (XdgAppInstalledRef *xref, xrefs) {
-        XdgApplication *app = nullptr;
+        XdgApplication *app = new XdgApplication(xref, this);
 
         XdgAppHelper helper = {app};
 
@@ -227,8 +221,11 @@ bool XdgAppBackend::downloadUpdates()
                 xdg_app_ref_get_kind(XDG_APP_REF(xref)), xdg_app_ref_get_name(XDG_APP_REF(xref)),
                 xdg_app_ref_get_arch(XDG_APP_REF(xref)), xdg_app_ref_get_branch(XDG_APP_REF(xref)),
                 (XdgAppProgressCallback) xdgAppProgressCallback, &helper, cancellable, &error);
-        if (xref2 == nullptr)
-            return false;
+        if (xref2 == nullptr) {
+            QString what = "Unable to download update for " +
+                           QString(xdg_app_ref_get_name(XDG_APP_REF(xref)));
+            throw GLibException(qPrintable(what), error);
+        }
     }
 
     return true;
@@ -236,10 +233,7 @@ bool XdgAppBackend::downloadUpdates()
 
 bool XdgAppBackend::refreshAvailableApplications()
 {
-    // uint cache_age = 30 * 60;
-
-    if (!initialize())
-        return false;
+    initialize();
 
     // TODO: Do something with these
     GCancellable *cancellable = nullptr;

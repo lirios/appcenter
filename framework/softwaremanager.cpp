@@ -36,20 +36,26 @@ SoftwareManager::SoftwareManager(QObject *parent) : QObject(parent)
         QObject::connect(backend, &SoftwareBackend::availableApplicationsChanged, this,
                          &SoftwareManager::availableApplicationsChanged);
     }
+}
 
+void SoftwareManager::refresh()
+{
     update();
     availableApplicationsChanged();
 
     refreshAvailableApps();
-    downloadUpdates();
 }
 
 void SoftwareManager::downloadUpdates()
 {
     QtConcurrent::run([this]() {
+        bool hasUpdates = false;
         foreach (SoftwareBackend *backend, m_backends) {
-            backend->downloadUpdates();
+            if (backend->downloadUpdates())
+                hasUpdates = true;
         }
+
+        emit updatesDownloaded(hasUpdates);
     });
 }
 

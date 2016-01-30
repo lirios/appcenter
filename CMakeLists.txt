@@ -31,7 +31,7 @@ include(KDECompilerSettings)
 include(FeatureSummary)
 
 # Build flags
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fvisibility-inlines-hidden -Werror -Wall -Wextra -Wno-unused-parameter -pedantic -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions -fvisibility=hidden -fvisibility-inlines-hidden -Werror -Wall -Wextra -Wno-unused-parameter -pedantic -std=c++11")
 
 # Disable debug output for release builds
 if(CMAKE_BUILD_TYPE MATCHES "^[Rr]elease$")
@@ -64,7 +64,7 @@ install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/${PROJECT_NAME}.appdata.xml
         DESTINATION ${CMAKE_INSTALL_METAINFODIR})
 
 add_subdirectory(app)
-# add_subdirectory(daemon)
+add_subdirectory(daemon)
 add_subdirectory(declarative)
 add_subdirectory(framework)
 

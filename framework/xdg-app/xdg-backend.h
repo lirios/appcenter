@@ -21,12 +21,46 @@
 
 #include "backend.h"
 
+#include <exception>
+#include <stdexcept>
+
 #include "base.h"
+
+using namespace std;
 
 struct AppstreamSource
 {
     QString origin;
     QString appstreamFilename;
+};
+
+class GLibException : public runtime_error
+{
+public:
+    GLibException(const char *what, GError *error) : runtime_error(what), m_error(error) {}
+
+    virtual const char *what() const throw()
+    {
+        QString error = runtime_error::what();
+
+        if (m_error != nullptr) {
+            error = error + ": " + m_error->message;
+        }
+
+        return qPrintable(error);
+    }
+
+private:
+    GError *m_error;
+};
+
+class InitializationFailedException : public GLibException
+{
+public:
+    InitializationFailedException(GError *error)
+            : GLibException("Unable to initialize xdg-app backend", error)
+    {
+    }
 };
 
 class XdgAppBackend : public SoftwareBackend
@@ -46,7 +80,7 @@ public slots:
     bool refreshAvailableApplications() override;
 
 private:
-    bool initialize();
+    void initialize() throw(InitializationFailedException);
 
     XdgAppInstallation *m_installation = nullptr;
     GFileMonitor *m_monitor = nullptr;
