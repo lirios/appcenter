@@ -35,7 +35,10 @@ class SOFTWARE_EXPORT SoftwareManager : public QObject
 
     Q_PROPERTY(QObjectListModel *sources READ sources CONSTANT)
     Q_PROPERTY(QObjectListModel *availableApps READ availableApps CONSTANT)
+    Q_PROPERTY(QObjectListModel *availableUpdates READ availableUpdates CONSTANT)
     Q_PROPERTY(QObjectListModel *installedApps READ installedApps CONSTANT)
+    Q_PROPERTY(bool hasUpdates READ hasUpdates NOTIFY updated)
+    Q_PROPERTY(QString updatesSummary READ updatesSummary NOTIFY updated)
 
 public:
     SoftwareManager(QObject *parent = nullptr);
@@ -43,8 +46,13 @@ public:
     QObjectListModel *sources() { return m_sources.getModel(); }
 
     QObjectListModel *availableApps() { return m_availableApps.getModel(); }
+    QObjectListModel *availableUpdates() { return m_availableUpdates.getModel(); }
 
     QObjectListModel *installedApps() { return m_installedApps.getModel(); }
+
+    bool hasUpdates() const { return m_availableUpdates.count() > 0; }
+
+    QString updatesSummary() const;
 
 public slots:
     void refresh();
@@ -56,12 +64,14 @@ private slots:
     void availableApplicationsChanged();
 
 signals:
-    void updatesDownloaded(bool hasUpdates);
+    void updatesDownloaded();
+    void updated();
 
 private:
     QList<SoftwareBackend *> m_backends;
     QQuickList<SoftwareSource> m_sources;
     QQuickList<Application> m_availableApps;
+    QQuickList<Application> m_availableUpdates;
     QQuickList<Application> m_installedApps;
 };
 

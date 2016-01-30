@@ -52,7 +52,7 @@ find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS
              Concurrent)
 
 find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
-             Archive)
+             Archive Notifications)
 
 find_package(XdgApp REQUIRED)
 find_package(Papyros REQUIRED)
@@ -60,13 +60,15 @@ find_package(Papyros REQUIRED)
 # Install the desktop and appdata files
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/${PROJECT_NAME}.desktop
         DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/${PROJECT_NAME}.notifyrc
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/knotifications5)
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/${PROJECT_NAME}.appdata.xml
         DESTINATION ${CMAKE_INSTALL_METAINFODIR})
 
 add_subdirectory(app)
-add_subdirectory(daemon)
 add_subdirectory(declarative)
 add_subdirectory(framework)
+add_subdirectory(notifier)
 
 # Display feature summary
 feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)

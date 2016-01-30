@@ -36,6 +36,8 @@ SoftwareManager::SoftwareManager(QObject *parent) : QObject(parent)
         QObject::connect(backend, &SoftwareBackend::availableApplicationsChanged, this,
                          &SoftwareManager::availableApplicationsChanged);
     }
+
+    QObject::connect(this, &SoftwareManager::updatesDownloaded, this, &SoftwareManager::update);
 }
 
 void SoftwareManager::refresh()
@@ -49,13 +51,11 @@ void SoftwareManager::refresh()
 void SoftwareManager::downloadUpdates()
 {
     QtConcurrent::run([this]() {
-        bool hasUpdates = false;
         foreach (SoftwareBackend *backend, m_backends) {
-            if (backend->downloadUpdates())
-                hasUpdates = true;
+            backend->downloadUpdates();
         }
 
-        emit updatesDownloaded(hasUpdates);
+        emit updatesDownloaded();
     });
 }
 
@@ -75,6 +75,8 @@ void SoftwareManager::availableApplicationsChanged()
     foreach (SoftwareBackend *backend, m_backends) {
         m_availableApps << backend->listAvailableApplications();
     }
+
+    emit updated();
 }
 
 void SoftwareManager::update()
@@ -82,9 +84,43 @@ void SoftwareManager::update()
     // TODO: Update the lists so only new objects are added and old objects removed
     m_sources.clear();
     m_installedApps.clear();
+    m_availableUpdates.clear();
 
     foreach (SoftwareBackend *backend, m_backends) {
         m_sources << backend->listSources();
         m_installedApps << backend->listInstalledApplications();
+    }
+
+    QList<Application *> apps = m_installedApps;
+
+    foreach (Application *app, apps) {
+        if (app->updatesAvailable() && app->m_type == Application::App)
+            m_availableUpdates << app;
+    }
+
+    emit updated();
+}
+
+QString SoftwareManager::updatesSummary() const
+{
+    if (m_availableUpdates.count() == 0) {
+        return tr("No updates are available");
+    } else if (m_availableUpdates.count() == 1) {
+        return tr("%1 is ready to update").arg(m_availableUpdates[0]->m_name);
+    } else if (m_availableUpdates.count() == 2) {
+        return tr("%1 and %2 are ready to update")
+                .arg(m_availableUpdates[0]->m_name)
+                .arg(m_availableUpdates[1]->m_name);
+    } else if (m_availableUpdates.count() == 3) {
+        return tr("%1, %2, and one other app are ready to update")
+                .arg(m_availableUpdates[0]->m_name)
+                .arg(m_availableUpdates[1]->m_name);
+    } else {
+        int otherCount = m_availableUpdates.count() - 2;
+
+        return tr("%1, %2, and %3 other apps are ready to update")
+                .arg(m_availableUpdates[0]->m_name)
+                .arg(m_availableUpdates[1]->m_name)
+                .arg(otherCount);
     }
 }

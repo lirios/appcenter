@@ -22,6 +22,7 @@
 #include <QObject>
 
 #include <QCoreApplication>
+#include <KNotification>
 #include <Software/SoftwareManager>
 
 class UpdateNotifier : public QObject
@@ -44,10 +45,21 @@ public slots:
     }
 
 private slots:
-    void updatesDownloaded(bool hasUpdates)
+    void updatesDownloaded()
     {
+        bool hasUpdates = m_softwareManager->hasUpdates();
+
         qDebug() << "Has updates" << hasUpdates;
-        QCoreApplication::instance()->quit();
+
+        if (hasUpdates) {
+            KNotification *notification =
+                    new KNotification("updatesAvailable", KNotification::Persistent, this);
+            notification->setText(m_softwareManager->updatesSummary());
+            notification->setActions(QStringList(tr("Install updates")));
+            // connect(notification, SIGNAL(activated(unsigned int )), contact ,
+            // SLOT(slotOpenChat()) );
+            notification->sendEvent();
+        }
     }
 
 private:

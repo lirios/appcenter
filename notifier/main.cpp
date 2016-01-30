@@ -7,7 +7,7 @@
 int main(int argc, char *argv[])
 {
     QCoreApplication app(argc, argv);
-    app.setApplicationName("App Center");
+    app.setApplicationName("io.papyros.AppCenter");
     app.setOrganizationDomain("papyros.io");
     app.setOrganizationName("Papyros");
 
