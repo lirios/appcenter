@@ -54,7 +54,7 @@ find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS
 find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
              Archive Notifications)
 
-find_package(XdgApp REQUIRED)
+find_package(Flatpak REQUIRED)
 find_package(Papyros REQUIRED)
 
 # Install the desktop and appdata files
