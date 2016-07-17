@@ -16,8 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef XDG_BACKEND_H
-#define XDG_BACKEND_H
+#ifndef FLATPAK_BACKEND_H
+#define FLATPAK_BACKEND_H
 
 #include "backend.h"
 
@@ -58,17 +58,17 @@ class InitializationFailedException : public GLibException
 {
 public:
     InitializationFailedException(GError *error)
-            : GLibException("Unable to initialize xdg-app backend", error)
+            : GLibException("Unable to initialize Flatpak backend", error)
     {
     }
 };
 
-class XdgAppBackend : public SoftwareBackend
+class FlatpakBackend : public SoftwareBackend
 {
     Q_OBJECT
 
 public:
-    XdgAppBackend(QObject *parent = nullptr);
+    FlatpakBackend(QObject *parent = nullptr);
 
     QList<SoftwareSource *> listSources() override;
     QList<Application *> listAvailableApplications() override;
@@ -82,9 +82,9 @@ public slots:
 private:
     void initialize() throw(InitializationFailedException);
 
-    XdgAppInstallation *m_installation = nullptr;
+    FlatpakInstallation *m_installation = nullptr;
     GFileMonitor *m_monitor = nullptr;
     QList<AppstreamSource> m_appstreamPaths;
 };
 
-#endif // XDG_BACKEND_H
+#endif // FLATPAK_BACKEND_H

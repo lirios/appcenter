@@ -35,11 +35,11 @@ class Remote : public SoftwareSource
     Q_PROPERTY(QString url MEMBER m_url CONSTANT)
 
 public:
-    Remote(XdgAppRemote *remote, QObject *parent = nullptr) : SoftwareSource(parent)
+    Remote(FlatpakRemote *remote, QObject *parent = nullptr) : SoftwareSource(parent)
     {
-        m_name = xdg_app_remote_get_name(remote);
-        m_title = xdg_app_remote_get_title(remote);
-        m_url = xdg_app_remote_get_url(remote);
+        m_name = flatpak_remote_get_name(remote);
+        m_title = flatpak_remote_get_title(remote);
+        m_url = flatpak_remote_get_url(remote);
     }
 
     QString m_name;

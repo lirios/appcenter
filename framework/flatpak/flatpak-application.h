@@ -16,8 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef XDG_APPLICATION_H
-#define XDG_APPLICATION_H
+#ifndef FLATPAK_APPLICATION_H
+#define FLATPAK_APPLICATION_H
 
 #include "application.h"
 
@@ -27,7 +27,7 @@
 #include "base.h"
 #include "appstream/component.h"
 
-class XdgApplication : public Application
+class FlatpakApplication : public Application
 {
     Q_OBJECT
 
@@ -36,8 +36,8 @@ class XdgApplication : public Application
     Q_PROPERTY(QString arch MEMBER m_arch CONSTANT)
 
 public:
-    XdgApplication(XdgAppInstalledRef *app_ref, SoftwareBackend *backend);
-    XdgApplication(Appstream::Component component, QString origin, SoftwareBackend *backend);
+    FlatpakApplication(FlatpakInstalledRef *app_ref, SoftwareBackend *backend);
+    FlatpakApplication(Appstream::Component component, QString origin, SoftwareBackend *backend);
 
     QString installedVersion() const override { return m_branch; }
 
@@ -55,4 +55,4 @@ public slots:
     void install();
 };
 
-#endif // XDG_APPLICATION_H
+#endif // FLATPAK_APPLICATION_H

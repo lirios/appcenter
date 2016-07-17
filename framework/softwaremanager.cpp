@@ -22,13 +22,13 @@
 #include <QDebug>
 #include <QtConcurrent>
 
-#include "xdg-app/xdg-backend.h"
+#include "flatpak/flatpak-backend.h"
 #include "source.h"
 #include "application.h"
 
 SoftwareManager::SoftwareManager(QObject *parent) : QObject(parent)
 {
-    m_backends << new XdgAppBackend(this);
+    m_backends << new FlatpakBackend(this);
 
     foreach (SoftwareBackend *backend, m_backends) {
         // TODO: Only update the data from this backend instead of all backends

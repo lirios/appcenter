@@ -30,10 +30,10 @@ target_link_libraries(PapyrosSoftware
         Hawaii::Core
     PRIVATE
         KF5::Archive
-        ${XdgApp_LIBRARIES}
+        ${Flatpak_LIBRARIES}
 )
 
-include_directories(${XdgApp_INCLUDE_DIRS})
+include_directories(${Flatpak_INCLUDE_DIRS})
 
 set(SOFTWARE_INCLUDEDIR "${CMAKE_INSTALL_INCLUDEDIR}/Papyros")
 

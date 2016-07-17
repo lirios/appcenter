@@ -18,6 +18,6 @@
 
 #undef signals
 extern "C" {
-#include <xdg-app.h>
+#include <flatpak/flatpak.h>
 }
 #define signals Q_SIGNALS
