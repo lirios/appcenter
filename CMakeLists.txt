@@ -55,8 +55,9 @@ set(REQUIRED_KF5_VERSION "5.8.0")
 find_package(KF5 ${REQUIRED_KF5_VERSION} REQUIRED COMPONENTS
              Archive Notifications)
 
-# Find Papyros
-find_package(Papyros REQUIRED)
+# Find Hawaii
+set(REQUIRED_HAWAII_VERSION "0.8.0")
+find_package(Hawaii ${REQUIRED_HAWAII_VERSION} REQUIRED)
 
 # Find Flatpak
 find_package(Flatpak REQUIRED)

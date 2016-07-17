@@ -21,7 +21,7 @@
 
 #include <QObject>
 
-#include <Papyros/QQuickList>
+#include <Hawaii/Core/QQuickList>
 
 #include <software/software_export.h>
 

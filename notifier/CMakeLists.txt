@@ -3,7 +3,7 @@ file(GLOB_RECURSE SOURCES *.cpp *.h)
 add_executable(papyros-update-notifier ${SOURCES})
 target_link_libraries(papyros-update-notifier
                       Qt5::Core
-                      Papyros::Core
+                      Hawaii::Core
                       Papyros::Software
                       KF5::Notifications)
 

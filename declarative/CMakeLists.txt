@@ -6,7 +6,7 @@ add_library(papyrossoftware SHARED ${SOURCES})
 target_link_libraries(papyrossoftware
                       Qt5::Core
                       Qt5::Qml
-                      Papyros::Core
+                      Hawaii::Core
                       Papyros::Software)
 
 install(TARGETS papyrossoftware

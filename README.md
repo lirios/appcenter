@@ -27,6 +27,7 @@ The following modules and their dependencies are required:
 
  * [ECM >= 1.7.0](http://quickgit.kde.org/?p=extra-cmake-modules.git)
  * [fluid](https://github.com/qmlos/fluid)
+ * [libqmlos](https://github.com/qmlos/libqmlos)
  * [flatpak](https://github.com/flatpak/flatpak)
  * [karchive](http://quickgit.kde.org/?p=karchive.git)
  * [knotifications](http://quickgit.kde.org/?p=knotifications.git)

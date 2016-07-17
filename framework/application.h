@@ -23,7 +23,7 @@
 #include <QString>
 #include <QIcon>
 
-#include <Papyros/QQuickList>
+#include <Hawaii/Core/QQuickList>
 
 #include <software/software_export.h>
 

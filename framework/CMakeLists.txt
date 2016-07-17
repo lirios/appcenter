@@ -27,7 +27,7 @@ target_link_libraries(PapyrosSoftware
         Qt5::Gui
         Qt5::Xml
         Qt5::Concurrent
-        Papyros::Core
+        Hawaii::Core
     PRIVATE
         KF5::Archive
         ${XdgApp_LIBRARIES}
