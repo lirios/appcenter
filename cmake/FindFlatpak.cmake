@@ -8,9 +8,9 @@
 include(LibFindMacros)
 
 # Dependencies
-#libfind_package(Flatpak Glib)
-#libfind_package(Flatpak GObject)
-#libfind_package(Flatpak GIO)
+libfind_package(Flatpak Glib)
+libfind_package(Flatpak GObject)
+libfind_package(Flatpak GIO)
 
 # Use pkg-config to get hints about paths
 libfind_pkg_check_modules(Flatpak_PKGCONF flatpak)
