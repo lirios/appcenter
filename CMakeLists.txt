@@ -1,11 +1,16 @@
-project(io.papyros.AppCenter)
+project(AppCenter)
 
 cmake_minimum_required(VERSION 3.0.0 FATAL_ERROR)
 
-# Silence CMake warnings
-if(POLICY CMP0063)
-    cmake_policy(SET CMP0063 NEW)
-endif()
+cmake_minimum_required(VERSION 3.0.0 FATAL_ERROR)
+cmake_policy(VERSION 3.4.1)
+
+# Instruct CMake to run moc and rrc automatically when needed
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+
+# Apple-specific configuration
+set(APPLE_SUPPRESS_X11_WARNING ON)
 
 # Set version
 set(PROJECT_VERSION "0.1.0")
@@ -14,48 +19,49 @@ set(PROJECT_VERSION_MINOR 1)
 set(PROJECT_VERSION_PATCH 0)
 set(PROJECT_SOVERSION 0)
 
-# Find includes in corresponding build directories
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
+# Set up packaging
+set(CPACK_PACKAGE_NAME "fluid")
+set(CPACK_PACKAGE_VERSION "${PROJECT_VERSION}")
+set(CPACK_GENERATOR "TGZ")
+set(CPACK_SET_DESTDIR FALSE)
+set(CPACK_SOURCE_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}")
+set(CPACK_SOURCE_IGNORE_FILES "/build/;/.git;/.tx/;~$;${CPACK_SOURCE_IGNORE_FILES}")
+include(CPack)
+add_custom_target(dist COMMAND ${CMAKE_MAKE_PROGRAM} package_source)
 
-# Instruct CMake to run moc and rrc automatically when needed
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
-
-# Extra CMake files
-find_package(ECM 0.0.11 REQUIRED NO_MODULE)
+# ECM
+find_package(ECM 1.7.0 REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR})
 
-include(KDEInstallDirs)
-include(KDECMakeSettings)
-include(KDECompilerSettings)
+# Macros
 include(FeatureSummary)
+include(KDEInstallDirs)
+include(KDECompilerSettings)
+include(KDECMakeSettings)
 
 # Build flags
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions -fvisibility=hidden -fvisibility-inlines-hidden -Werror -Wall -Wextra -Wno-unused-parameter -pedantic -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fvisibility-inlines-hidden -Werror -Wall -Wextra -Wformat -Wswitch-default -Wunused-parameter -pedantic -std=c++11")
 
-# Disable debug output for release builds
-if(CMAKE_BUILD_TYPE MATCHES "^[Rr]elease$")
-    add_definitions(-DQT_NO_DEBUG_OUTPUT)
+# Assume release build by default
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "" FORCE)
 endif()
 
-# Minimum version requirements
-set(QT_MIN_VERSION "5.4.0")
-set(KF5_MIN_VERSION "5.8.0")
-
 # Find Qt5
-find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS
-             Core
-             Gui
-             Qml
-             Quick
-             Xml
-             Concurrent)
+set(REQUIRED_QT_VERSION "5.7.0")
+find_package(Qt5 ${REQUIRED_QT_VERSION} CONFIG REQUIRED COMPONENTS
+             Xml Concurrent Gui Qml Quick)
 
-find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
+# Find KF5
+set(REQUIRED_KF5_VERSION "5.8.0")
+find_package(KF5 ${REQUIRED_KF5_VERSION} REQUIRED COMPONENTS
              Archive Notifications)
 
-find_package(Flatpak REQUIRED)
+# Find Papyros
 find_package(Papyros REQUIRED)
+
+# Find Flatpak
+find_package(Flatpak REQUIRED)
 
 # Install the desktop and appdata files
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/${PROJECT_NAME}.desktop
@@ -65,6 +71,7 @@ install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/${PROJECT_NAME}.notifyrc
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/${PROJECT_NAME}.appdata.xml
         DESTINATION ${CMAKE_INSTALL_METAINFODIR})
 
+# Subdirectories
 add_subdirectory(app)
 add_subdirectory(declarative)
 add_subdirectory(framework)
