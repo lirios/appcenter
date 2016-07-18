@@ -37,6 +37,10 @@ struct FlatpakHelper
 static void flatpakChanged(GFileMonitor *monitor, GFile *child, GFile *other_file,
                            GFileMonitorEvent event_type, FlatpakBackend *flatpak)
 {
+    Q_UNUSED(monitor);
+    Q_UNUSED(child);
+    Q_UNUSED(other_file);
+    Q_UNUSED(event_type);
     emit flatpak->updated();
 }
 

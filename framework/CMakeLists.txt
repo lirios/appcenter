@@ -13,6 +13,8 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
 )
 
+add_definitions(-fexceptions)
+
 file(GLOB_RECURSE SOURCES *.cpp *.h)
 file(GLOB_RECURSE QML_FILES *.qml)
 
