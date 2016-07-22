@@ -63,11 +63,11 @@ find_package(Hawaii ${REQUIRED_HAWAII_VERSION} REQUIRED)
 find_package(Flatpak REQUIRED)
 
 # Install the desktop and appdata files
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/${PROJECT_NAME}.desktop
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/io.papyros.AppCenter.desktop
         DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/${PROJECT_NAME}.notifyrc
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/io.papyros.AppCenter.notifyrc
         DESTINATION ${CMAKE_INSTALL_DATADIR}/knotifications5)
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/${PROJECT_NAME}.appdata.xml
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/io.papyros.AppCenter.appdata.xml
         DESTINATION ${CMAKE_INSTALL_METAINFODIR})
 
 # Subdirectories
