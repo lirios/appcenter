@@ -30,8 +30,8 @@
 
 void SoftwarePlugin::registerTypes(const char *uri)
 {
-    // @uri Papyros.Material
-    Q_ASSERT(uri == QStringLiteral("Papyros.Software"));
+    // @uri Papyros.Software
+    Q_ASSERT(uri == QLatin1String("Papyros.Software"));
 
     qmlRegisterType<SoftwareManager>(uri, 0, 1, "SoftwareManager");
     qmlRegisterUncreatableType<SoftwareSource>(uri, 0, 1, "SoftwareSource", "A remote for xdg-app");
