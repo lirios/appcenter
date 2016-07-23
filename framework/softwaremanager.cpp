@@ -38,12 +38,12 @@ SoftwareManager::SoftwareManager(QObject *parent) : QObject(parent)
 
     foreach (SoftwareBackend *backend, m_backends) {
         // TODO: Only update the data from this backend instead of all backends
-        QObject::connect(backend, &SoftwareBackend::updated, this, &SoftwareManager::update);
-        QObject::connect(backend, &SoftwareBackend::availableApplicationsChanged, this,
-                         &SoftwareManager::availableApplicationsChanged);
+        connect(backend, &SoftwareBackend::updated, this, &SoftwareManager::update);
+        connect(backend, &SoftwareBackend::availableApplicationsChanged,
+                this, &SoftwareManager::availableApplicationsChanged);
     }
 
-    QObject::connect(this, &SoftwareManager::updatesDownloaded, this, &SoftwareManager::update);
+    connect(this, &SoftwareManager::updatesDownloaded, this, &SoftwareManager::update);
 }
 
 void SoftwareManager::refresh()
