@@ -28,25 +28,22 @@
 #include <QDebug>
 #include <QIcon>
 #include <QDir>
-
-#define TR(x) QT_TRANSLATE_NOOP("Command line parser", QStringLiteral(x))
+#include <QtQuickControls2/QQuickStyle>
 
 int main(int argc, char *argv[])
 {
-    QGuiApplication app(argc, argv);
-    app.setApplicationName("App Center");
-    app.setOrganizationDomain("papyros.io");
-    app.setOrganizationName("Papyros");
-
-#if QT_VERSION >= QT_VERSION_CHECK(5, 7, 0)
-    app.setDesktopFileName("io.papyros.AppCenter.desktop");
-#endif
-
     // Set the X11 WML_CLASS so X11 desktops can find the desktop file
-    qputenv("RESOURCE_NAME", "io.papyros.AppCenter");
+    qputenv("RESOURCE_NAME", QByteArrayLiteral("io.papyros.AppCenter"));
 
-    // TODO: Figure out why this is necessary
-    QIcon::setThemeName("Paper");
+    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+
+    QGuiApplication app(argc, argv);
+    app.setApplicationName(QLatin1String("App Center"));
+    app.setOrganizationDomain(QLatin1String("papyros.io"));
+    app.setOrganizationName(QLatin1String("Papyros"));
+    app.setDesktopFileName(QLatin1String("io.papyros.AppCenter.desktop"));
+
+    QQuickStyle::setStyle(QLatin1String("Material"));
 
     QQmlApplicationEngine engine(QUrl(QStringLiteral("qrc:/qml/main.qml")));
 

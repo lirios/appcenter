@@ -54,7 +54,7 @@ endif()
 # Find Qt5
 set(REQUIRED_QT_VERSION "5.7.0")
 find_package(Qt5 ${REQUIRED_QT_VERSION} CONFIG REQUIRED COMPONENTS
-             Xml Concurrent Gui Qml Quick)
+             Xml Concurrent Gui Qml Quick QuickControls2)
 
 # Find KF5
 set(REQUIRED_KF5_VERSION "5.8.0")
