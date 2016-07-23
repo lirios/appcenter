@@ -46,7 +46,7 @@ static void flatpakChanged(GFileMonitor *monitor, GFile *child, GFile *other_fil
     Q_UNUSED(child);
     Q_UNUSED(other_file);
     Q_UNUSED(event_type);
-    emit flatpak->updated();
+    Q_EMIT flatpak->updated();
 }
 
 static void flatpakProgressCallback(const char *rawStatus, uint progress, bool estimating,
@@ -285,6 +285,6 @@ bool FlatpakBackend::refreshAvailableApplications()
 
     qDebug() << "Finished updating applications!";
 
-    emit availableApplicationsChanged();
+    Q_EMIT availableApplicationsChanged();
     return true;
 }

@@ -22,7 +22,9 @@
  ***************************************************************************/
 
 #undef signals
+
 extern "C" {
 #include <flatpak/flatpak.h>
 }
-#define signals Q_SIGNALS
+
+#include <QtCore/qglobal.h>

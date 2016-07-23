@@ -59,16 +59,16 @@ public:
 
     QString updatesSummary() const;
 
-public slots:
+public Q_SLOTS:
     void refresh();
     void downloadUpdates();
     void refreshAvailableApps();
 
-private slots:
+private Q_SLOTS:
     void update();
     void availableApplicationsChanged();
 
-signals:
+Q_SIGNALS:
     void updatesDownloaded();
     void updated();
 

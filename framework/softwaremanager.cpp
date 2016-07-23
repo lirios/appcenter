@@ -61,7 +61,7 @@ void SoftwareManager::downloadUpdates()
             backend->downloadUpdates();
         }
 
-        emit updatesDownloaded();
+        Q_EMIT updatesDownloaded();
     });
 }
 
@@ -82,7 +82,7 @@ void SoftwareManager::availableApplicationsChanged()
         m_availableApps << backend->listAvailableApplications();
     }
 
-    emit updated();
+    Q_EMIT updated();
 }
 
 void SoftwareManager::update()
@@ -104,7 +104,7 @@ void SoftwareManager::update()
             m_availableUpdates << app;
     }
 
-    emit updated();
+    Q_EMIT updated();
 }
 
 QString SoftwareManager::updatesSummary() const

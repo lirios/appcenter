@@ -29,8 +29,8 @@
 #include <QObject>
 #include <QString>
 
-#include "base.h"
 #include "appstream/component.h"
+#include "base.h"
 
 class FlatpakApplication : public Application
 {

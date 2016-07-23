@@ -40,12 +40,12 @@ public:
     virtual QList<Application *> listInstalledApplications() = 0;
     virtual QList<Application *> listAvailableApplications() = 0;
 
-public slots:
+public Q_SLOTS:
     virtual bool launchApplication(const Application *app) = 0;
     virtual bool downloadUpdates() = 0;
     virtual bool refreshAvailableApplications() = 0;
 
-signals:
+Q_SIGNALS:
     void updated();
     void availableApplicationsChanged();
 };
