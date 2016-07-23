@@ -25,17 +25,14 @@
 
 #include "updatenotifier.h"
 
-#define TR(x) QT_TRANSLATE_NOOP("Command line parser", QStringLiteral(x))
-
 int main(int argc, char *argv[])
 {
     QCoreApplication app(argc, argv);
-    app.setApplicationName("io.papyros.AppCenter");
-    app.setOrganizationDomain("papyros.io");
-    app.setOrganizationName("Papyros");
+    app.setApplicationName(QLatin1String("io.papyros.AppCenter"));
+    app.setOrganizationDomain(QLatin1String("papyros.io"));
+    app.setOrganizationName(QLatin1String("Papyros"));
 
     UpdateNotifier notifier;
-
     notifier.checkForUpdates();
 
     return app.exec();
