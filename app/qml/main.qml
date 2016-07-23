@@ -43,11 +43,6 @@ FluidWindow {
     Material.primary: Material.Blue
     Material.accent: Material.Blue
 
-    Component.onCompleted: {
-        if (!settings.shownWelcome)
-            welcomeDialog.open()
-    }
-
     Action {
         id: searchAction
 
@@ -113,64 +108,7 @@ FluidWindow {
         }
     }
 
-    Popup {
-        id: welcomeDialog
-        x: (parent.width - width) / 2
-        y: (parent.height - height) / 2
-        modal: true
-        focus: true
-
-        ColumnLayout {
-            anchors.margins: 16
-            spacing: 16
-
-            Icon {
-                name: "software-store"
-                //name: "system-software-install"
-                width: 96
-                height: width
-
-                Layout.alignment: Qt.AlignCenter
-            }
-
-            TitleLabel {
-                text: qsTr("Welcome to App Center")
-
-                Layout.alignment: Qt.AlignHCenter
-            }
-
-            BodyLabel {
-                horizontalAlignment: Text.AlignJustify
-                wrapMode: Text.WordWrap
-                opacity: 0.5
-                text: qsTr("App Center lets you install all the software you need, all from one place. " +
-                           "See our recommendations, browse the categories, or search for the applications you want.")
-
-                Layout.fillWidth: true
-            }
-
-            Button {
-                text: qsTr("Get Started")
-                // TODO: When QQC2 introduces a ButtonBox we'll likely have buttons automatically
-                // flat for the Material style, in that case we can remove the line below
-                flat: true
-                onClicked: {
-                    settings.shownWelcome = true
-                    welcomeDialog.close()
-                }
-
-                Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
-            }
-        }
-    }
-
     SoftwareManager {
         id: software
-    }
-
-    Settings {
-        id: settings
-        schema.id: "io.papyros.AppCenter"
-        schema.path: "/io/papyros/AppCenter/"
     }
 }
