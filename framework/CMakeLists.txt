@@ -9,7 +9,7 @@ ecm_setup_version(${PROJECT_VERSION} VARIABLE_PREFIX SOFTWARE
                   SOVERSION ${PROJECT_SOVERSION})
 
 include_directories(
-    ${CMAKE_BINARY_DIR}/headers
+    "${CMAKE_CURRENT_BINARY_DIR}/../headers"
     ${CMAKE_CURRENT_BINARY_DIR}
 )
 
