@@ -26,7 +26,7 @@
 
 #include <QObject>
 
-#include <Hawaii/Core/QQuickList>
+#include <Vibe/Core/QQuickList>
 
 #include <software/software_export.h>
 

@@ -4,10 +4,10 @@ App Center
 [![ZenHub.io](https://img.shields.io/badge/supercharged%20by-zenhub.io-blue.svg)](https://zenhub.io)
 
 [![License](https://img.shields.io/badge/license-GPLv3%2B-blue.svg)](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
-[![GitHub release](https://img.shields.io/github/release/qmlos/appcenter.svg)](https://github.com/qmlos/appcenter)
-[![Build Status](https://travis-ci.org/qmlos/appcenter.svg?branch=develop)](https://travis-ci.org/qmlos/appcenter)
-[![GitHub issues](https://img.shields.io/github/issues/qmlos/appcenter.svg)](https://github.com/qmlos/appcenter/issues)
-[![Maintained](https://img.shields.io/maintenance/yes/2016.svg)](https://github.com/qmlos/appcenter/commits/develop)
+[![GitHub release](https://img.shields.io/github/release/lirios/appcenter.svg)](https://github.com/lirios/appcenter)
+[![Build Status](https://travis-ci.org/lirios/appcenter.svg?branch=develop)](https://travis-ci.org/lirios/appcenter)
+[![GitHub issues](https://img.shields.io/github/issues/lirios/appcenter.svg)](https://github.com/lirios/appcenter/issues)
+[![Maintained](https://img.shields.io/maintenance/yes/2016.svg)](https://github.com/lirios/appcenter/commits/develop)
 
 This is the App Center for qmlOS for installing, updating, and managing applications built using Flatpak.
 
@@ -26,8 +26,8 @@ Qt >= 5.7.0 with at least the following modules is required:
 The following modules and their dependencies are required:
 
  * [ECM >= 1.7.0](http://quickgit.kde.org/?p=extra-cmake-modules.git)
- * [fluid](https://github.com/qmlos/fluid)
- * [libqmlos](https://github.com/qmlos/libqmlos)
+ * [fluid](https://github.com/lirios/fluid)
+ * [vibe](https://github.com/lirios/vibe)
  * [flatpak](https://github.com/flatpak/flatpak)
  * [karchive](http://quickgit.kde.org/?p=karchive.git)
  * [knotifications](http://quickgit.kde.org/?p=knotifications.git)
@@ -45,7 +45,7 @@ make install # use sudo if necessary
 
 On the `cmake` line, you can specify additional configuration parameters:
 
- * `-DCMAKE_INSTALL_PREFIX=/path/to/install` (for example, `/opt/qmlos` or `/usr`)
+ * `-DCMAKE_INSTALL_PREFIX=/path/to/install` (for example, `/opt/liri` or `/usr`)
  * `-DCMAKE_BUILD_TYPE=<build_type>`, where `<build_type>` is one of:
    * **Debug:** debug build
    * **Release:** release build

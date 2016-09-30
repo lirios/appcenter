@@ -28,7 +28,7 @@
 #include <QString>
 #include <QIcon>
 
-#include <Hawaii/Core/QQuickList>
+#include <Vibe/Core/QQuickList>
 
 #include <software/software_export.h>
 

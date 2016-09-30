@@ -33,15 +33,15 @@
 int main(int argc, char *argv[])
 {
     // Set the X11 WML_CLASS so X11 desktops can find the desktop file
-    qputenv("RESOURCE_NAME", QByteArrayLiteral("io.papyros.AppCenter"));
+    qputenv("RESOURCE_NAME", QByteArrayLiteral("io.liri.AppCenter"));
 
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc, argv);
     app.setApplicationName(QLatin1String("App Center"));
-    app.setOrganizationDomain(QLatin1String("papyros.io"));
-    app.setOrganizationName(QLatin1String("Papyros"));
-    app.setDesktopFileName(QLatin1String("io.papyros.AppCenter.desktop"));
+    app.setOrganizationDomain(QLatin1String("liri.io"));
+    app.setOrganizationName(QLatin1String("Liri"));
+    app.setDesktopFileName(QLatin1String("io.liri.AppCenter.desktop"));
 
     QQuickStyle::setStyle(QLatin1String("Material"));
 

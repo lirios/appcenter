@@ -26,7 +26,7 @@ import QtQuick 2.4
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import Fluid.Controls 1.0
-import Papyros.Software 0.1 as Software
+import Liri.Software 0.1 as Software
 
 Page {
     property var app

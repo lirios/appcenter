@@ -23,4 +23,4 @@
 
 #include "logging.h"
 
-Q_LOGGING_CATEGORY(lcAppCenter, "papyros.appcenter")
+Q_LOGGING_CATEGORY(lcAppCenter, "liri.appcenter")

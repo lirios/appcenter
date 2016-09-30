@@ -1,8 +1,8 @@
 [Desktop Entry]
 Name=App Center
-Comment=App Center for Papyros
-Exec=papyros-appcenter
+Comment=App Center for Liri
+Exec=liri-appcenter
 Icon=software-store
 Terminal=False
 Type=Application
-Categories=Papyros;Apps
+Categories=Liri;Apps

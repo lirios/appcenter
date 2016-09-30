@@ -19,7 +19,7 @@ set(PROJECT_SOVERSION 0)
 
 if(NOT USE_SUPERBUILD)
     # Set up packaging
-    set(CPACK_PACKAGE_NAME "qmlos-appcenter")
+    set(CPACK_PACKAGE_NAME "liri-appcenter")
     set(CPACK_PACKAGE_VERSION "${PROJECT_VERSION}")
     set(CPACK_GENERATOR "TGZ")
     set(CPACK_SET_DESTDIR FALSE)
@@ -61,19 +61,19 @@ set(REQUIRED_KF5_VERSION "5.8.0")
 find_package(KF5 ${REQUIRED_KF5_VERSION} REQUIRED COMPONENTS
              Archive Notifications)
 
-# Find Hawaii
-set(REQUIRED_HAWAII_VERSION "0.8.0")
-find_package(Hawaii ${REQUIRED_HAWAII_VERSION} REQUIRED)
+# Find Vibe
+set(REQUIRED_VIBE_VERSION "0.8.0")
+find_package(Vibe ${REQUIRED_VIBE_VERSION} REQUIRED)
 
 # Find Flatpak
 find_package(Flatpak REQUIRED)
 
 # Install the desktop and appdata files
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/io.papyros.AppCenter.desktop
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/io.liri.AppCenter.desktop
         DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/io.papyros.AppCenter.notifyrc
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/io.liri.AppCenter.notifyrc
         DESTINATION ${CMAKE_INSTALL_DATADIR}/knotifications5)
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/io.papyros.AppCenter.appdata.xml
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/io.liri.AppCenter.appdata.xml
         DESTINATION ${CMAKE_INSTALL_METAINFODIR})
 
 # Subdirectories

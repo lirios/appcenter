@@ -28,9 +28,9 @@
 int main(int argc, char *argv[])
 {
     QCoreApplication app(argc, argv);
-    app.setApplicationName(QLatin1String("io.papyros.AppCenter"));
-    app.setOrganizationDomain(QLatin1String("papyros.io"));
-    app.setOrganizationName(QLatin1String("Papyros"));
+    app.setApplicationName(QLatin1String("App Center"));
+    app.setOrganizationDomain(QLatin1String("liri.io"));
+    app.setOrganizationName(QLatin1String("Liri"));
 
     UpdateNotifier notifier;
     notifier.checkForUpdates();

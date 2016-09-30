@@ -28,8 +28,8 @@ import QtQuick.Layouts 1.0
 import QtQuick.Controls 2.0
 import QtQuick.Controls.Material 2.0
 import Fluid.Controls 1.0
-import Hawaii.Settings 1.0
-import Papyros.Software 0.1
+import Vibe.Settings 1.0
+import Liri.Software 0.1
 
 FluidWindow {
     id: demo
