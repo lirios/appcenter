@@ -3,15 +3,13 @@ App Center
 
 [![ZenHub.io](https://img.shields.io/badge/supercharged%20by-zenhub.io-blue.svg)](https://zenhub.io)
 
-[![License](https://img.shields.io/badge/license-GPLv3%2B-blue.svg)](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
+[![License](https://img.shields.io/badge/license-GPLv3.0-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.html)
 [![GitHub release](https://img.shields.io/github/release/lirios/appcenter.svg)](https://github.com/lirios/appcenter)
 [![Build Status](https://travis-ci.org/lirios/appcenter.svg?branch=develop)](https://travis-ci.org/lirios/appcenter)
 [![GitHub issues](https://img.shields.io/github/issues/lirios/appcenter.svg)](https://github.com/lirios/appcenter/issues)
 [![Maintained](https://img.shields.io/maintenance/yes/2016.svg)](https://github.com/lirios/appcenter/commits/develop)
 
-This is the App Center for qmlOS for installing, updating, and managing applications built using Flatpak.
-
-**_NOTE: This will soon be updated to use QtQuick.Controls 2, Fluid, and Flatpak_**
+This is the App Center for Liri OS for installing, updating, and managing applications built using Flatpak.
 
 ## Dependencies
 
