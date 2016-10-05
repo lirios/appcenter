@@ -13,6 +13,7 @@ arch:
   packages:
     - qt5-tools
     - extra-cmake-modules
+    - karchive
     - vibe-git
     - xorg-server-xvfb
     - clang
