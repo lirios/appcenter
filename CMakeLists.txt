@@ -59,7 +59,7 @@ find_package(Qt5 ${REQUIRED_QT_VERSION} CONFIG REQUIRED COMPONENTS
 # Find KF5
 set(REQUIRED_KF5_VERSION "5.8.0")
 find_package(KF5 ${REQUIRED_KF5_VERSION} REQUIRED COMPONENTS
-             Archive Notifications)
+             Archive)
 
 # Find Vibe
 set(REQUIRED_VIBE_VERSION "0.8.0")
