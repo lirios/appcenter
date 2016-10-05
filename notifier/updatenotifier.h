@@ -24,10 +24,11 @@
 #ifndef BACKEND_H
 #define BACKEND_H
 
+#include <QCoreApplication>
 #include <QObject>
 
-#include <QCoreApplication>
-#include <KNotification>
+#include <Vibe/Core/Notification>
+
 #include <Software/SoftwareManager>
 
 class UpdateNotifier : public QObject
@@ -57,13 +58,16 @@ private slots:
         qDebug() << "Has updates" << hasUpdates;
 
         if (hasUpdates) {
-            KNotification *notification =
-                    new KNotification("updatesAvailable", KNotification::Persistent, this);
-            notification->setText(m_softwareManager->updatesSummary());
+            Vibe::Notification *notification =
+                    new Vibe::Notification(this);
+            notification->setApplicationName(QLatin1String("App Center"));
+            notification->setApplicationIcon(QLatin1String("software-store"));
+            notification->setSummary(tr("Updates available"));
+            notification->setBody(m_softwareManager->updatesSummary());
             notification->setActions(QStringList(tr("Install updates")));
             // connect(notification, SIGNAL(activated(unsigned int )), contact ,
             // SLOT(slotOpenChat()) );
-            notification->sendEvent();
+            notification->send();
         }
     }
 

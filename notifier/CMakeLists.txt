@@ -4,8 +4,7 @@ add_executable(liri-update-notifier ${SOURCES})
 target_link_libraries(liri-update-notifier
                       Qt5::Core
                       Vibe::Core
-                      Liri::Software
-                      KF5::Notifications)
+                      Liri::Software)
 
 install(TARGETS liri-update-notifier
         DESTINATION ${CMAKE_INSTALL_BINDIR})

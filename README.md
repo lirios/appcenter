@@ -28,7 +28,6 @@ The following modules and their dependencies are required:
  * [vibe](https://github.com/lirios/vibe)
  * [flatpak](https://github.com/flatpak/flatpak)
  * [karchive](http://quickgit.kde.org/?p=karchive.git)
- * [knotifications](http://quickgit.kde.org/?p=knotifications.git)
 
 ## Installation
 
