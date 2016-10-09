@@ -68,14 +68,9 @@ find_package(Vibe ${REQUIRED_VIBE_VERSION} REQUIRED)
 # Find Flatpak
 find_package(Flatpak REQUIRED)
 
-# Install the desktop and appdata files
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/io.liri.AppCenter.desktop
-        DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/io.liri.AppCenter.appdata.xml
-        DESTINATION ${CMAKE_INSTALL_METAINFODIR})
-
 # Subdirectories
 add_subdirectory(app)
+add_subdirectory(data)
 add_subdirectory(declarative)
 add_subdirectory(framework)
 add_subdirectory(notifier)
