@@ -11,12 +11,7 @@
       App Center allows you to find and install new applications.
     </p>
   </description>
-  <screenshots>
-    <!-- TODO: Add screenshots -->
-  </screenshots>
-  <!--
-   Validate with `appstream-util validate *.appdata.xml`
-  -->
+  <!-- TODO: Add screenshots -->
   <releases>
     <release version="0.0.1" timestamp="1446724044">
       <description>
@@ -24,10 +19,7 @@
       </description>
     </release>
   </releases>
-  <kudos>
-    <!-- TODO: Implement kudos -->
-  </kudos>
+  <!-- TODO: Implement kudos -->
   <url type="homepage">http://liri.io</url>
   <update_contact>info@liri.io</update_contact>
-  <compulsory_for_desktop>Liri</compulsory_for_desktop>
 </component>
