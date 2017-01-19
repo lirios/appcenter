@@ -118,11 +118,13 @@ Page {
                 spacing: 16
 
                 Image {
-                    Layout.preferredWidth: 240
+                    Layout.preferredWidth: 630
                     Layout.preferredHeight: width * sourceSize.height/sourceSize.width
                     Layout.alignment: Qt.AlignTop
 
                     source: app.screenshots.get(selectedImageIndex).url
+                    fillMode: Image.Pad
+                    clip: true
                 }
 
                 ColumnLayout {
