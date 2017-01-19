@@ -24,8 +24,10 @@
 
 import QtQuick 2.4
 import QtQuick.Controls 2.0
+import QtQuick.Controls.Material 2.0
 import QtQuick.Layouts 1.0
 import Fluid.Controls 1.0
+import Fluid.Material 1.0 as FluidMaterial
 import Liri.Software 0.1 as Software
 
 Page {
@@ -40,43 +42,43 @@ Page {
 
         contentHeight: column.height + column.anchors.margins * 2
 
+        ScrollBar.vertical: ScrollBar {}
+
         ColumnLayout {
             id: column
-            width: Math.min(Units.dp(800), scrollView.width - 2 * anchors.margins)
+            width: Math.min(800, scrollView.width - 2 * anchors.margins)
 
-            spacing: Units.dp(16)
+            spacing: 16
 
             anchors {
                 horizontalCenter: parent.horizontalCenter
                 top: parent.top
-                margins: Units.dp(16)
+                margins: 16
             }
 
             RowLayout {
                 Layout.fillWidth: true
 
-                spacing: Units.dp(16)
+                spacing: 16
 
-                IconItem {
+                Icon {
                     id: image
                     Layout.fillHeight: true
                     Layout.preferredWidth: height
 
-                    icon: app.icon
+                    //icon: app.icon
                 }
 
                 ColumnLayout {
                     Layout.alignment: Qt.AlignVCenter
 
-                    Label {
+                    HeadlineLabel {
                         text: app.name
-                        style: "headline"
                     }
 
-                    Label {
+                    SubheadingLabel {
                         text: app.summary
-                        style: "subheading"
-                        color: Theme.light.subTextColor
+                        color: Material.secondaryTextColor
                     }
                 }
 
@@ -87,30 +89,32 @@ Page {
                 Button {
                     Layout.alignment: Qt.AlignVCenter
 
-                    text: app.state == Software.Application.Installed  ? "Uninstall" : "Install"
-                    elevation: 1
-                    backgroundColor: app.state == Software.Application.Installed
-                            ? Palette.colors.red['500'] : Theme.primaryColor
+                    text: app.state === Software.Application.Installed  ? "Uninstall" : "Install"
+
+                    Material.elevation: 1
+                    Material.background: app.state === Software.Application.Installed
+                                         ? Material.color(Material.Red, Material.Shade500) : Material.primaryColor
                 }
 
                 Button {
                     Layout.alignment: Qt.AlignVCenter
 
-                    visible: app.state == Software.Application.Installed
+                    visible: app.state === Software.Application.Installed
                     text: "Open"
-                    elevation: 1
-                    // backgroundColor: Palette.colors.green['500']
+                    // backgroundColor: Material.color(Material.Green, Material.Shade500)
                     onClicked: {
                         if (!app.launch())
                             console.log("Something went wrong!")
                     }
+
+                    Material.elevation: 1
                 }
             }
 
             RowLayout {
                 Layout.fillWidth: true
 
-                spacing: Units.dp(16)
+                spacing: 16
 
                 Image {
                     Layout.fillWidth: true
@@ -122,17 +126,17 @@ Page {
 
                 ColumnLayout {
                     Layout.alignment: Qt.AlignTop
-                    spacing: Units.dp(8)
+                    spacing: 8
 
                     Repeater {
                         model: app.screenshots
                         delegate: Image {
                             source: edit.url
 
-                            Layout.preferredWidth: Units.dp(120)
+                            Layout.preferredWidth: 120
                             Layout.preferredHeight: width * sourceSize.height/sourceSize.width
 
-                            Ink {
+                            FluidMaterial.Ripple {
                                 anchors.fill: parent
                                 onClicked: selectedImageIndex = index
                             }
@@ -141,9 +145,5 @@ Page {
                 }
             }
         }
-    }
-
-    Scrollbar {
-        flickableItem: scrollView
     }
 }
