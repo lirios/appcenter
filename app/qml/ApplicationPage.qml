@@ -63,10 +63,11 @@ Page {
 
                 Icon {
                     id: image
-                    Layout.fillHeight: true
-                    Layout.preferredWidth: height
+
+                    size: 64
 
                     //icon: app.icon
+                    name: "application-x-executable"
                 }
 
                 ColumnLayout {
@@ -117,7 +118,7 @@ Page {
                 spacing: 16
 
                 Image {
-                    Layout.fillWidth: true
+                    Layout.preferredWidth: 240
                     Layout.preferredHeight: width * sourceSize.height/sourceSize.width
                     Layout.alignment: Qt.AlignTop
 
