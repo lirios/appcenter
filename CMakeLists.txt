@@ -1,11 +1,14 @@
-project(io.papyros.AppCenter)
+project(AppCenter)
 
 cmake_minimum_required(VERSION 3.0.0 FATAL_ERROR)
+cmake_policy(VERSION 3.4.1)
 
-# Silence CMake warnings
-if(POLICY CMP0063)
-    cmake_policy(SET CMP0063 NEW)
-endif()
+# Instruct CMake to run moc and rrc automatically when needed
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+
+# Apple-specific configuration
+set(APPLE_SUPPRESS_X11_WARNING ON)
 
 # Set version
 set(PROJECT_VERSION "0.1.0")
@@ -14,58 +17,60 @@ set(PROJECT_VERSION_MINOR 1)
 set(PROJECT_VERSION_PATCH 0)
 set(PROJECT_SOVERSION 0)
 
-# Find includes in corresponding build directories
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
-# Instruct CMake to run moc and rrc automatically when needed
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
-
-# Extra CMake files
-find_package(ECM 0.0.11 REQUIRED NO_MODULE)
-set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR})
-
-include(KDEInstallDirs)
-include(KDECMakeSettings)
-include(KDECompilerSettings)
-include(FeatureSummary)
-
-# Build flags
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions -fvisibility=hidden -fvisibility-inlines-hidden -Werror -Wall -Wextra -Wno-unused-parameter -pedantic -std=c++11")
-
-# Disable debug output for release builds
-if(CMAKE_BUILD_TYPE MATCHES "^[Rr]elease$")
-    add_definitions(-DQT_NO_DEBUG_OUTPUT)
+if(NOT USE_SUPERBUILD)
+    # Set up packaging
+    set(CPACK_PACKAGE_NAME "liri-appcenter")
+    set(CPACK_PACKAGE_VERSION "${PROJECT_VERSION}")
+    set(CPACK_GENERATOR "TGZ")
+    set(CPACK_SET_DESTDIR FALSE)
+    set(CPACK_SOURCE_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}")
+    set(CPACK_SOURCE_IGNORE_FILES "/build/;/.git;/.tx/;~$;${CPACK_SOURCE_IGNORE_FILES}")
+    include(CPack)
+    add_custom_target(dist COMMAND ${CMAKE_MAKE_PROGRAM} package_source)
 endif()
 
-# Minimum version requirements
-set(QT_MIN_VERSION "5.4.0")
-set(KF5_MIN_VERSION "5.8.0")
+# ECM
+find_package(ECM 1.7.0 REQUIRED NO_MODULE)
+list(APPEND CMAKE_MODULE_PATH
+     "${ECM_MODULE_PATH}"
+     "${ECM_KDE_MODULE_DIR}"
+     "${CMAKE_CURRENT_SOURCE_DIR}/cmake"
+)
+
+# Macros
+include(FeatureSummary)
+include(KDEInstallDirs)
+include(KDECompilerSettings)
+include(KDECMakeSettings)
+
+# Build flags
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fvisibility-inlines-hidden -Werror -Wall -Wextra -Wformat -Wswitch-default -Wunused-parameter -pedantic -std=c++11")
+
+# Assume release build by default
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "" FORCE)
+endif()
 
 # Find Qt5
-find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS
-             Core
-             Gui
-             Qml
-             Quick
-             Xml
-             Concurrent)
+set(REQUIRED_QT_VERSION "5.7.0")
+find_package(Qt5 ${REQUIRED_QT_VERSION} CONFIG REQUIRED COMPONENTS
+             Xml Concurrent Gui Qml Quick QuickControls2)
 
-find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
-             Archive Notifications)
+# Find KF5
+set(REQUIRED_KF5_VERSION "5.8.0")
+find_package(KF5 ${REQUIRED_KF5_VERSION} REQUIRED COMPONENTS
+             Archive)
 
-find_package(XdgApp REQUIRED)
-find_package(Papyros REQUIRED)
+# Find Vibe
+set(REQUIRED_VIBE_VERSION "0.8.0")
+find_package(Vibe ${REQUIRED_VIBE_VERSION} REQUIRED)
 
-# Install the desktop and appdata files
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/${PROJECT_NAME}.desktop
-        DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/${PROJECT_NAME}.notifyrc
-        DESTINATION ${CMAKE_INSTALL_DATADIR}/knotifications5)
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/${PROJECT_NAME}.appdata.xml
-        DESTINATION ${CMAKE_INSTALL_METAINFODIR})
+# Find Flatpak
+find_package(Flatpak REQUIRED)
 
+# Subdirectories
 add_subdirectory(app)
+add_subdirectory(data)
 add_subdirectory(declarative)
 add_subdirectory(framework)
 add_subdirectory(notifier)

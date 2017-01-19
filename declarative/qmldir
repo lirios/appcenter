@@ -1,2 +1,2 @@
-module Papyros.Software
-plugin papyrossoftware
+module Liri.Software
+plugin lirisoftwareplugin

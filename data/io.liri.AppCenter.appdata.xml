@@ -1,22 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Copyright 2016 Michael Spencer <sonrisesoftware@gmail.com> -->
 <component type="desktop">
-  <id>io.papyros.AppCenter.desktop</id>
+  <id>io.liri.AppCenter.desktop</id>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0+</project_license>
-  <name>Papyros App Center</name>
-  <summary>Application manager for Ppayros</summary>
+  <name>Liri App Center</name>
+  <summary>Application manager for Liri OS</summary>
   <description>
     <p>
       App Center allows you to find and install new applications.
     </p>
   </description>
-  <screenshots>
-    <!-- TODO: Add screenshots -->
-  </screenshots>
-  <!--
-   Validate with `appstream-util validate *.appdata.xml`
-  -->
+  <!-- TODO: Add screenshots -->
   <releases>
     <release version="0.0.1" timestamp="1446724044">
       <description>
@@ -24,10 +19,7 @@
       </description>
     </release>
   </releases>
-  <kudos>
-    <!-- TODO: Implement kudos -->
-  </kudos>
-  <url type="homepage">http://papyros.io</url>
-  <update_contact>sonrisesoftware@gmail.com</update_contact>
-  <compulsory_for_desktop>Papyros</compulsory_for_desktop>
+  <!-- TODO: Implement kudos -->
+  <url type="homepage">http://liri.io</url>
+  <update_contact>info@liri.io</update_contact>
 </component>

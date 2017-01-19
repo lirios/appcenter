@@ -1,6 +1,7 @@
 /****************************************************************************
  * This file is part of App Center.
  *
+ * Copyright (C) 2016 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
  * Copyright (C) 2016 Michael Spencer <sonrisesoftware@gmail.com>
  *
  * $BEGIN_LICENSE:GPL3+$
@@ -21,28 +22,20 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef SOURCE_H
-#define SOURCE_H
+import QtQuick 2.0
+import QtQuick.Controls 2.0
+import Fluid.Controls 1.0
 
-#include <QObject>
-#include <QString>
+Page {
+    title: qsTr("Settings")
 
-#include <software/software_export.h>
+    ListView {
+        anchors.fill: parent
 
-class SOFTWARE_EXPORT SoftwareSource : public QObject
-{
-    Q_OBJECT
-
-    Q_PROPERTY(QString name MEMBER m_name CONSTANT)
-    Q_PROPERTY(QString title MEMBER m_title CONSTANT)
-    Q_PROPERTY(QString url MEMBER m_url CONSTANT)
-
-public:
-    SoftwareSource(QObject *parent = nullptr) : QObject(parent) {}
-
-    QString m_name;
-    QString m_title;
-    QString m_url;
-};
-
-#endif // SOURCE_H
+        model: software.sources
+        delegate: ListItem {
+            text: edit.title ? "%1 (%2)".arg(edit.title).arg(edit.name) : edit.name
+            subText: edit.url
+        }
+    }
+}

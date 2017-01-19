@@ -1,6 +1,9 @@
-/*
- * Papyros Software - The app store for Papyros
+/****************************************************************************
+ * This file is part of App Center.
+ *
  * Copyright (C) 2016 Michael Spencer <sonrisesoftware@gmail.com>
+ *
+ * $BEGIN_LICENSE:GPL3+$
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -9,12 +12,14 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * $END_LICENSE$
+ ***************************************************************************/
 
 #ifndef REMOTE_H
 #define REMOTE_H
@@ -35,11 +40,11 @@ class Remote : public SoftwareSource
     Q_PROPERTY(QString url MEMBER m_url CONSTANT)
 
 public:
-    Remote(XdgAppRemote *remote, QObject *parent = nullptr) : SoftwareSource(parent)
+    Remote(FlatpakRemote *remote, QObject *parent = nullptr) : SoftwareSource(parent)
     {
-        m_name = xdg_app_remote_get_name(remote);
-        m_title = xdg_app_remote_get_title(remote);
-        m_url = xdg_app_remote_get_url(remote);
+        m_name = flatpak_remote_get_name(remote);
+        m_title = flatpak_remote_get_title(remote);
+        m_url = flatpak_remote_get_url(remote);
     }
 
     QString m_name;

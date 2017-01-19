@@ -1,6 +1,9 @@
-/*
- * Papyros Software - The app store for Papyros
+/****************************************************************************
+ * This file is part of App Center.
+ *
  * Copyright (C) 2016 Michael Spencer <sonrisesoftware@gmail.com>
+ *
+ * $BEGIN_LICENSE:GPL3+$
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -9,20 +12,23 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * $END_LICENSE$
+ ***************************************************************************/
 
 #ifndef BACKEND_H
 #define BACKEND_H
 
+#include <QCoreApplication>
 #include <QObject>
 
-#include <QCoreApplication>
-#include <KNotification>
+#include <Vibe/Core/Notification>
+
 #include <Software/SoftwareManager>
 
 class UpdateNotifier : public QObject
@@ -52,13 +58,16 @@ private slots:
         qDebug() << "Has updates" << hasUpdates;
 
         if (hasUpdates) {
-            KNotification *notification =
-                    new KNotification("updatesAvailable", KNotification::Persistent, this);
-            notification->setText(m_softwareManager->updatesSummary());
+            Vibe::Notification *notification =
+                    new Vibe::Notification(this);
+            notification->setApplicationName(QLatin1String("App Center"));
+            notification->setApplicationIcon(QLatin1String("software-store"));
+            notification->setSummary(tr("Updates available"));
+            notification->setBody(m_softwareManager->updatesSummary());
             notification->setActions(QStringList(tr("Install updates")));
             // connect(notification, SIGNAL(activated(unsigned int )), contact ,
             // SLOT(slotOpenChat()) );
-            notification->sendEvent();
+            notification->send();
         }
     }
 

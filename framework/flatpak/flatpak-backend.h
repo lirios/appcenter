@@ -1,6 +1,9 @@
-/*
- * Papyros Software - The app store for Papyros
+/****************************************************************************
+ * This file is part of App Center.
+ *
  * Copyright (C) 2016 Michael Spencer <sonrisesoftware@gmail.com>
+ *
+ * $BEGIN_LICENSE:GPL3+$
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -9,15 +12,17 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * $END_LICENSE$
+ ***************************************************************************/
 
-#ifndef XDG_BACKEND_H
-#define XDG_BACKEND_H
+#ifndef FLATPAK_BACKEND_H
+#define FLATPAK_BACKEND_H
 
 #include "backend.h"
 
@@ -58,17 +63,17 @@ class InitializationFailedException : public GLibException
 {
 public:
     InitializationFailedException(GError *error)
-            : GLibException("Unable to initialize xdg-app backend", error)
+            : GLibException("Unable to initialize Flatpak backend", error)
     {
     }
 };
 
-class XdgAppBackend : public SoftwareBackend
+class FlatpakBackend : public SoftwareBackend
 {
     Q_OBJECT
 
 public:
-    XdgAppBackend(QObject *parent = nullptr);
+    FlatpakBackend(QObject *parent = nullptr);
 
     QList<SoftwareSource *> listSources() override;
     QList<Application *> listAvailableApplications() override;
@@ -82,9 +87,9 @@ public slots:
 private:
     void initialize() throw(InitializationFailedException);
 
-    XdgAppInstallation *m_installation = nullptr;
+    FlatpakInstallation *m_installation = nullptr;
     GFileMonitor *m_monitor = nullptr;
     QList<AppstreamSource> m_appstreamPaths;
 };
 
-#endif // XDG_BACKEND_H
+#endif // FLATPAK_BACKEND_H

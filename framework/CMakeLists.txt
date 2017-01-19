@@ -9,37 +9,39 @@ ecm_setup_version(${PROJECT_VERSION} VARIABLE_PREFIX SOFTWARE
                   SOVERSION ${PROJECT_SOVERSION})
 
 include_directories(
-    ${CMAKE_BINARY_DIR}/headers
+    "${CMAKE_CURRENT_BINARY_DIR}/../headers"
     ${CMAKE_CURRENT_BINARY_DIR}
 )
+
+add_definitions(-fexceptions)
 
 file(GLOB_RECURSE SOURCES *.cpp *.h)
 file(GLOB_RECURSE QML_FILES *.qml)
 
-add_library(PapyrosSoftware SHARED ${SOURCES})
+add_library(LiriSoftware SHARED ${SOURCES})
 
-generate_export_header(PapyrosSoftware BASE_NAME Software EXPORT_FILE_NAME software/software_export.h)
-add_library(Papyros::Software ALIAS PapyrosSoftware)
+generate_export_header(LiriSoftware BASE_NAME Software EXPORT_FILE_NAME software/software_export.h)
+add_library(Liri::Software ALIAS LiriSoftware)
 
-target_link_libraries(PapyrosSoftware
+target_link_libraries(LiriSoftware
     PUBLIC
         Qt5::Core
         Qt5::Gui
         Qt5::Xml
         Qt5::Concurrent
-        Papyros::Core
+        Vibe::Core
     PRIVATE
         KF5::Archive
-        ${XdgApp_LIBRARIES}
+        ${Flatpak_LIBRARIES}
 )
 
-include_directories(${XdgApp_INCLUDE_DIRS})
+include_directories(${Flatpak_INCLUDE_DIRS})
 
-set(SOFTWARE_INCLUDEDIR "${CMAKE_INSTALL_INCLUDEDIR}/Papyros")
+set(SOFTWARE_INCLUDEDIR "${CMAKE_INSTALL_INCLUDEDIR}/Liri")
 
-target_include_directories(PapyrosSoftware INTERFACE "$<INSTALL_INTERFACE:${SOFTWARE_INCLUDEDIR}>")
+target_include_directories(LiriSoftware INTERFACE "$<INSTALL_INTERFACE:${SOFTWARE_INCLUDEDIR}>")
 
-set_target_properties(PapyrosSoftware PROPERTIES VERSION   ${PROJECT_VERSION}
+set_target_properties(LiriSoftware PROPERTIES VERSION   ${PROJECT_VERSION}
                                                  SOVERSION ${PROJECT_SOVERSION}
                                                  EXPORT_NAME Software
 )
@@ -56,7 +58,7 @@ install(FILES ${Software_CamelCase_HEADERS}
         DESTINATION ${SOFTWARE_INCLUDEDIR}/Software
         COMPONENT Devel)
 
-install(TARGETS PapyrosSoftware EXPORT SoftwareTargets ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS LiriSoftware EXPORT SoftwareTargets ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
 
 install(
     FILES
@@ -69,7 +71,7 @@ install(
 )
 
 # Create a Config.cmake and a ConfigVersion.cmake file and install them
-set(CMAKECONFIG_INSTALL_DIR "${CMAKECONFIG_INSTALL_PREFIX}/Papyros")
+set(CMAKECONFIG_INSTALL_DIR "${CMAKECONFIG_INSTALL_PREFIX}/Liri")
 
 ecm_configure_package_config_file("${CMAKE_CURRENT_SOURCE_DIR}/SoftwareConfig.cmake.in"
                                   "${CMAKE_CURRENT_BINARY_DIR}/SoftwareConfig.cmake"
@@ -82,7 +84,7 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/SoftwareConfig.cmake"
 
 install(EXPORT SoftwareTargets
         DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
-        FILE SoftwareTargets.cmake NAMESPACE Papyros::)
+        FILE SoftwareTargets.cmake NAMESPACE Liri::)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/software_version.h
         DESTINATION ${SOFTWARE_INCLUDEDIR}/software COMPONENT Devel)

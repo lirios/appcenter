@@ -1,6 +1,9 @@
-/*
- * Papyros Software - The app store for Papyros
+/****************************************************************************
+ * This file is part of App Center.
+ *
  * Copyright (C) 2016 Michael Spencer <sonrisesoftware@gmail.com>
+ *
+ * $BEGIN_LICENSE:GPL3+$
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -9,25 +12,27 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * $END_LICENSE$
+ ***************************************************************************/
 
-#ifndef XDG_APPLICATION_H
-#define XDG_APPLICATION_H
+#ifndef FLATPAK_APPLICATION_H
+#define FLATPAK_APPLICATION_H
 
 #include "application.h"
 
 #include <QObject>
 #include <QString>
 
-#include "base.h"
 #include "appstream/component.h"
+#include "base.h"
 
-class XdgApplication : public Application
+class FlatpakApplication : public Application
 {
     Q_OBJECT
 
@@ -36,8 +41,8 @@ class XdgApplication : public Application
     Q_PROPERTY(QString arch MEMBER m_arch CONSTANT)
 
 public:
-    XdgApplication(XdgAppInstalledRef *app_ref, SoftwareBackend *backend);
-    XdgApplication(Appstream::Component component, QString origin, SoftwareBackend *backend);
+    FlatpakApplication(FlatpakInstalledRef *app_ref, SoftwareBackend *backend);
+    FlatpakApplication(Appstream::Component component, QString origin, SoftwareBackend *backend);
 
     QString installedVersion() const override { return m_branch; }
 
@@ -55,4 +60,4 @@ public slots:
     void install();
 };
 
-#endif // XDG_APPLICATION_H
+#endif // FLATPAK_APPLICATION_H

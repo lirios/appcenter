@@ -1,11 +1,10 @@
 file(GLOB_RECURSE SOURCES *.cpp *.h)
 
-add_executable(papyros-update-notifier ${SOURCES})
-target_link_libraries(papyros-update-notifier
+add_executable(liri-update-notifier ${SOURCES})
+target_link_libraries(liri-update-notifier
                       Qt5::Core
-                      Papyros::Core
-                      Papyros::Software
-                      KF5::Notifications)
+                      Vibe::Core
+                      Liri::Software)
 
-install(TARGETS papyros-update-notifier
+install(TARGETS liri-update-notifier
         DESTINATION ${CMAKE_INSTALL_BINDIR})

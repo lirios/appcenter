@@ -1,6 +1,9 @@
-/*
- * Papyros Software - The app store for Papyros
+/****************************************************************************
+ * This file is part of App Center.
+ *
  * Copyright (C) 2016 Michael Spencer <sonrisesoftware@gmail.com>
+ *
+ * $BEGIN_LICENSE:GPL3+$
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -9,12 +12,15 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * $END_LICENSE$
+ ***************************************************************************/
+
 #include "softwaremanager.h"
 
 #include <QProcess>
@@ -22,22 +28,24 @@
 #include <QDebug>
 #include <QtConcurrent>
 
-#include "xdg-app/xdg-backend.h"
+#include "flatpak/flatpak-backend.h"
 #include "source.h"
 #include "application.h"
 
 SoftwareManager::SoftwareManager(QObject *parent) : QObject(parent)
 {
-    m_backends << new XdgAppBackend(this);
+    m_backends << new FlatpakBackend(this);
 
     foreach (SoftwareBackend *backend, m_backends) {
         // TODO: Only update the data from this backend instead of all backends
-        QObject::connect(backend, &SoftwareBackend::updated, this, &SoftwareManager::update);
-        QObject::connect(backend, &SoftwareBackend::availableApplicationsChanged, this,
-                         &SoftwareManager::availableApplicationsChanged);
+        connect(backend, &SoftwareBackend::updated, this, &SoftwareManager::update);
+        connect(backend, &SoftwareBackend::availableApplicationsChanged,
+                this, &SoftwareManager::availableApplicationsChanged);
     }
 
-    QObject::connect(this, &SoftwareManager::updatesDownloaded, this, &SoftwareManager::update);
+    connect(this, &SoftwareManager::updatesDownloaded, this, &SoftwareManager::update);
+
+    update();
 }
 
 void SoftwareManager::refresh()
@@ -55,7 +63,7 @@ void SoftwareManager::downloadUpdates()
             backend->downloadUpdates();
         }
 
-        emit updatesDownloaded();
+        Q_EMIT updatesDownloaded();
     });
 }
 
@@ -76,7 +84,7 @@ void SoftwareManager::availableApplicationsChanged()
         m_availableApps << backend->listAvailableApplications();
     }
 
-    emit updated();
+    Q_EMIT updated();
 }
 
 void SoftwareManager::update()
@@ -98,7 +106,7 @@ void SoftwareManager::update()
             m_availableUpdates << app;
     }
 
-    emit updated();
+    Q_EMIT updated();
 }
 
 QString SoftwareManager::updatesSummary() const

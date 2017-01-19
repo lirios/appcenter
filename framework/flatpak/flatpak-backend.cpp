@@ -1,8 +1,10 @@
-/*
- * Papyros Software - The app store for Papyros
+/****************************************************************************
+ * This file is part of App Center.
  *
  * Copyright (C) 2016 Michael Spencer <sonrisesoftware@gmail.com>
  * Copyright (C) 2015 Richard Hughes <richard@hughsie.com>
+ *
+ * $BEGIN_LICENSE:GPL3+$
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,40 +13,47 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
-#include "xdg-backend.h"
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * $END_LICENSE$
+ ***************************************************************************/
+
+#include "flatpak-backend.h"
 
 #include <QProcess>
 #include <QStringList>
 #include <QDebug>
 
-#include "xdg-remote.h"
-#include "xdg-application.h"
+#include "flatpak-remote.h"
+#include "flatpak-application.h"
 #include "utils.h"
 
 #include "appstream/store.h"
 
-struct XdgAppHelper
+struct FlatpakHelper
 {
-    XdgApplication *app;
+    FlatpakApplication *app;
 };
 
-static void xdgAppChanged(GFileMonitor *monitor, GFile *child, GFile *other_file,
-                          GFileMonitorEvent event_type, XdgAppBackend *xdgapp)
+static void flatpakChanged(GFileMonitor *monitor, GFile *child, GFile *other_file,
+                           GFileMonitorEvent event_type, FlatpakBackend *flatpak)
 {
-    emit xdgapp->updated();
+    Q_UNUSED(monitor);
+    Q_UNUSED(child);
+    Q_UNUSED(other_file);
+    Q_UNUSED(event_type);
+    Q_EMIT flatpak->updated();
 }
 
-static void xdgAppProgressCallback(const char *rawStatus, uint progress, bool estimating,
-                                   void *userData)
+static void flatpakProgressCallback(const char *rawStatus, uint progress, bool estimating,
+                                    void *userData)
 {
     QString status = rawStatus;
-    XdgAppHelper *helper = static_cast<XdgAppHelper *>(userData);
+    FlatpakHelper *helper = static_cast<FlatpakHelper *>(userData);
 
     Q_ASSERT(helper->app);
 
@@ -52,12 +61,12 @@ static void xdgAppProgressCallback(const char *rawStatus, uint progress, bool es
     // TODO: Do something more!
 }
 
-XdgAppBackend::XdgAppBackend(QObject *parent) : SoftwareBackend(parent)
+FlatpakBackend::FlatpakBackend(QObject *parent) : SoftwareBackend(parent)
 {
     // Nothing needed here yet.
 }
 
-void XdgAppBackend::initialize() throw(InitializationFailedException)
+void FlatpakBackend::initialize() throw(InitializationFailedException)
 {
     // Don't reinitialize
     if (m_installation != nullptr)
@@ -67,20 +76,20 @@ void XdgAppBackend::initialize() throw(InitializationFailedException)
     GCancellable *cancellable = nullptr;
     GError *error = nullptr;
 
-    m_installation = xdg_app_installation_new_user(cancellable, &error);
+    m_installation = flatpak_installation_new_user(cancellable, &error);
 
     if (m_installation == nullptr)
         throw InitializationFailedException(error);
 
-    m_monitor = xdg_app_installation_create_monitor(m_installation, cancellable, &error);
+    m_monitor = flatpak_installation_create_monitor(m_installation, cancellable, &error);
 
     if (m_monitor == nullptr)
         throw InitializationFailedException(error);
 
-    g_signal_connect(m_monitor, "changed", G_CALLBACK(xdgAppChanged), this);
+    g_signal_connect(m_monitor, "changed", G_CALLBACK(flatpakChanged), this);
 }
 
-QList<SoftwareSource *> XdgAppBackend::listSources()
+QList<SoftwareSource *> FlatpakBackend::listSources()
 {
     initialize();
 
@@ -91,19 +100,19 @@ QList<SoftwareSource *> XdgAppBackend::listSources()
     GError *error = nullptr;
 
     g_autoptr(GPtrArray) xremotes =
-            xdg_app_installation_list_remotes(m_installation, cancellable, &error);
+            flatpak_installation_list_remotes(m_installation, cancellable, &error);
 
     if (xremotes == nullptr)
         return sources;
 
-    G_FOREACH (XdgAppRemote *xremote, xremotes) {
+    G_FOREACH (FlatpakRemote *xremote, xremotes) {
         sources << new Remote(xremote, this);
     }
 
     return sources;
 }
 
-QList<Application *> XdgAppBackend::listAvailableApplications()
+QList<Application *> FlatpakBackend::listAvailableApplications()
 {
     initialize();
 
@@ -114,17 +123,17 @@ QList<Application *> XdgAppBackend::listAvailableApplications()
     GError *error = nullptr;
 
     g_autoptr(GPtrArray) xremotes =
-            xdg_app_installation_list_remotes(m_installation, cancellable, &error);
+            flatpak_installation_list_remotes(m_installation, cancellable, &error);
 
     if (xremotes == nullptr)
         return applications;
 
-    G_FOREACH (XdgAppRemote *xremote, xremotes) {
+    G_FOREACH (FlatpakRemote *xremote, xremotes) {
         /* add the new AppStream repo to the shared store */
-        g_autoptr(GFile) file = xdg_app_remote_get_appstream_dir(xremote, NULL);
+        g_autoptr(GFile) file = flatpak_remote_get_appstream_dir(xremote, NULL);
         QString appstreamFilename = g_file_get_path(file);
 
-        QString origin = xdg_app_remote_get_name(xremote);
+        QString origin = flatpak_remote_get_name(xremote);
 
         qDebug() << "Using AppStream metadata found at: " << appstreamFilename << origin;
 
@@ -132,14 +141,14 @@ QList<Application *> XdgAppBackend::listAvailableApplications()
         store.load(appstreamFilename);
 
         foreach (Appstream::Component component, store.allComponents()) {
-            applications << new XdgApplication(component, origin, this);
+            applications << new FlatpakApplication(component, origin, this);
         }
     }
 
     return applications;
 }
 
-QList<Application *> XdgAppBackend::listInstalledApplications()
+QList<Application *> FlatpakBackend::listInstalledApplications()
 {
     initialize();
 
@@ -150,12 +159,12 @@ QList<Application *> XdgAppBackend::listInstalledApplications()
     GError *error = nullptr;
 
     g_autoptr(GPtrArray) xrefs =
-            xdg_app_installation_list_installed_refs(m_installation, cancellable, &error);
+            flatpak_installation_list_installed_refs(m_installation, cancellable, &error);
 
     if (xrefs == nullptr)
         return applications;
 
-    G_FOREACH (XdgAppInstalledRef *xref, xrefs) {
+    G_FOREACH (FlatpakInstalledRef *xref, xrefs) {
         /*
          * Only show the current application in GNOME Software
          *
@@ -164,34 +173,34 @@ QList<Application *> XdgAppBackend::listInstalledApplications()
          *  1) the default to launch unless you specify a version
          *  2) The one that gets its exported files exported
          */
-        qDebug() << xdg_app_installed_ref_get_is_current(xref);
-        if (!xdg_app_installed_ref_get_is_current(xref) &&
-            xdg_app_ref_get_kind(XDG_APP_REF(xref)) == XDG_APP_REF_KIND_APP) {
+        qDebug() << flatpak_installed_ref_get_is_current(xref);
+        if (!flatpak_installed_ref_get_is_current(xref) &&
+            flatpak_ref_get_kind(FLATPAK_REF(xref)) == FLATPAK_REF_KIND_APP) {
             qDebug() << "Skipping!";
             continue;
         }
 
-        applications << new XdgApplication(xref, this);
+        applications << new FlatpakApplication(xref, this);
     }
 
     return applications;
 }
 
-bool XdgAppBackend::launchApplication(const Application *app)
+bool FlatpakBackend::launchApplication(const Application *app)
 {
     initialize();
 
-    const XdgApplication *xapp = qobject_cast<const XdgApplication *>(app);
+    const FlatpakApplication *xapp = qobject_cast<const FlatpakApplication *>(app);
 
     // TODO: Do something with these
     GCancellable *cancellable = nullptr;
     GError *error = nullptr;
 
-    return xdg_app_installation_launch(m_installation, qPrintable(xapp->m_id), NULL,
+    return flatpak_installation_launch(m_installation, qPrintable(xapp->m_id), NULL,
                                        qPrintable(xapp->m_branch), NULL, cancellable, &error);
 }
 
-bool XdgAppBackend::downloadUpdates()
+bool FlatpakBackend::downloadUpdates()
 {
     initialize();
 
@@ -199,7 +208,7 @@ bool XdgAppBackend::downloadUpdates()
     GError *error = nullptr;
 
     /* get all the updates available from all remotes */
-    g_autoptr(GPtrArray) xrefs = xdg_app_installation_list_installed_refs_for_update(
+    g_autoptr(GPtrArray) xrefs = flatpak_installation_list_installed_refs_for_update(
             m_installation, cancellable, &error);
 
     if (xrefs == nullptr)
@@ -210,20 +219,20 @@ bool XdgAppBackend::downloadUpdates()
 
     qDebug() << "Downloading" << xrefs->len << "updates";
 
-    G_FOREACH (XdgAppInstalledRef *xref, xrefs) {
-        XdgApplication *app = new XdgApplication(xref, this);
+    G_FOREACH (FlatpakInstalledRef *xref, xrefs) {
+        FlatpakApplication *app = new FlatpakApplication(xref, this);
 
-        XdgAppHelper helper = {app};
+        FlatpakHelper helper = {app};
 
-        qDebug() << "Updating" << xdg_app_ref_get_name(XDG_APP_REF(xref));
-        XdgAppInstalledRef *xref2 = xdg_app_installation_update(
-                m_installation, XDG_APP_UPDATE_FLAGS_NO_DEPLOY,
-                xdg_app_ref_get_kind(XDG_APP_REF(xref)), xdg_app_ref_get_name(XDG_APP_REF(xref)),
-                xdg_app_ref_get_arch(XDG_APP_REF(xref)), xdg_app_ref_get_branch(XDG_APP_REF(xref)),
-                (XdgAppProgressCallback) xdgAppProgressCallback, &helper, cancellable, &error);
+        qDebug() << "Updating" << flatpak_ref_get_name(FLATPAK_REF(xref));
+        FlatpakInstalledRef *xref2 = flatpak_installation_update(
+                m_installation, FLATPAK_UPDATE_FLAGS_NO_DEPLOY,
+                flatpak_ref_get_kind(FLATPAK_REF(xref)), flatpak_ref_get_name(FLATPAK_REF(xref)),
+                flatpak_ref_get_arch(FLATPAK_REF(xref)), flatpak_ref_get_branch(FLATPAK_REF(xref)),
+                (FlatpakProgressCallback) flatpakProgressCallback, &helper, cancellable, &error);
         if (xref2 == nullptr) {
             QString what = "Unable to download update for " +
-                           QString(xdg_app_ref_get_name(XDG_APP_REF(xref)));
+                           QString(flatpak_ref_get_name(FLATPAK_REF(xref)));
             throw GLibException(qPrintable(what), error);
         }
     }
@@ -231,7 +240,7 @@ bool XdgAppBackend::downloadUpdates()
     return true;
 }
 
-bool XdgAppBackend::refreshAvailableApplications()
+bool FlatpakBackend::refreshAvailableApplications()
 {
     initialize();
 
@@ -240,17 +249,17 @@ bool XdgAppBackend::refreshAvailableApplications()
     GError *error = nullptr;
 
     g_autoptr(GPtrArray) xremotes =
-            xdg_app_installation_list_remotes(m_installation, cancellable, &error);
+            flatpak_installation_list_remotes(m_installation, cancellable, &error);
 
     if (xremotes == nullptr)
         return false;
 
-    G_FOREACH (XdgAppRemote *xremote, xremotes) {
+    G_FOREACH (FlatpakRemote *xremote, xremotes) {
         g_autoptr(GError) error_local = NULL;
 
         /* is the timestamp new enough */
         // TODO: Figure this out
-        // g_autoptr(GFile) file_timestamp = xdg_app_remote_get_appstream_timestamp(xremote, NULL);
+        // g_autoptr(GFile) file_timestamp = flatpak_remote_get_appstream_timestamp(xremote, NULL);
         // uint file_age = gs_utils_get_file_age(file_timestamp);
         // if (file_age < cache_age) {
         //     QString filename = g_file_get_path(file_timestamp);
@@ -259,8 +268,8 @@ bool XdgAppBackend::refreshAvailableApplications()
         // }
 
         /* download new data */
-        bool result = xdg_app_installation_update_appstream_sync(
-                m_installation, xdg_app_remote_get_name(xremote), NULL, /* arch */
+        bool result = flatpak_installation_update_appstream_sync(
+                m_installation, flatpak_remote_get_name(xremote), NULL, /* arch */
                 NULL,                                                   /* out_changed */
                 cancellable, &error_local);
         if (!result) {
@@ -276,6 +285,6 @@ bool XdgAppBackend::refreshAvailableApplications()
 
     qDebug() << "Finished updating applications!";
 
-    emit availableApplicationsChanged();
+    Q_EMIT availableApplicationsChanged();
     return true;
 }

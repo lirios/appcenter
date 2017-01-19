@@ -1,0 +1,38 @@
+language: c
+
+compiler:
+  - clang
+  - gcc
+
+sudo: required
+
+arch:
+  repos:
+    - fluid=https://dl.bintray.com/liri/archlinux-develop/$arch/
+    - vibe=https://dl.bintray.com/liri/archlinux-develop/$arch/
+  packages:
+    - qt5-tools
+    - extra-cmake-modules
+    - karchive
+    - vibe-git
+    - xorg-server-xvfb
+    - desktop-file-utils
+    - appstream
+    - clang
+    #- clazy-git
+  script:
+    - if [ "$CC" = "gcc" ]; then cmake . -DKDE_INSTALL_USE_QT_SYS_PATHS=ON -DCMAKE_INSTALL_PREFIX=/usr; fi
+    #- if [ "$CC" = "clang" ]; then env CLAZY_CHECKS="level1" cmake . -DCMAKE_CXX_COMPILER=clazy -DKDE_INSTALL_USE_QT_SYS_PATHS=ON -DCMAKE_INSTALL_PREFIX=/usr; fi
+    - if [ "$CC" = "clang" ]; then cmake . -DKDE_INSTALL_USE_QT_SYS_PATHS=ON -DCMAKE_INSTALL_PREFIX=/usr; fi
+    - make
+    #- sudo make install
+    - desktop-file-validate data/io.liri.AppCenter.desktop
+    - appstreamcli validate data/io.liri.AppCenter.appdata.xml
+    #- xvfb-run -a -s "-screen 0 800x600x24" make check
+
+script:
+  - "curl -s https://raw.githubusercontent.com/mikkeloscar/arch-travis/master/arch-travis.sh | bash"
+
+notifications:
+  email: false
+  slack: lirios:fdUqVmPzqPskEL1UBhqapZ0w

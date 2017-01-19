@@ -1,7 +1,10 @@
-/*
- * Papyros Software - The app store for Papyros
+/****************************************************************************
+ * This file is part of App Center.
+ *
  * Copyright (C) 2016 Michael Spencer <sonrisesoftware@gmail.com>
  * Copyright (C) 2015 Richard Hughes <richard@hughsie.com>
+ *
+ * $BEGIN_LICENSE:GPL3+$
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -10,42 +13,44 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * $END_LICENSE$
+ ***************************************************************************/
 
-#include "xdg-application.h"
+#include "flatpak-application.h"
 
 #include "appstream/store.h"
 
-XdgApplication::XdgApplication(XdgAppInstalledRef *app_ref, SoftwareBackend *backend)
+FlatpakApplication::FlatpakApplication(FlatpakInstalledRef *app_ref, SoftwareBackend *backend)
         : Application(backend)
 {
     m_state = Application::Installed;
-    m_id = xdg_app_ref_get_name(XDG_APP_REF(app_ref));
-    m_branch = xdg_app_ref_get_branch(XDG_APP_REF(app_ref));
-    m_origin = xdg_app_installed_ref_get_origin(app_ref);
+    m_id = flatpak_ref_get_name(FLATPAK_REF(app_ref));
+    m_branch = flatpak_ref_get_branch(FLATPAK_REF(app_ref));
+    m_origin = flatpak_installed_ref_get_origin(app_ref);
     m_name = m_id;
-    m_arch = xdg_app_ref_get_arch(XDG_APP_REF(app_ref));
+    m_arch = flatpak_ref_get_arch(FLATPAK_REF(app_ref));
 
-    m_currentCommit = xdg_app_ref_get_commit(XDG_APP_REF(app_ref));
-    m_latestCommit = xdg_app_installed_ref_get_latest_commit(app_ref);
+    m_currentCommit = flatpak_ref_get_commit(FLATPAK_REF(app_ref));
+    m_latestCommit = flatpak_installed_ref_get_latest_commit(app_ref);
 
     if (m_branch.isEmpty())
         m_branch = "master";
 
     QString desktopId;
 
-    switch (xdg_app_ref_get_kind(XDG_APP_REF(app_ref))) {
-    case XDG_APP_REF_KIND_APP:
+    switch (flatpak_ref_get_kind(FLATPAK_REF(app_ref))) {
+    case FLATPAK_REF_KIND_APP:
         m_type = Application::App;
 
         desktopId = m_name + ".desktop";
         break;
-    case XDG_APP_REF_KIND_RUNTIME:
+    case FLATPAK_REF_KIND_RUNTIME:
         m_type = Application::Runtime;
         m_icon = QIcon::fromTheme("package-x-generic");
         m_summary = "Framework for applications";
@@ -57,7 +62,7 @@ XdgApplication::XdgApplication(XdgAppInstalledRef *app_ref, SoftwareBackend *bac
         break;
     }
 
-    QString deployDir = xdg_app_installed_ref_get_deploy_dir(app_ref);
+    QString deployDir = flatpak_installed_ref_get_deploy_dir(app_ref);
     QString desktopPath = deployDir + "/files/share/applications";
     QString appdataPath = deployDir + "/files/share/appdata";
 
@@ -70,7 +75,7 @@ XdgApplication::XdgApplication(XdgAppInstalledRef *app_ref, SoftwareBackend *bac
         refineFromAppstream(component);
 }
 
-XdgApplication::XdgApplication(Appstream::Component component, QString origin,
+FlatpakApplication::FlatpakApplication(Appstream::Component component, QString origin,
                                SoftwareBackend *backend)
         : Application(backend)
 {
@@ -85,15 +90,15 @@ XdgApplication::XdgApplication(Appstream::Component component, QString origin,
     refineFromAppstream(component);
 }
 
-void XdgApplication::install()
+void FlatpakApplication::install()
 {
     /* install */
-    // xref = xdg_app_installation_install (plugin->priv->installation,
+    // xref = flatpak_installation_install (plugin->priv->installation,
     // 				     gs_app_get_origin (app),
-    // 				     XDG_APP_REF_KIND_APP,
+    // 				     FLATPAK_REF_KIND_APP,
     // 				     gs_app_get_id (app),
     // 				     gs_app_get_metadata_item (app, "XgdApp::arch"),
     // 				     gs_app_get_metadata_item (app, "XgdApp::branch"),
-    // 				     gs_plugin_xdg_app_progress_cb, &helper,
+    // 				     gs_plugin_flatpak_progress_cb, &helper,
     // 				     cancellable, error);
 }

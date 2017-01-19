@@ -1,29 +1,47 @@
-import QtQuick 2.4
-import QtQuick.Controls 1.2
-import Material 0.2
-import Material.ListItems 0.1 as ListItem
-import Papyros.Software 0.1
-import Papyros.Core 0.2
-import QtQuick.Window 2.2
+/****************************************************************************
+ * This file is part of App Center.
+ *
+ * Copyright (C) 2016 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
+ * Copyright (C) 2016 Michael Spencer <sonrisesoftware@gmail.com>
+ *
+ * $BEGIN_LICENSE:GPL3+$
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * $END_LICENSE$
+ ***************************************************************************/
 
-ApplicationWindow {
+import QtQuick 2.4
+import QtQuick.Window 2.2
+import QtQuick.Layouts 1.0
+import QtQuick.Controls 2.0
+import QtQuick.Controls.Material 2.0
+import Fluid.Controls 1.0
+import Vibe.Settings 1.0
+import Liri.Software 0.1
+
+FluidWindow {
     id: demo
 
-    title: "App Center"
+    title: qsTr("App Center")
 
-    // Necessary when loading the window from C++
+    width: 800
+    height: 600
     visible: true
 
-    theme {
-        primaryColor: "blue"
-        accentColor: "blue"
-        tabHighlightColor: "white"
-    }
-
-    Component.onCompleted: {
-        if (session.shownWelcome == "false")
-            welcomeDialog.open()
-    }
+    Material.primary: Material.Blue
+    Material.accent: Material.Blue
 
     Action {
         id: searchAction
@@ -32,175 +50,65 @@ ApplicationWindow {
         text: "Search"
     }
 
-    initialPage: NavigationDrawerPage {
-        id: navPage
-        page: overviewPage
+    initialPage: Page {
+        title: qsTr("App Center")
 
-        navDrawer: NavigationDrawer {
+        actions: [searchAction]
 
-            Column {
+        Pane {
+            id: listPane
+
+            anchors {
+                left: parent.left
+                top: parent.top
+                bottom: parent.bottom
+            }
+
+            Material.background: "white"
+            Material.elevation: 1
+
+            width: 200
+            padding: 0
+            z: 2
+
+            ListView {
                 anchors.fill: parent
 
-                ListItem.Standard {
-                    text: "Applications"
-                    iconName: "action/shop"
-                    selected: navPage.page == overviewPage
-                    onClicked: navPage.navigate(overviewPage)
+                model: ListModel {
+                    ListElement { text: qsTr("All Apps"); iconName: "action/shop"; url: "AllAppsPage.qml" }
+                    ListElement { text: qsTr("Installed Apps"); iconName: "file/file_download"; url: "InstalledAppsPage.qml" }
+                    ListElement { text: qsTr("Settings"); iconName: "action/settings"; url: "SettingsPage.qml" }
+                }
+                delegate: ListItem {
+                    text: model.text
+                    iconName: model.iconName
+                    onClicked: pageStack.push(Qt.resolvedUrl(url))
                 }
 
-                ListItem.Standard {
-                    text: "Installed Apps"
-                    iconName: "file/file_download"
-                    selected: navPage.page == installedPage
-                    onClicked: navPage.navigate(installedPage)
-                }
-
-                ListItem.Standard {
-                    text: "Settings"
-                    iconName: "action/settings"
-                    selected: navPage.page == settingsPage
-                    onClicked: navPage.navigate(settingsPage)
-                }
+                ScrollBar.vertical: ScrollBar {}
             }
         }
-    }
-
-    Page {
-        id: overviewPage
-        title: "App Center"
-
-        actions: [searchAction]
-
-        // Column {
-        //     anchors.centerIn: parent
-        //     spacing: Units.dp(16)
-        //     opacity: 0.5
-        //
-        //     Icon {
-        //         name: "action/shop"
-        //         size: Units.dp(96)
-        //         anchors.horizontalCenter: parent.horizontalCenter
-        //     }
-        //
-        //     Label {
-        //         text: "Installing new applications is not supported yet"
-        //         style: "title"
-        //         anchors.horizontalCenter: parent.horizontalCenter
-        //     }
-        // }
 
         ListView {
-            anchors.fill: parent
+            anchors {
+                left: listPane.right
+                top: parent.top
+                right: parent.right
+                bottom: parent.bottom
+            }
 
             model: software.availableApps
-            delegate: ListItem.Subtitled {
-                action: IconItem {
-                    width: Units.dp(48)
-                    height: width
-                    anchors.centerIn: parent
-                    icon: edit.icon
-                }
+            delegate: ListItem {
                 text: edit.name
                 subText: edit.summary
                 valueText: edit.branch
+                iconName: edit.icon
                 onClicked: pageStack.push(Qt.resolvedUrl("ApplicationPage.qml"), {app: edit})
             }
         }
-    }
-
-    Page {
-        id: installedPage
-        title: "Installed Apps"
-
-        actions: [searchAction]
-
-        ListView {
-            anchors.fill: parent
-
-            model: software.installedApps
-            delegate: ListItem.Subtitled {
-                action: IconItem {
-                    width: Units.dp(48)
-                    height: width
-                    anchors.centerIn: parent
-                    icon: edit.icon
-                }
-                text: edit.name
-                subText: edit.summary
-                valueText: edit.branch
-                onClicked: pageStack.push(Qt.resolvedUrl("ApplicationPage.qml"), {app: edit})
-            }
-        }
-    }
-
-    Page {
-        id: settingsPage
-        title: "Settings"
-        actionBar.backgroundColor: Palette.colors.blueGrey['700']
-        actionBar.decorationColor: Palette.colors.blueGrey['900']
-
-        ListView {
-            anchors.fill: parent
-
-            model: software.sources
-            delegate: ListItem.Subtitled {
-                text: edit.title ? "%1 (%2)".arg(edit.title).arg(edit.name) : edit.name
-                subText: edit.url
-            }
-        }
-    }
-
-    Dialog {
-        id: welcomeDialog
-
-        Column {
-            spacing: Units.dp(16)
-
-            Item {
-                width: parent.width
-                height: Units.dp(16)
-            }
-
-            IconItem {
-                anchors.horizontalCenter: parent.horizontalCenter
-                icon: 'software-store'
-                width: Units.dp(96)
-                height: width
-            }
-
-            Label {
-                style: "title"
-                text: "Welcome to App Center"
-                anchors.horizontalCenter: parent.horizontalCenter
-            }
-
-            Label {
-                horizontalAlignment: Text.AlignJustify
-                width: Units.dp(280)
-                wrapMode: Text.Wrap
-                style: "dialog"
-                color: Theme.light.subTextColor
-                text: "App Center lets you install all the software you need, all from one place. See our recommendations, browse the categories, or search for the applications you want."
-            }
-        }
-
-        positiveButtonText: "Get Started"
-        negativeButton.visible: false
-
-        onAccepted: session.shownWelcome = "true"
     }
 
     SoftwareManager {
         id: software
-    }
-
-    KQuickConfig {
-        id: session
-        file: "papyros-appcenter"
-        group: "session"
-
-        defaults: {
-            "shownWelcome": "false"
-        }
     }
 }

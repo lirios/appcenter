@@ -1,7 +1,9 @@
 <RCC>
     <qresource prefix="/">
         <file>qml/main.qml</file>
-        <file>qml/IconItem.qml</file>
+        <file>qml/AllAppsPage.qml</file>
         <file>qml/ApplicationPage.qml</file>
+        <file>qml/InstalledAppsPage.qml</file>
+        <file>qml/SettingsPage.qml</file>
     </qresource>
 </RCC>

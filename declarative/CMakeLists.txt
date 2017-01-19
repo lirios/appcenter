@@ -1,15 +1,15 @@
 file(GLOB_RECURSE SOURCES *.cpp *.h)
 file(GLOB_RECURSE QML_FILES *.qml)
 
-add_library(papyrossoftware SHARED ${SOURCES})
+add_library(lirisoftwareplugin SHARED ${SOURCES})
 
-target_link_libraries(papyrossoftware
+target_link_libraries(lirisoftwareplugin
                       Qt5::Core
                       Qt5::Qml
-                      Papyros::Core
-                      Papyros::Software)
+                      Vibe::Core
+                      Liri::Software)
 
-install(TARGETS papyrossoftware
-        DESTINATION ${QML_INSTALL_DIR}/Papyros/Software)
+install(TARGETS lirisoftwareplugin
+        DESTINATION ${QML_INSTALL_DIR}/Liri/Software)
 install(FILES qmldir ${QML_FILES}
-        DESTINATION ${QML_INSTALL_DIR}/Papyros/Software)
+        DESTINATION ${QML_INSTALL_DIR}/Liri/Software)

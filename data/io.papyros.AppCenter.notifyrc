@@ -1,9 +1,0 @@
-[Global]
-IconName=software-store
-Comment=App Center
-
-[Event/updatesAvailable]
-Name=Updates available
-Comment=Software Updates Available
-Action=Sound|Popup
-Sound=Blip.ogg

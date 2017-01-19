@@ -1,6 +1,9 @@
-/*
- * Papyros Software - The app store for Papyros
+/****************************************************************************
+ * This file is part of App Center.
+ *
  * Copyright (C) 2016 Michael Spencer <sonrisesoftware@gmail.com>
+ *
+ * $BEGIN_LICENSE:GPL3+$
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -9,12 +12,14 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * $END_LICENSE$
+ ***************************************************************************/
 
 #ifndef BACKEND_H
 #define BACKEND_H
@@ -35,12 +40,12 @@ public:
     virtual QList<Application *> listInstalledApplications() = 0;
     virtual QList<Application *> listAvailableApplications() = 0;
 
-public slots:
+public Q_SLOTS:
     virtual bool launchApplication(const Application *app) = 0;
     virtual bool downloadUpdates() = 0;
     virtual bool refreshAvailableApplications() = 0;
 
-signals:
+Q_SIGNALS:
     void updated();
     void availableApplicationsChanged();
 };
