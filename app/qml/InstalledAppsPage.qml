@@ -36,7 +36,7 @@ Page {
             text: edit.name
             subText: edit.summary
             valueText: edit.branch
-            iconName: edit.icon
+            //iconName: edit.icon
             onClicked: pageStack.push(Qt.resolvedUrl("ApplicationPage.qml"), {app: edit})
         }
     }
