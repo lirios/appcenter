@@ -44,6 +44,8 @@ SoftwareManager::SoftwareManager(QObject *parent) : QObject(parent)
     }
 
     connect(this, &SoftwareManager::updatesDownloaded, this, &SoftwareManager::update);
+
+    update();
 }
 
 void SoftwareManager::refresh()
