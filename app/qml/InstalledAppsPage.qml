@@ -30,6 +30,7 @@ Page {
     title: qsTr("Installed Apps")
 
     ListView {
+        anchors.fill: parent
         model: software.installedApps
         delegate: ListItem {
             text: edit.name
