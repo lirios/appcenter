@@ -32,10 +32,11 @@ target_link_libraries(LiriSoftware
         Vibe::Core
     PRIVATE
         KF5::Archive
-        ${Flatpak_LIBRARIES}
+        Flatpak::Flatpak
+        Flatpak::Glib
+        Flatpak::Gio
+        Flatpak::GObject
 )
-
-include_directories(${Flatpak_INCLUDE_DIRS})
 
 set(SOFTWARE_INCLUDEDIR "${CMAKE_INSTALL_INCLUDEDIR}/Liri")
 

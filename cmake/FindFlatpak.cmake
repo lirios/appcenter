@@ -5,30 +5,106 @@
 #  Flatpak_INCLUDE_DIRS - the Flatpak include directories
 #  Flatpak_LIBRARIES - link these to use Flatpak
 
-include(LibFindMacros)
+find_package(PkgConfig)
+pkg_check_modules(PKG_Glib QUIET glib-2.0)
+pkg_check_modules(PKG_Gio QUIET gio-2.0)
+pkg_check_modules(PKG_GObject QUIET gobject-2.0)
+pkg_check_modules(PKG_Flatpak QUIET flatpak)
 
-# Dependencies
-libfind_package(Flatpak Glib)
-libfind_package(Flatpak GObject)
-libfind_package(Flatpak GIO)
+set(Flatpak_FOUND ${PKG_Flatpak_FOUND})
+set(Flatpak_DEFINITIONS ${PKG_Flatpak_CFLAGS_OTHER})
+set(Flatpak_VERSION ${PKG_Flatpak_VERSION})
+set(Flatpak_INCLUDE_DIR ${PKG_Flatpak_INCLUDE_DIRS})
 
-# Use pkg-config to get hints about paths
-libfind_pkg_check_modules(Flatpak_PKGCONF flatpak)
-
-# Include dir
-find_path(Flatpak_INCLUDE_DIR
-  NAMES flatpak.h
-  PATHS ${Flatpak_PKGCONF_INCLUDE_DIRS}
+find_library(Glib_LIBRARY
+    NAMES
+        glib-2.0
+    PATHS
+        ${PKG_Glib_LIBRARY_DIRS}
+)
+find_library(Gio_LIBRARY
+    NAMES
+        gio-2.0
+    PATHS
+        ${PKG_Gio_LIBRARY_DIRS}
+)
+find_library(GObject_LIBRARY
+    NAMES
+        gobject-2.0
+    PATHS
+        ${PKG_GObject_LIBRARY_DIRS}
 )
 
-# Finally the library itself
 find_library(Flatpak_LIBRARY
-  NAMES flatpak
-  PATHS ${Flatpak_PKGCONF_LIBRARY_DIRS}
+    NAMES
+        flatpak
+    PATHS
+        ${PKG_Flatpak_LIBRARY_DIRS}
 )
 
-# Set the include dir variables and the libraries and let libfind_process do the rest.
-# NOTE: Singular variables for this library, plural for libraries this this lib depends on.
-set(Flatpak_PROCESS_INCLUDES Flatpak_INCLUDE_DIR Glib_INCLUDE_DIR GObject_INCLUDE_DIR GIO_INCLUDE_DIR)
-set(Flatpak_PROCESS_LIBS Flatpak_LIBRARY Glib_LIBRARY GObject_LIBRARY GIO_LIBRARY)
-libfind_process(Flatpak)
+include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(Flatpak
+    FOUND_VAR
+        Flatpak_FOUND
+    REQUIRED_VARS
+        Flatpak_LIBRARY
+        Flatpak_INCLUDE_DIR
+    VERSION_VAR
+        Flatpak_VERSION
+)
+
+if(Flatpak_FOUND AND NOT TARGET Flatpak::Glib)
+    add_library(Flatpak::Glib UNKNOWN IMPORTED)
+    set_target_properties(Flatpak::Glib PROPERTIES
+	IMPORTED_LINK_DEPENDENT_LIBRARIES "${PKG_Glib_STATIC_LIBRARIES}"
+        IMPORTED_LOCATION "${Glib_LIBRARY}"
+        INTERFACE_COMPILE_OPTIONS "${PKG_Glib_CFLAGS_OTHERS}"
+        INTERFACE_INCLUDE_DIRECTORIES "${PKG_Glib_INCLUDE_DIR}"
+    )
+endif()
+
+if(Flatpak_FOUND AND NOT TARGET Flatpak::Gio)
+    add_library(Flatpak::Gio UNKNOWN IMPORTED)
+    set_target_properties(Flatpak::Gio PROPERTIES
+	IMPORTED_LINK_DEPENDENT_LIBRARIES "${PKG_Gio_STATIC_LIBRARIES}"
+        IMPORTED_LOCATION "${Gio_LIBRARY}"
+        INTERFACE_COMPILE_OPTIONS "${PKG_Gio_CFLAGS_OTHERS}"
+        INTERFACE_INCLUDE_DIRECTORIES "${PKG_Gio_INCLUDE_DIR}"
+    )
+endif()
+
+if(Flatpak_FOUND AND NOT TARGET Flatpak::GObject)
+    add_library(Flatpak::GObject UNKNOWN IMPORTED)
+    set_target_properties(Flatpak::GObject PROPERTIES
+	IMPORTED_LINK_DEPENDENT_LIBRARIES "${PKG_GObject_STATIC_LIBRARIES}"
+        IMPORTED_LOCATION "${GObject_LIBRARY}"
+        INTERFACE_COMPILE_OPTIONS "${PKG_GObject_CFLAGS_OTHERS}"
+        INTERFACE_INCLUDE_DIRECTORIES "${PKG_GObject_INCLUDE_DIR}"
+    )
+endif()
+
+if(Flatpak_FOUND AND NOT TARGET Flatpak::Flatpak)
+    add_library(Flatpak::Flatpak UNKNOWN IMPORTED)
+    set_target_properties(Flatpak::Flatpak PROPERTIES
+	IMPORTED_LINK_DEPENDENT_LIBRARIES "${PKG_Flatpak_STATIC_LIBRARIES}"
+        IMPORTED_LOCATION "${Flatpak_LIBRARY}"
+        INTERFACE_COMPILE_OPTIONS "${Flatpak_DEFINITIONS}"
+        INTERFACE_INCLUDE_DIRECTORIES "${Flatpak_INCLUDE_DIR}"
+    )
+    add_dependencies(Flatpak::Flatpak Flatpak::Glib)
+    add_dependencies(Flatpak::Flatpak Flatpak::Gio)
+    add_dependencies(Flatpak::Flatpak Flatpak::Gobject)
+endif()
+
+mark_as_advanced(Flatpak_LIBRARY Flatpak_INCLUDE_DIR)
+
+# Compatibility variables
+set(Flatpak_LIBRARIES ${PKG_Flatpak_LIBRARIES})
+set(Flatpak_INCLUDE_DIRS ${Flatpak_INCLUDE_DIR})
+set(Flatpak_VERSION_STRING ${Flatpak_VERSION})
+
+include(FeatureSummary)
+set_package_properties(Flatpak PROPERTIES
+    URL "http://flatpak.org"
+    DESCRIPTION "Flatpak."
+)
