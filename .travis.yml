@@ -18,6 +18,7 @@ arch:
     - xorg-server-xvfb
     - desktop-file-utils
     - appstream
+    - flatpak
     - clang
     #- clazy-git
   script:
