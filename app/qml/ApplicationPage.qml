@@ -26,11 +26,11 @@ import QtQuick 2.4
 import QtQuick.Controls 2.0
 import QtQuick.Controls.Material 2.0
 import QtQuick.Layouts 1.0
-import Fluid.Controls 1.0
+import Fluid.Controls 1.0 as FluidControls
 import Fluid.Material 1.0 as FluidMaterial
 import Liri.Software 0.1 as Software
 
-Page {
+FluidControls.Page {
     property var app
     property int selectedImageIndex
 
@@ -61,7 +61,7 @@ Page {
 
                 spacing: 16
 
-                Icon {
+                FluidControls.Icon {
                     id: image
 
                     size: 64
@@ -73,11 +73,11 @@ Page {
                 ColumnLayout {
                     Layout.alignment: Qt.AlignVCenter
 
-                    HeadlineLabel {
+                    FluidControls.HeadlineLabel {
                         text: app.name
                     }
 
-                    SubheadingLabel {
+                    FluidControls.SubheadingLabel {
                         text: app.summary
                         color: Material.secondaryTextColor
                     }
@@ -92,7 +92,8 @@ Page {
 
                     text: app.state === Software.Application.Installed  ? "Uninstall" : "Install"
 
-                    Material.elevation: 1
+                    Material.foreground: app.state === Software.Application.Installed
+                                         ? Material.color(Material.Red, Material.Shade100) : Material.primaryTextColor
                     Material.background: app.state === Software.Application.Installed
                                          ? Material.color(Material.Red, Material.Shade500) : Material.primaryColor
                 }
@@ -102,13 +103,13 @@ Page {
 
                     visible: app.state === Software.Application.Installed
                     text: "Open"
-                    // backgroundColor: Material.color(Material.Green, Material.Shade500)
                     onClicked: {
                         if (!app.launch())
                             console.log("Something went wrong!")
                     }
 
-                    Material.elevation: 1
+                    Material.foreground: Material.color(Material.Green, Material.Shade100)
+                    Material.background: Material.color(Material.Green, Material.Shade500)
                 }
             }
 

@@ -24,18 +24,20 @@
 
 import QtQuick 2.0
 import QtQuick.Controls 2.0
-import Fluid.Controls 1.0
+import Fluid.Controls 1.0 as FluidControls
 
-Page {
-    title: qsTr("Settings")
+FluidControls.Tab {
+    title: qsTr("Installed Apps")
 
     ListView {
         anchors.fill: parent
-
-        model: software.sources
-        delegate: ListItem {
-            text: edit.title ? "%1 (%2)".arg(edit.title).arg(edit.name) : edit.name
-            subText: edit.url
+        model: software.installedApps
+        delegate: FluidControls.ListItem {
+            text: edit.name
+            subText: edit.summary
+            valueText: edit.branch
+            //iconName: edit.icon
+            onClicked: pageStack.push(Qt.resolvedUrl("ApplicationPage.qml"), {app: edit})
         }
     }
 }

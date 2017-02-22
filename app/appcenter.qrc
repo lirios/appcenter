@@ -1,9 +1,9 @@
 <RCC>
     <qresource prefix="/">
         <file>qml/main.qml</file>
-        <file>qml/AllAppsPage.qml</file>
+        <file>qml/AllTab.qml</file>
         <file>qml/ApplicationPage.qml</file>
-        <file>qml/InstalledAppsPage.qml</file>
-        <file>qml/SettingsPage.qml</file>
+        <file>qml/InstalledTab.qml</file>
+        <file>qml/SourcesTab.qml</file>
     </qresource>
 </RCC>
