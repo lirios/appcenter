@@ -28,16 +28,16 @@
 #include <QString>
 #include <QIcon>
 
-#include <Vibe/Core/QQuickList>
+#include <LiriModels/QQuickList>
 
-#include <software/software_export.h>
+#include <LiriSoftware/lirisoftwareglobal.h>
 
 #include "appstream/component.h"
 #include "appstream/screenshot.h"
 #include "backend.h"
 #include "screenshot.h"
 
-class SOFTWARE_EXPORT Application : public QObject
+class LIRISOFTWARE_EXPORT Application : public QObject
 {
     Q_OBJECT
 

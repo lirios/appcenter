@@ -26,15 +26,15 @@
 
 #include <QObject>
 
-#include <Vibe/Core/QQuickList>
+#include <LiriModels/QQuickList>
 
-#include <software/software_export.h>
+#include <LiriSoftware/lirisoftwareglobal.h>
 
 class Application;
 class SoftwareSource;
 class SoftwareBackend;
 
-class SOFTWARE_EXPORT SoftwareManager : public QObject
+class LIRISOFTWARE_EXPORT SoftwareManager : public QObject
 {
     Q_OBJECT
 

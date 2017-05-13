@@ -23,10 +23,10 @@
 
 #include "plugin.h"
 
-#include "softwaremanager.h"
-#include "source.h"
-#include "application.h"
-#include "screenshot.h"
+#include <LiriSoftware/SoftwareManager>
+#include <LiriSoftware/Source>
+#include <LiriSoftware/Application>
+#include <LiriSoftware/Screenshot>
 
 void SoftwarePlugin::registerTypes(const char *uri)
 {

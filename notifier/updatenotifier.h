@@ -27,9 +27,9 @@
 #include <QCoreApplication>
 #include <QObject>
 
-#include <Vibe/Core/Notification>
+#include <LiriNotifications/Notification>
 
-#include <Software/SoftwareManager>
+#include <LiriSoftware/SoftwareManager>
 
 class UpdateNotifier : public QObject
 {
@@ -58,8 +58,8 @@ private slots:
         qDebug() << "Has updates" << hasUpdates;
 
         if (hasUpdates) {
-            Vibe::Notification *notification =
-                    new Vibe::Notification(this);
+            Liri::Notification *notification =
+                    new Liri::Notification(this);
             notification->setApplicationName(QLatin1String("App Center"));
             notification->setApplicationIcon(QLatin1String("software-store"));
             notification->setSummary(tr("Updates available"));

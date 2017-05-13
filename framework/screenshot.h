@@ -31,11 +31,11 @@
 #include <QHash>
 #include <QDomElement>
 
-#include <software/software_export.h>
+#include <LiriSoftware/lirisoftwareglobal.h>
 
 #include "appstream/screenshot.h"
 
-class SOFTWARE_EXPORT Screenshot : public QObject
+class LIRISOFTWARE_EXPORT Screenshot : public QObject
 {
     Q_OBJECT
 

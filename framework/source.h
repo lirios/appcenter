@@ -27,9 +27,9 @@
 #include <QObject>
 #include <QString>
 
-#include <software/software_export.h>
+#include <LiriSoftware/lirisoftwareglobal.h>
 
-class SOFTWARE_EXPORT SoftwareSource : public QObject
+class LIRISOFTWARE_EXPORT SoftwareSource : public QObject
 {
     Q_OBJECT
 

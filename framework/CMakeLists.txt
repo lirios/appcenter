@@ -20,7 +20,7 @@ file(GLOB_RECURSE QML_FILES *.qml)
 
 add_library(LiriSoftware SHARED ${SOURCES})
 
-generate_export_header(LiriSoftware BASE_NAME Software EXPORT_FILE_NAME software/software_export.h)
+generate_export_header(LiriSoftware BASE_NAME Software EXPORT_FILE_NAME software/lirisoftwareglobal.h)
 add_library(Liri::Software ALIAS LiriSoftware)
 
 target_link_libraries(LiriSoftware
@@ -63,7 +63,7 @@ install(TARGETS LiriSoftware EXPORT SoftwareTargets ${KDE_INSTALL_TARGETS_DEFAUL
 
 install(
     FILES
-      ${CMAKE_CURRENT_BINARY_DIR}/software/software_export.h
+      ${CMAKE_CURRENT_BINARY_DIR}/software/lirisoftwareglobal.h
       ${Software_HEADERS}
     DESTINATION
       ${SOFTWARE_INCLUDEDIR}/software
