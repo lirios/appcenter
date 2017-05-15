@@ -9,11 +9,13 @@ sudo: required
 arch:
   repos:
     - fluid=https://dl.bintray.com/liri/archlinux-develop/$arch/
+    - libliri=https://dl.bintray.com/liri/archlinux-develop/$arch/
   packages:
     - qbs
     - qt5-tools
     - karchive
     - fluid-git
+    - libliri-git
     - xorg-server-xvfb
     - desktop-file-utils
     - appstream

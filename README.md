@@ -22,7 +22,7 @@ Qt >= 5.8.0 with at least the following modules is required:
 The following modules and their dependencies are required:
 
  * [fluid](https://github.com/lirios/fluid)
- * [vibe](https://github.com/lirios/vibe)
+ * [libliri](https://github.com/lirios/libliri)
  * [flatpak](https://github.com/flatpak/flatpak)
  * [karchive](http://quickgit.kde.org/?p=karchive.git)
 
