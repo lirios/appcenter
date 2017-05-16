@@ -54,7 +54,7 @@ and the default value doesn't suit your needs. All are relative to `qbs.installR
  * `lirideployment:qmlDir=path/to/qml` where QML plugins are installed (default: `lib/qml`)
  * `lirideployment:qbsModulesDir=path/to/qbs` where Qbs modules are installed (default: `share/qbs/modules`)
 
-See `qbs-shared/modules/lirideployment/lirideployment.qbs` for more deployment-related parameters.
+See `qbs/shared/modules/lirideployment/lirideployment.qbs` for more deployment-related parameters.
 
 If you specify `qbs.installRoot` you might need to prefix the entire line with `sudo`,
 depending on whether you have permissions to write there or not.
