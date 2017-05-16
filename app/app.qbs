@@ -21,4 +21,20 @@ QtGuiApplication {
         qbs.installDir: lirideployment.binDir
         fileTagsFilter: product.type
     }
+
+    Group {
+        condition: qbs.hostOS.contains("linux")
+        name: "Desktop File"
+        files: ["../data/io.liri.AppCenter.desktop"]
+        qbs.install: true
+        qbs.installDir: lirideployment.applicationsDir
+    }
+
+    Group {
+        condition: qbs.hostOS.contains("linux")
+        name: "AppStream Metadata"
+        files: ["../data/io.liri.AppCenter.appdata.xml"]
+        qbs.install: true
+        qbs.installDir: lirideployment.appDataDir
+    }
 }
