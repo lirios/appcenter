@@ -6,10 +6,13 @@ compiler:
 
 sudo: required
 
+services:
+  - docker
+
 arch:
-  repos:
-    - fluid=https://dl.bintray.com/liri/archlinux-develop/$arch/
-    - libliri=https://dl.bintray.com/liri/archlinux-develop/$arch/
+  artifacts:
+    - fluid-artifacts.tar.gz
+    - libliri-artifacts.tar.gz
   packages:
     - qbs
     - qt5-tools
@@ -20,17 +23,16 @@ arch:
     - desktop-file-utils
     - appstream
     - flatpak
-    - clang
     #- clazy-git
   script:
     #- export CLAZY_CHECKS="level1"
     - qbs-setup-toolchains --detect
     - qbs-setup-qt /usr/bin/qmake-qt5 qt5
     - qbs config profiles.qt5.baseProfile ${CC}
-    - eval `dbus-launch --sh-syntax` && xvfb-run -a -s "-screen 0 800x600x24" qbs -d qbs-build -j $(nproc) profile:qt5
+    - eval `dbus-launch --sh-syntax` && xvfb-run -a -s "-screen 0 800x600x24" qbs -d build -j $(nproc) profile:qt5
 
 script:
-  - "curl -s https://raw.githubusercontent.com/mikkeloscar/arch-travis/master/arch-travis.sh | bash"
+  - "curl -s https://raw.githubusercontent.com/lirios/repotools/develop/travis/docker-travis.sh | bash"
 
 notifications:
   email: false
