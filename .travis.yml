@@ -28,6 +28,7 @@ arch:
     - qt5-quickcontrols2
     - qt5-tools
     - karchive
+    - libqtxdg
     - xorg-server-xvfb
     - desktop-file-utils
     - appstream
