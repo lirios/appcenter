@@ -24,6 +24,7 @@ arch:
     - libliri-artifacts.tar.gz
   packages:
     - qbs
+    - qt5-declarative
     - qt5-tools
     - karchive
     - xorg-server-xvfb
