@@ -11,11 +11,15 @@ LiriModule {
     Depends { name: "KF5.Archive" }
 
     condition: {
-        if (!KF5.Archive.found)
-            throw "KF5Archive is required to build " + targetName;
+        if (!KF5.Archive.found) {
+            console.error("KF5Archive is required to build " + targetName);
+            return false;
+        }
 
-        if (!flatpak.found)
-            throw "flatpak is required to build " + targetName;
+        if (!flatpak.found) {
+            console.error("flatpak is required to build " + targetName);
+            return false;
+        }
 
         return true;
     }
