@@ -17,8 +17,6 @@ arch:
     - qbs
     - qt5-tools
     - karchive
-    - fluid-git
-    - libliri-git
     - xorg-server-xvfb
     - desktop-file-utils
     - appstream
