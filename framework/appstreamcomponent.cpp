@@ -22,7 +22,7 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#include "component.h"
+#include "appstreamcomponent.h"
 
 #include <QDir>
 #include <QFileInfo>
@@ -32,7 +32,7 @@
 #include <QSettings>
 
 #include "utils.h"
-#include "store.h"
+#include "appstreamstore.h"
 
 #define MERGE_FIELD(other, fieldName)                                                              \
     if (fieldName.isNull())                                                                        \
@@ -209,9 +209,9 @@ bool Component::loadFromAppdata(QDomElement appNode, QString iconPath)
             FOREACH_ELEMENT (QDomElement screenshot, element.elementsByTagName("screenshot")) {
                 // TODO: New object created without parent
                 if (!screenshot.isNull())
-                    m_screenshots << Screenshot(screenshot);
+                    m_screenshots << AppStreamScreenshot(screenshot);
             }
-            m_screenshots << Screenshot(element);
+            m_screenshots << AppStreamScreenshot(element);
         } else if (tagName == "releases") {
             qDebug() << "WARNING: releases not parsed";
         } else if (tagName == "provides") {

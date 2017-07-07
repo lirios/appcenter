@@ -22,15 +22,13 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#include "screenshot.h"
+#include "appstreamscreenshot.h"
 
 #include "utils.h"
 
 #include <QDebug>
 
-using namespace Appstream;
-
-Screenshot::Screenshot(QDomElement element)
+AppStreamScreenshot::AppStreamScreenshot(QDomElement element)
 {
     QStringList images = stringsByTagName(element, "image");
     if (!images.isEmpty())
@@ -41,14 +39,14 @@ Screenshot::Screenshot(QDomElement element)
     QString type = element.attribute("type");
 
     if (type == "default")
-        m_type = Screenshot::Default;
+        m_type = AppStreamScreenshot::Default;
     else if (type == "normal")
-        m_type = Screenshot::Normal;
+        m_type = AppStreamScreenshot::Normal;
     else
-        m_type = Screenshot::Unknown;
+        m_type = AppStreamScreenshot::Unknown;
 }
 
-bool Screenshot::operator==(const Screenshot &other) const
+bool AppStreamScreenshot::operator==(const AppStreamScreenshot &other) const
 {
     return m_type == other.m_type && m_url == other.m_url;
 }

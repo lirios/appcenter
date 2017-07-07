@@ -29,7 +29,7 @@
 #include <QObject>
 #include <QString>
 
-#include "appstream/component.h"
+#include "appstreamcomponent.h"
 #include "base.h"
 
 class FlatpakApplication : public Application

@@ -22,43 +22,34 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#include "url.h"
+#ifndef APPSTREAM_SCREENSHOT_H
+#define APPSTREAM_SCREENSHOT_H
 
-#include <QDir>
-#include <QFileInfo>
-#include <QLocale>
-#include <QDir>
-#include <QDebug>
+#include <QObject>
 
-using namespace Appstream;
+#include <QString>
+#include <QHash>
+#include <QDomElement>
 
-
-Url::Url(QString url, Type type)
-        : m_url(url), m_type(type)
+class AppStreamScreenshot
 {
-    // Nothing needed here
-}
 
-Url::Url(QString url, QString type)
-        : m_url(url)
-{
-    if (type == "homepage")
-        m_type = Url::Homepage;
-    else if (type == "bugtracker")
-        m_type = Url::BugTracker;
-    else if (type == "faq")
-        m_type = Url::FAQ;
-    else if (type == "donation")
-        m_type = Url::Donation;
-    else if (type == "help")
-        m_type = Url::Help;
-    else if (type == "missing")
-        m_type = Url::Missing;
-    else
-       m_type = Url::Unknown;
-}
+public:
+    enum Type
+    {
+        Normal,
+        Default,
+        Unknown
+    };
 
-bool Url::operator==(const Url &other) const
-{
-    return m_type == other.m_type && m_url == other.m_url;
-}
+    AppStreamScreenshot(QDomElement element);
+
+    bool operator==(const AppStreamScreenshot &other) const;
+
+    QString m_url;
+    Type m_type;
+    int m_priority;
+    QHash<QString, QString> m_captions;
+};
+
+#endif // APPSTREAM_SCREENSHOT_H

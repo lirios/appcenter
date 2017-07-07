@@ -2,7 +2,6 @@
  * This file is part of App Center.
  *
  * Copyright (C) 2016 Michael Spencer <sonrisesoftware@gmail.com>
- * Copyright (C) 2013-2015 Richard Hughes <richard@hughsie.com>
  *
  * $BEGIN_LICENSE:GPL3+$
  *
@@ -22,38 +21,43 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef APPSTREAM_SCREENSHOT_H
-#define APPSTREAM_SCREENSHOT_H
+#ifndef STORE_H
+#define STORE_H
 
 #include <QObject>
 
-#include <QString>
-#include <QHash>
-#include <QDomElement>
+#include "appstreamcomponent.h"
 
 namespace Appstream
 {
 
-class Screenshot
+enum SourceKind
+{
+    Appstream,
+    Appdata,
+    Metainfo,
+    Desktop,
+    Unknown
+};
+
+SourceKind kindFromFilename(QString filename);
+
+class Store
 {
 
 public:
-    enum Type
-    {
-        Normal,
-        Default,
-        Unknown
-    };
+    bool load(QString path);
 
-    Screenshot(QDomElement element);
+    Component componentById(QString id) const;
 
-    bool operator==(const Screenshot &other) const;
+    QList<Component> allComponents() const { return m_components; }
 
-    QString m_url;
-    Type m_type;
-    int m_priority;
-    QHash<QString, QString> m_captions;
+private:
+    void addComponent(Component component);
+    bool loadFromAppstreamFile(QString filename, QString iconPath);
+
+    QList<Component> m_components;
 };
 }
 
-#endif // APPSTREAM_SCREENSHOT_H
+#endif // STORE_H

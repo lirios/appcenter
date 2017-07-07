@@ -32,8 +32,7 @@
 #include <QDomElement>
 
 #include <LiriSoftware/lirisoftwareglobal.h>
-
-#include "appstream/screenshot.h"
+#include <LiriSoftware/AppStreamScreenshot>
 
 class LIRISOFTWARE_EXPORT Screenshot : public QObject
 {
@@ -44,10 +43,10 @@ class LIRISOFTWARE_EXPORT Screenshot : public QObject
     Q_PROPERTY(int priority MEMBER m_priority CONSTANT)
 
 public:
-    typedef Appstream::Screenshot::Type Type;
+    typedef AppStreamScreenshot::Type Type;
     Q_ENUM(Type)
 
-    Screenshot(Appstream::Screenshot, QObject *parent = nullptr);
+    Screenshot(AppStreamScreenshot, QObject *parent = nullptr);
 
     // bool operator==(const Screenshot &other) const;
 

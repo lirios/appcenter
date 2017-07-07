@@ -1,75 +1,74 @@
 import qbs 1.0
+import "../qbs/shared/imports/LiriUtils.js" as LiriUtils
 
-LiriModule {
-    name: "LiriSoftware"
-    targetName: "LiriSoftware"
-    version: "0.0.0"
+LiriModuleProject {
+    id: root
 
-    Depends { name: "Qt"; submodules: ["core", "gui", "xml", "concurrent"] }
-    Depends { name: "LiriModels" }
-    Depends { name: "flatpak" }
-    Depends { name: "KF5.Archive" }
+    name: "Software"
+    moduleName: "LiriSoftware"
+    description: "AppCenter framework"
 
-    condition: {
-        if (!KF5.Archive.found) {
-            console.error("KF5Archive is required to build " + targetName);
-            return false;
-        }
-
-        if (!flatpak.found) {
-            console.error("flatpak is required to build " + targetName);
-            return false;
-        }
-
-        return true;
-    }
-
-    cpp.defines: [
-        'LIRISOFTWARE_VERSION="' + project.version + '"',
-        "QT_BUILD_LIRISOFTWARE_LIB"
-    ]
-
-    create_headers.headersMap: ({
-        "application.h": "Application",
-        "screenshot.h": "Screenshot",
-        "softwaremanager.h": "SoftwareManager",
-        "source.h": "Source",
+    resolvedProperties: ({
+        Depends: [{ name: LiriUtils.quote("Qt.core") }, { name: LiriUtils.quote("Qt.gui") },
+                  { name: LiriUtils.quote("Qt.xml") }, { name: LiriUtils.quote("Qt.concurrent") },
+                  { name: LiriUtils.quote("flatpak") }, { name: LiriUtils.quote("KF5.Archive") }],
     })
 
-    create_pkgconfig.name: "Liri Software"
-    create_pkgconfig.description: "AppCenter framework"
-    create_pkgconfig.version: project.version
-    create_pkgconfig.dependencies: ["Qt5Core", "LiriModels"]
+    pkgConfigDependencies: ["Qt5Core", "LiriModels"]
 
-    create_cmake.version: project.version
-    create_cmake.dependencies: ({
-        "Qt5Core": "5.6.0",
-        "LiriCore": "",
-        "KF5Archive": "5.23.0",
-    })
-    create_cmake.linkLibraries: ["Qt5::Core", "LiriModels::LiriModels", "KF5::Archive"]
+    cmakeDependencies: ({ "Qt5Core": "5.6.0", "LiriCore": "", "KF5Archive": "5.23.0" })
+    cmakeLinkLibraries: ["Qt5::Core", "LiriModels::LiriModels", "KF5::Archive"]
 
-    files: ["*.cpp", "appstream/*.cpp", "appstream/*.h", "flatpak/*.cpp", "flatpak/*.h"]
+    LiriHeaders {
+        name: root.headersName
+        sync.module: root.moduleName
 
-    Group {
-        name: "Headers"
-        files: ["*.h"]
-        excludeFiles: ["*_p.h"]
-        fileTags: ["public_headers"]
+        Group {
+            name: "Headers"
+            files: "*.h"
+            fileTags: ["hpp_syncable"]
+        }
     }
 
-    Group {
-        name: "Private Headers"
-        files: ["*_p.h"]
-        fileTags: ["private_headers"]
-    }
+    LiriModule {
+        name: root.moduleName
+        targetName: root.targetName
+        version: "0.0.0"
 
-    Export {
-        Depends { name: "cpp" }
+        Depends { name: root.headersName }
         Depends { name: "Qt"; submodules: ["core", "gui", "xml", "concurrent"] }
         Depends { name: "LiriModels" }
+        Depends { name: "flatpak" }
         Depends { name: "KF5.Archive" }
 
-        cpp.includePaths: base.concat([product.sourceDirectory, product.generatedHeadersDir])
+        condition: {
+            if (!KF5.Archive.found) {
+                console.error("KF5Archive is required to build " + targetName);
+                return false;
+            }
+
+            if (!flatpak.found) {
+                console.error("flatpak is required to build " + targetName);
+                return false;
+            }
+
+            return true;
+        }
+
+        cpp.defines: [
+            'LIRISOFTWARE_VERSION="' + project.version + '"',
+            "QT_BUILD_LIRISOFTWARE_LIB"
+        ]
+        cpp.includePaths: base.concat([product.sourceDirectory])
+
+        files: ["*.cpp", "*.h", "flatpak/*.cpp", "flatpak/*.h"]
+
+        Export {
+            Depends { name: "cpp" }
+            Depends { name: root.headersName }
+            Depends { name: "Qt"; submodules: ["core", "gui", "xml", "concurrent"] }
+            Depends { name: "LiriModels" }
+            Depends { name: "KF5.Archive" }
+        }
     }
 }

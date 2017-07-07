@@ -28,7 +28,7 @@
 
 #include <QDebug>
 
-Screenshot::Screenshot(Appstream::Screenshot screenshot, QObject *parent) : QObject(parent)
+Screenshot::Screenshot(AppStreamScreenshot screenshot, QObject *parent) : QObject(parent)
 {
     m_url = screenshot.m_url;
     m_type = screenshot.m_type;

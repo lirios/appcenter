@@ -29,7 +29,7 @@
 #include <QString>
 #include <QDomElement>
 
-#include "autocast.h"
+#include "autocast_p.h"
 
 #define G_FOREACH(item, array)                                                                     \
     for (uint keep = 1, index = 0; keep && index < (array)->len; keep = !keep, index++)            \

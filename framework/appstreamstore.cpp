@@ -21,7 +21,7 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#include "store.h"
+#include "appstreamstore.h"
 
 #include <QDir>
 #include <QDebug>

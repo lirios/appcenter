@@ -32,8 +32,8 @@
 #include <QHash>
 #include <QIcon>
 
-#include "url.h"
-#include "screenshot.h"
+#include "appstreamurl.h"
+#include "appstreamscreenshot.h"
 
 namespace Appstream
 {
@@ -72,7 +72,7 @@ public:
     QStringList m_compulsoryForDesktops;
     QStringList m_extends;
     QList<Url> m_urls;
-    QList<Screenshot> m_screenshots;
+    QList<AppStreamScreenshot> m_screenshots;
     QIcon m_icon;
 
 private:

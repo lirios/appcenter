@@ -31,11 +31,14 @@
 #include <LiriModels/QQuickList>
 
 #include <LiriSoftware/lirisoftwareglobal.h>
+#include <LiriSoftware/SoftwareBackend>
+#include <LiriSoftware/Screenshot>
 
-#include "appstream/component.h"
-#include "appstream/screenshot.h"
-#include "backend.h"
-#include "screenshot.h"
+namespace Appstream {
+class Component;
+}
+
+class AppStreamScreenshot;
 
 class LIRISOFTWARE_EXPORT Application : public QObject
 {

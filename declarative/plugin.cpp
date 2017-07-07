@@ -24,7 +24,7 @@
 #include "plugin.h"
 
 #include <LiriSoftware/SoftwareManager>
-#include <LiriSoftware/Source>
+#include <LiriSoftware/SoftwareSource>
 #include <LiriSoftware/Application>
 #include <LiriSoftware/Screenshot>
 

@@ -2,6 +2,7 @@
  * This file is part of App Center.
  *
  * Copyright (C) 2016 Michael Spencer <sonrisesoftware@gmail.com>
+ * Copyright (C) 2013-2015 Richard Hughes <richard@hughsie.com>
  *
  * $BEGIN_LICENSE:GPL3+$
  *
@@ -21,43 +22,43 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef STORE_H
-#define STORE_H
+#include "appstreamurl.h"
 
-#include <QObject>
+#include <QDir>
+#include <QFileInfo>
+#include <QLocale>
+#include <QDir>
+#include <QDebug>
 
-#include "component.h"
+using namespace Appstream;
 
-namespace Appstream
+
+Url::Url(QString url, Type type)
+        : m_url(url), m_type(type)
 {
-
-enum SourceKind
-{
-    Appstream,
-    Appdata,
-    Metainfo,
-    Desktop,
-    Unknown
-};
-
-SourceKind kindFromFilename(QString filename);
-
-class Store
-{
-
-public:
-    bool load(QString path);
-
-    Component componentById(QString id) const;
-
-    QList<Component> allComponents() const { return m_components; }
-
-private:
-    void addComponent(Component component);
-    bool loadFromAppstreamFile(QString filename, QString iconPath);
-
-    QList<Component> m_components;
-};
+    // Nothing needed here
 }
 
-#endif // STORE_H
+Url::Url(QString url, QString type)
+        : m_url(url)
+{
+    if (type == "homepage")
+        m_type = Url::Homepage;
+    else if (type == "bugtracker")
+        m_type = Url::BugTracker;
+    else if (type == "faq")
+        m_type = Url::FAQ;
+    else if (type == "donation")
+        m_type = Url::Donation;
+    else if (type == "help")
+        m_type = Url::Help;
+    else if (type == "missing")
+        m_type = Url::Missing;
+    else
+       m_type = Url::Unknown;
+}
+
+bool Url::operator==(const Url &other) const
+{
+    return m_type == other.m_type && m_url == other.m_url;
+}

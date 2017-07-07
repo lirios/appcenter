@@ -32,7 +32,7 @@
 #include "flatpak-application.h"
 #include "utils.h"
 
-#include "appstream/store.h"
+#include "appstreamstore.h"
 
 struct FlatpakHelper
 {

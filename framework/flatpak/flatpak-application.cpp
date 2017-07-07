@@ -24,7 +24,7 @@
 
 #include "flatpak-application.h"
 
-#include "appstream/store.h"
+#include "appstreamstore.h"
 
 FlatpakApplication::FlatpakApplication(FlatpakInstalledRef *app_ref, SoftwareBackend *backend)
         : Application(backend)

@@ -23,6 +23,9 @@
 
 #include "application.h"
 
+#include "appstreamcomponent.h"
+#include "appstreamscreenshot.h"
+
 #define REFINE_PROPERTY(name, value)                                                               \
     if (!value.isNull())                                                                           \
         name = value;
@@ -35,7 +38,7 @@ void Application::refineFromAppstream(Appstream::Component component)
     REFINE_PROPERTY(m_summary, component.comment());
     REFINE_PROPERTY(m_icon, component.m_icon);
 
-    foreach (Appstream::Screenshot screenshot, component.m_screenshots) {
+    foreach (AppStreamScreenshot screenshot, component.m_screenshots) {
         m_screenshots << new Screenshot(screenshot, this);
     }
 }
