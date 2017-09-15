@@ -8,7 +8,7 @@ Project {
 
     condition: qbs.targetOS.contains("linux")
 
-    minimumQbsVersion: "1.6"
+    minimumQbsVersion: "1.8.0"
 
     references: [
         "app/app.qbs",
