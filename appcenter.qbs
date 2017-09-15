@@ -10,8 +10,6 @@ Project {
 
     minimumQbsVersion: "1.6"
 
-    qbsSearchPaths: "qbs/shared"
-
     references: [
         "app/app.qbs",
         "declarative/declarative.qbs",

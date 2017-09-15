@@ -51,11 +51,12 @@ On the last `qbs` line, you can specify additional configuration parameters at t
 The following are only needed if `qbs.installPrefix` is a system-wide path such as `usr`
 and the default value doesn't suit your needs. All are relative to `qbs.installRoot`:
 
- * `lirideployment.libDir:path/to/lib` where libraries are installed (default: `lib`)
- * `lirideployment.qmlDir:path/to/qml` where QML plugins are installed (default: `lib/qml`)
- * `lirideployment.qbsModulesDir:path/to/qbs` where Qbs modules are installed (default: `share/qbs/modules`)
+ * `modules.lirideployment.libDir:path/to/lib` where libraries are installed (default: `lib`)
+ * `modules.lirideployment.qmlDir:path/to/qml` where QML plugins are installed (default: `lib/qml`)
+ * `modules.lirideployment.qbsModulesDir:path/to/qbs` where Qbs modules are installed (default: `share/qbs/modules`)
 
-See `qbs/shared/modules/lirideployment/lirideployment.qbs` for more deployment-related parameters.
+See [lirideployment.qbs](https://github.com/lirios/qbs-shared/blob/develop/modules/lirideployment/lirideployment.qbs)
+for more deployment-related parameters.
 
 If you specify `qbs.installRoot` you might need to prefix the entire line with `sudo`,
 depending on whether you have permissions to write there or not.

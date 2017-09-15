@@ -20,6 +20,7 @@ env:
 
 arch:
   artifacts:
+    - qbs-shared-artifacts.tar.gz
     - fluid-artifacts.tar.gz
     - libliri-artifacts.tar.gz
   packages:
