@@ -27,7 +27,6 @@ import QtQuick.Controls 2.0
 import QtQuick.Controls.Material 2.0
 import QtQuick.Layouts 1.0
 import Fluid.Controls 1.0 as FluidControls
-import Fluid.Material 1.0 as FluidMaterial
 import Liri.Software 0.1 as Software
 
 FluidControls.Page {
@@ -140,7 +139,7 @@ FluidControls.Page {
                             Layout.preferredWidth: 120
                             Layout.preferredHeight: width * sourceSize.height/sourceSize.width
 
-                            FluidMaterial.Ripple {
+                            FluidControls.Ripple {
                                 anchors.fill: parent
                                 onClicked: selectedImageIndex = index
                             }
