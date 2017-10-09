@@ -8,7 +8,7 @@ Project {
 
     property bool useStaticAnalyzer: false
 
-    condition: qbs.targetOS.contains("linux")
+    condition: qbs.targetOS.contains("linux") && qbs.targetOS.contains("android")
 
     minimumQbsVersion: "1.8.0"
 
