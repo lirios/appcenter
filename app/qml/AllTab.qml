@@ -1,7 +1,7 @@
 /****************************************************************************
  * This file is part of App Center.
  *
- * Copyright (C) 2016 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
+ * Copyright (C) 2017 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
  * Copyright (C) 2016 Michael Spencer <sonrisesoftware@gmail.com>
  *
  * $BEGIN_LICENSE:GPL3+$
@@ -25,18 +25,22 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.0
 import Fluid.Controls 1.0 as FluidControls
+import Liri.AppCenter 1.0 as AppCenter
 
 FluidControls.Tab {
     title: qsTr("All Apps")
 
     ListView {
-        //model: software.availableApps
+        anchors.fill: parent
+
+        model: AppCenter.FilteredResourcesModel {
+            sourceModel: softwareManager.resourcesModel
+            filter: AppCenter.FilteredResourcesModel.AllApps
+        }
         delegate: FluidControls.ListItem {
-            text: edit.name
-            subText: edit.summary
-            valueText: edit.branch
-            iconName: edit.icon
-            onClicked: pageStack.push(Qt.resolvedUrl("ApplicationPage.qml"), {app: edit})
+            text: model.resource.name
+            subText: model.resource.summary
+            onClicked: pageStack.push(Qt.resolvedUrl("ApplicationPage.qml"), {app: model.resource})
         }
     }
 }

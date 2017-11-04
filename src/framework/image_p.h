@@ -2,51 +2,54 @@
  * This file is part of App Center.
  *
  * Copyright (C) 2017 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
- * Copyright (C) 2016 Michael Spencer <sonrisesoftware@gmail.com>
  *
- * $BEGIN_LICENSE:GPL3+$
+ * $BEGIN_LICENSE:LGPLv3+$
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef BACKEND_H
-#define BACKEND_H
+#ifndef LIRIAPPCENTERIMAGE_P_H
+#define LIRIAPPCENTERIMAGE_P_H
 
-#include <QObject>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Liri API.  It exists purely as an
+// implementation detail.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
 
-#include <LiriAppCenter/SoftwareManager>
-#include <LiriNotifications/Notification>
+namespace Liri {
 
-using namespace Liri;
+namespace AppCenter {
 
-class UpdateNotifier : public QObject
+class ImagePrivate
 {
-    Q_OBJECT
 public:
-    explicit UpdateNotifier(QObject *parent = nullptr);
+    ImagePrivate();
 
-    void checkForUpdates();
-
-private Q_SLOTS:
-    void updatesAvailable(uint count);
-
-private:
-    AppCenter::SoftwareManager *m_softwareManager = nullptr;
-
-    QString updatesSummary();
+    QUrl url;
+    QSize size;
 };
 
-#endif // BACKEND_H
+} // namespace AppCenter
+
+} // namespace Liri
+
+#endif // LIRIAPPCENTERIMAGE_P_H

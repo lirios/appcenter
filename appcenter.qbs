@@ -15,7 +15,8 @@ Project {
     references: [
         "app/app.qbs",
         "src/imports/appcenter/appcenter.qbs",
-        "framework/framework.qbs",
+        "src/framework/framework.qbs",
+        "src/plugins/flatpak/flatpak.qbs",
         "notifier/notifier.qbs",
     ]
 }

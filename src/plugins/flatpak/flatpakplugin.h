@@ -2,51 +2,41 @@
  * This file is part of App Center.
  *
  * Copyright (C) 2017 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
- * Copyright (C) 2016 Michael Spencer <sonrisesoftware@gmail.com>
  *
- * $BEGIN_LICENSE:GPL3+$
+ * $BEGIN_LICENSE:LGPLv3+$
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef BACKEND_H
-#define BACKEND_H
+#ifndef FLATPAKPLUGIN_H
+#define FLATPAKPLUGIN_H
 
-#include <QObject>
+#include <LiriAppCenter/BackendPlugin>
 
-#include <LiriAppCenter/SoftwareManager>
-#include <LiriNotifications/Notification>
+#include "flatpakbackend.h"
 
-using namespace Liri;
-
-class UpdateNotifier : public QObject
+class FlatpakPlugin : public Liri::AppCenter::BackendPlugin
 {
     Q_OBJECT
+    Q_PLUGIN_METADATA(IID BackendPlugin_iid FILE "flatpak.json")
+    Q_INTERFACES(Liri::AppCenter::BackendPlugin)
 public:
-    explicit UpdateNotifier(QObject *parent = nullptr);
+    explicit FlatpakPlugin(QObject *parent = nullptr);
 
-    void checkForUpdates();
-
-private Q_SLOTS:
-    void updatesAvailable(uint count);
-
-private:
-    AppCenter::SoftwareManager *m_softwareManager = nullptr;
-
-    QString updatesSummary();
+    Liri::AppCenter::Backend *create() override;
 };
 
-#endif // BACKEND_H
+#endif // FLATPAKPLUGIN_H

@@ -21,9 +21,21 @@
  * $END_LICENSE$
  ***************************************************************************/
 
+#include <QQmlComponent>
 #include <QQmlExtensionPlugin>
 
-class SoftwarePlugin : public QQmlExtensionPlugin
+#include <LiriAppCenter/ResourcesModel>
+#include <LiriAppCenter/ScreenshotsModel>
+#include <LiriAppCenter/SoftwareManager>
+#include <LiriAppCenter/SoftwareResource>
+#include <LiriAppCenter/SoftwareSource>
+#include <LiriAppCenter/SourcesModel>
+
+#include "filteredresourcesmodel.h"
+
+using namespace Liri::AppCenter;
+
+class LiriAppCenterPlugin : public QQmlExtensionPlugin
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface")
@@ -31,7 +43,18 @@ public:
     void registerTypes(const char *uri)
     {
         // @uri Liri.AppCenter
-        Q_ASSERT(uri == QLatin1String("Liri.AppCenter"));
+        Q_ASSERT(QLatin1String(uri) == QLatin1String("Liri.AppCenter"));
+
+        qmlRegisterType<FilteredResourcesModel>(uri, 1, 0, "FilteredResourcesModel");
+        qmlRegisterType<ScreenshotsModel>(uri, 1, 0, "ScreenshotsModel");
+        qmlRegisterType<SoftwareManager>(uri, 1, 0, "SoftwareManager");
+        qmlRegisterType<SourcesModel>(uri, 1, 0, "SourcesModel");
+
+        qmlRegisterUncreatableType<ResourcesModel>(uri, 1, 0, "ResourcesModel", QLatin1String("Unable to instantiate ResourcesModel"));
+        qmlRegisterUncreatableType<SoftwareResource>(uri, 1, 0, "SoftwareResource", QLatin1String("Unable to instantiate SoftwareResource"));
+        qmlRegisterUncreatableType<SoftwareSource>(uri, 1, 0, "SoftwareSource", QLatin1String("Unable to instantiate SoftwareSource"));
+
+        qmlProtectModule(uri, 1);
     }
 };
 

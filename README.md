@@ -24,6 +24,7 @@ The following modules and their dependencies are required:
  * [fluid](https://github.com/lirios/fluid)
  * [libliri](https://github.com/lirios/libliri)
  * [flatpak](https://github.com/flatpak/flatpak)
+ * [AppStream](https://github.com/ximion/appstream)
  * [karchive](http://quickgit.kde.org/?p=karchive.git)
 
 ## Installation
@@ -60,6 +61,19 @@ for more deployment-related parameters.
 
 If you specify `qbs.installRoot` you might need to prefix the entire line with `sudo`,
 depending on whether you have permissions to write there or not.
+
+### Logging categories
+
+Qt 5.2 introduced logging categories and Hawaii takes advantage of
+them to make debugging easier.
+
+Please refer to the [Qt](http://doc.qt.io/qt-5/qloggingcategory.html) documentation
+to learn how to enable them.
+
+### Available categories
+
+* **liri.appcenter:** Library
+* **liri.backends.flatpak:** Flatpak backend
 
 ## Licensing
 

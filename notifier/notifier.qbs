@@ -7,7 +7,7 @@ CppApplication {
     Depends { name: "lirideployment" }
     Depends { name: "Qt.core" }
     Depends { name: "LiriNotifications" }
-    Depends { name: "LiriSoftware" }
+    Depends { name: "LiriAppCenter" }
 
     cpp.defines: base.concat(['APPCENTER_VERSION="' + project.version + '"'])
 

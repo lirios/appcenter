@@ -25,6 +25,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.0
 import Fluid.Controls 1.0 as FluidControls
+import Liri.AppCenter 1.0 as AppCenter
 
 FluidControls.Tab {
     title: qsTr("Sources")
@@ -32,10 +33,19 @@ FluidControls.Tab {
     ListView {
         anchors.fill: parent
 
-        //model: software.sources
+        model: softwareManager.sourcesModel
+        section.delegate: FluidControls.Subheader {
+            text: section
+        }
+        section.property: "section"
         delegate: FluidControls.ListItem {
-            text: edit.title ? "%1 (%2)".arg(edit.title).arg(edit.name) : edit.name
-            subText: edit.url
+            leftItem: CheckBox {
+                anchors.verticalCenter: parent.verticalCenter
+                checked: model.enabled
+                onCheckedChanged: model.source.enabled = checked
+            }
+            text: qsTr("%1 (%2)").arg(model.title).arg(model.name)
+            subText: model.url
         }
     }
 }

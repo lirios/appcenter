@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Software Install
+Comment=Install the selected software on the system
+Exec=liri-appcenter --local-filename=%f
+Icon=software-store
+Terminal=false
+Type=Application
+Categories=X-Liri;Qt;System;PackageManager;
+StartupNotify=true
+NoDisplay=true
+MimeType=application/vnd.flatpak;application/vnd.flatpak.repo;application/vnd.flatpak.ref

@@ -1,7 +1,7 @@
 /****************************************************************************
  * This file is part of App Center.
  *
- * Copyright (C) 2016 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
+ * Copyright (C) 2017 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
  * Copyright (C) 2016 Michael Spencer <sonrisesoftware@gmail.com>
  *
  * $BEGIN_LICENSE:GPL3+$
@@ -27,7 +27,7 @@ import QtQuick.Layouts 1.0
 import QtQuick.Controls 2.0
 import QtQuick.Controls.Material 2.0
 import Fluid.Controls 1.0 as FluidControls
-import Liri.AppCenter 1.0
+import Liri.AppCenter 1.0 as AppCenter
 
 FluidControls.ApplicationWindow {
     id: demo
@@ -53,14 +53,14 @@ FluidControls.ApplicationWindow {
 
         actions: [searchAction]
 
-        //AllTab {}
+        AllTab {}
         InstalledTab {}
         SourcesTab {}
     }
 
-    /*
-    SoftwareManager {
-        id: software
+    AppCenter.SoftwareManager {
+        id: softwareManager
     }
-    */
+
+    Component.onCompleted: softwareManager.initialize()
 }

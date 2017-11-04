@@ -2,51 +2,53 @@
  * This file is part of App Center.
  *
  * Copyright (C) 2017 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
- * Copyright (C) 2016 Michael Spencer <sonrisesoftware@gmail.com>
  *
- * $BEGIN_LICENSE:GPL3+$
+ * $BEGIN_LICENSE:LGPLv3+$
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef BACKEND_H
-#define BACKEND_H
+#ifndef LIRIAPPCENTERBACKENDPLUGIN_H
+#define LIRIAPPCENTERBACKENDPLUGIN_H
 
 #include <QObject>
 
-#include <LiriAppCenter/SoftwareManager>
-#include <LiriNotifications/Notification>
+#include <LiriAppCenter/liriappcenterglobal.h>
 
-using namespace Liri;
+namespace Liri {
 
-class UpdateNotifier : public QObject
+namespace AppCenter {
+
+class Backend;
+
+class LIRIAPPCENTER_EXPORT BackendPlugin : public QObject
 {
     Q_OBJECT
 public:
-    explicit UpdateNotifier(QObject *parent = nullptr);
+    explicit BackendPlugin(QObject *parent = nullptr);
 
-    void checkForUpdates();
-
-private Q_SLOTS:
-    void updatesAvailable(uint count);
-
-private:
-    AppCenter::SoftwareManager *m_softwareManager = nullptr;
-
-    QString updatesSummary();
+    virtual Backend *create() = 0;
 };
 
-#endif // BACKEND_H
+} // namespace AppCenter
+
+} // namespace Liri
+
+#define BackendPlugin_iid "io.liri.AppCenter.BackendPlugin"
+
+Q_DECLARE_INTERFACE(Liri::AppCenter::BackendPlugin, BackendPlugin_iid)
+
+#endif // LIRIAPPCENTERBACKENDPLUGIN_H

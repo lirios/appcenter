@@ -4,13 +4,8 @@ LiriQmlPlugin {
     name: "liriappcenterplugin"
     pluginPath: "Liri/AppCenter"
 
-    Depends { name: "LiriCore" }
-    Depends { name: "LiriSoftware" }
+    Depends { name: "LiriModels" }
+    Depends { name: "LiriAppCenter" }
 
-    cpp.defines: []
-
-    files: [
-        "plugin.cpp",
-        "qmldir"
-    ]
+    files: ["*.cpp", "*.h", "qmldir"]
 }

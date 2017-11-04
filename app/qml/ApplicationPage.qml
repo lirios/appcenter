@@ -1,7 +1,7 @@
 /****************************************************************************
  * This file is part of App Center.
  *
- * Copyright (C) 2016 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
+ * Copyright (C) 2017 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
  * Copyright (C) 2016 Michael Spencer <sonrisesoftware@gmail.com>
  *
  * $BEGIN_LICENSE:GPL3+$
@@ -27,9 +27,11 @@ import QtQuick.Controls 2.0
 import QtQuick.Controls.Material 2.0
 import QtQuick.Layouts 1.0
 import Fluid.Controls 1.0 as FluidControls
-import Liri.Software 0.1 as Software
+import Liri.AppCenter 1.0 as AppCenter
 
 FluidControls.Page {
+    id: appPage
+
     property var app
     property int selectedImageIndex
 
@@ -61,12 +63,20 @@ FluidControls.Page {
                 spacing: 16
 
                 FluidControls.Icon {
-                    id: image
+                    id: icon
 
                     size: 64
+                    name: app.iconName
+                    visible: !image.visible
+                }
 
-                    //icon: app.icon
-                    name: "application-x-executable"
+                Image {
+                    id: image
+
+                    width: 64
+                    height: 64
+                    source: app.iconUrl
+                    visible: app.iconUrl.toString() !== ""
                 }
 
                 ColumnLayout {
@@ -89,19 +99,52 @@ FluidControls.Page {
                 Button {
                     Layout.alignment: Qt.AlignVCenter
 
-                    text: app.state === Software.Application.Installed  ? "Uninstall" : "Install"
+                    text: qsTr("Install")
+                    visible: app.state === AppCenter.SoftwareResource.NotInstalledState
+                    onClicked: {
+                        if (!app.install())
+                            console.log("Something went wrong!")
+                    }
 
-                    Material.foreground: app.state === Software.Application.Installed
-                                         ? Material.color(Material.Red, Material.Shade100) : Material.primaryTextColor
-                    Material.background: app.state === Software.Application.Installed
-                                         ? Material.color(Material.Red, Material.Shade500) : Material.primaryColor
+                    Material.foreground: Material.color(Material.Green, Material.Shade100)
+                    Material.background: Material.color(Material.Green, Material.Shade500)
                 }
 
                 Button {
                     Layout.alignment: Qt.AlignVCenter
 
-                    visible: app.state === Software.Application.Installed
-                    text: "Open"
+                    text: qsTr("Remove")
+                    visible: app.state === AppCenter.SoftwareResource.InstalledState ||
+                             app.state === AppCenter.SoftwareResource.UpgradableState
+                    onClicked: {
+                        if (!app.uninstall())
+                            console.log("Something went wrong!")
+                    }
+
+                    Material.foreground: Material.color(Material.Red, Material.Shade100)
+                    Material.background: Material.color(Material.Red, Material.Shade500)
+                }
+
+                Button {
+                    Layout.alignment: Qt.AlignVCenter
+
+                    visible: app.state === AppCenter.SoftwareResource.UpgradableState
+                    text: qsTr("Update")
+                    onClicked: {
+                        if (!app.update())
+                            console.log("Something went wrong!")
+                    }
+
+                    Material.foreground: Material.color(Material.Green, Material.Shade100)
+                    Material.background: Material.color(Material.Green, Material.Shade500)
+                }
+
+                Button {
+                    Layout.alignment: Qt.AlignVCenter
+
+                    visible: app.state === AppCenter.SoftwareResource.InstalledState ||
+                             app.state === AppCenter.SoftwareResource.UpgradableState
+                    text: qsTr("Launch")
                     onClicked: {
                         if (!app.launch())
                             console.log("Something went wrong!")
@@ -122,7 +165,7 @@ FluidControls.Page {
                     Layout.preferredHeight: width * sourceSize.height/sourceSize.width
                     Layout.alignment: Qt.AlignTop
 
-                    source: app.screenshots.get(selectedImageIndex).url
+                    source: screenshotsModel.screenshotUrlAt(selectedImageIndex)
                     fillMode: Image.Pad
                     clip: true
                 }
@@ -132,9 +175,12 @@ FluidControls.Page {
                     spacing: 8
 
                     Repeater {
-                        model: app.screenshots
+                        model: AppCenter.ScreenshotsModel {
+                            id: screenshotsModel
+                            app: appPage.app
+                        }
                         delegate: Image {
-                            source: edit.url
+                            source: model.thumbnailUrl
 
                             Layout.preferredWidth: 120
                             Layout.preferredHeight: width * sourceSize.height/sourceSize.width
