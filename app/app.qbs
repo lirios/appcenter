@@ -7,13 +7,18 @@ QtGuiApplication {
     Depends { name: "lirideployment" }
     Depends { name: "Qt"; submodules: ["qml", "quick", "quickcontrols2"] }
 
+    Qt.core.resourcePrefix: "/"
+    Qt.core.resourceSourceBase: sourceDirectory
+
     cpp.defines: base.concat(['LIRIAPPCENTER_VERSION="' + project.version + '"'])
 
-    files: ["*.cpp", "*.h", "*.qrc"]
+    files: ["*.cpp", "*.h"]
 
     Group {
-        name: "QML Files"
-        files: ["qml/*.qml"]
+        name: "Resource Data"
+        prefix: "qml/"
+        files: ["**"]
+        fileTags: ["qt.core.resource_data"]
     }
 
     Group {
