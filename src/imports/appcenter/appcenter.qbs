@@ -1,13 +1,16 @@
 import qbs 1.0
 
 LiriQmlPlugin {
-    name: "lirisoftwareplugin"
-    pluginPath: "Liri/Software"
+    name: "liriappcenterplugin"
+    pluginPath: "Liri/AppCenter"
 
     Depends { name: "LiriCore" }
     Depends { name: "LiriSoftware" }
 
     cpp.defines: []
 
-    files: ["*.cpp", "*.h", "qmldir"]
+    files: [
+        "plugin.cpp",
+        "qmldir"
+    ]
 }

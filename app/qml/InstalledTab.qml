@@ -31,7 +31,7 @@ FluidControls.Tab {
 
     ListView {
         anchors.fill: parent
-        model: software.installedApps
+        //model: software.installedApps
         delegate: FluidControls.ListItem {
             text: edit.name
             subText: edit.summary

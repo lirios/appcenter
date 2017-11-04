@@ -32,7 +32,7 @@ FluidControls.Tab {
     ListView {
         anchors.fill: parent
 
-        model: software.sources
+        //model: software.sources
         delegate: FluidControls.ListItem {
             text: edit.title ? "%1 (%2)".arg(edit.title).arg(edit.name) : edit.name
             subText: edit.url

@@ -14,7 +14,7 @@ Project {
 
     references: [
         "app/app.qbs",
-        "declarative/declarative.qbs",
+        "src/imports/appcenter/appcenter.qbs",
         "framework/framework.qbs",
         "notifier/notifier.qbs",
     ]

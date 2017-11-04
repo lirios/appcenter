@@ -30,7 +30,7 @@ FluidControls.Tab {
     title: qsTr("All Apps")
 
     ListView {
-        model: software.availableApps
+        //model: software.availableApps
         delegate: FluidControls.ListItem {
             text: edit.name
             subText: edit.summary

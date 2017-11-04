@@ -27,7 +27,7 @@ import QtQuick.Layouts 1.0
 import QtQuick.Controls 2.0
 import QtQuick.Controls.Material 2.0
 import Fluid.Controls 1.0 as FluidControls
-import Liri.Software 0.1
+import Liri.AppCenter 1.0
 
 FluidControls.ApplicationWindow {
     id: demo
@@ -58,7 +58,9 @@ FluidControls.ApplicationWindow {
         SourcesTab {}
     }
 
+    /*
     SoftwareManager {
         id: software
     }
+    */
 }
