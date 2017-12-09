@@ -41,20 +41,6 @@ LiriModuleProject {
         Depends { name: "flatpak" }
         Depends { name: "KF5.Archive" }
 
-        condition: {
-            if (!KF5.Archive.found) {
-                console.error("KF5Archive is required to build " + targetName);
-                return false;
-            }
-
-            if (!flatpak.found) {
-                console.error("flatpak is required to build " + targetName);
-                return false;
-            }
-
-            return true;
-        }
-
         cpp.defines: [
             'LIRISOFTWARE_VERSION="' + project.version + '"',
             "QT_BUILD_LIRISOFTWARE_LIB"
