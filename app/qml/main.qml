@@ -44,7 +44,7 @@ FluidControls.ApplicationWindow {
     FluidControls.Action {
         id: searchAction
 
-        iconName: "action/search"
+        icon.name: "action/search"
         text: "Search"
     }
 
