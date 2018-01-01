@@ -13,10 +13,9 @@ Project {
     minimumQbsVersion: "1.8.0"
 
     references: [
-        "app/app.qbs",
-        "src/imports/appcenter/appcenter.qbs",
+        "src/imports/imports.qbs",
         "src/framework/framework.qbs",
-        "src/plugins/flatpak/flatpak.qbs",
-        "notifier/notifier.qbs",
+        "src/plugins/plugins.qbs",
+        "src/programs.qbs",
     ]
 }

@@ -2,7 +2,6 @@
  * This file is part of App Center.
  *
  * Copyright (C) 2017 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
- * Copyright (C) 2016 Michael Spencer <sonrisesoftware@gmail.com>
  *
  * $BEGIN_LICENSE:GPL3+$
  *
@@ -22,28 +21,43 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-import QtQuick 2.0
+import QtQuick 2.4
+import QtQuick.Layouts 1.0
 import QtQuick.Controls 2.0
-import Fluid.Core 1.0 as FluidCore
+import QtQuick.Controls.Material 2.0
 import Fluid.Controls 1.0 as FluidControls
-import Liri.Core 1.0 as LiriCore
 import Liri.AppCenter 1.0 as AppCenter
 
-FluidControls.Tab {
-    title: qsTr("Installed Apps")
+FluidControls.ApplicationWindow {
+    title: qsTr("App Center")
 
-    ListView {
-        anchors.fill: parent
+    width: 800
+    height: 600
+    visible: true
 
-        model: AppCenter.FilteredResourcesModel {
-            sourceModel: softwareManager.resourcesModel
-            filter: AppCenter.FilteredResourcesModel.InstalledApps
-        }
-        delegate: FluidControls.ListItem {
-            text: model.resource.name
-            subText: model.resource.summary
-            valueText: LiriCore.Formatter.formatByteSize(model.resource.installedSize)
-            onClicked: pageStack.push(Qt.resolvedUrl("ApplicationPage.qml"), {app: model.resource})
-        }
+    Material.primary: Material.Blue
+    Material.accent: Material.Blue
+
+    AppCenter.SoftwareManager {
+        id: softwareManager
+
+        Component.onCompleted: softwareManager.initialize()
+    }
+
+    initialPage: FluidControls.TabbedPage {
+        title: qsTr("App Center")
+
+        actions: [
+            FluidControls.Action {
+                icon.name: "action/search"
+                text: qsTr("Search")
+                toolTip: qsTr("Search apps")
+            }
+        ]
+
+        AllAppsTab {}
+        InstalledAppsTab {}
+        UpdatesTab {}
+        SourcesTab {}
     }
 }

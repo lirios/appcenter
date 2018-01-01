@@ -63,6 +63,9 @@ bool FilteredResourcesModel::filterAcceptsRow(int source_row, const QModelIndex 
         return type == SoftwareResource::App &&
                 (state == SoftwareResource::InstalledState ||
                  state == SoftwareResource::UpgradableState);
+    case Updates:
+        return type == SoftwareResource::App &&
+                state == SoftwareResource::UpgradableState;
     }
 
     return false;

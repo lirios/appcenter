@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright 2016 Michael Spencer <sonrisesoftware@gmail.com> -->
 <component type="desktop">
   <id>io.liri.AppCenter.desktop</id>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0+</project_license>
-  <name>Liri App Center</name>
+  <name>App Center</name>
   <summary>Application manager for Liri OS</summary>
   <description>
     <p>
@@ -12,14 +11,6 @@
     </p>
   </description>
   <!-- TODO: Add screenshots -->
-  <releases>
-    <release version="0.0.1" timestamp="1446724044">
-      <description>
-        <p>This is an initial development release</p>
-      </description>
-    </release>
-  </releases>
-  <!-- TODO: Implement kudos -->
-  <url type="homepage">http://liri.io</url>
+  <url type="homepage">https://liri.io</url>
   <update_contact>info@liri.io</update_contact>
 </component>

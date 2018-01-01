@@ -34,7 +34,8 @@ public:
     enum Filter {
         AllApps,
         NotInstalledApps,
-        InstalledApps
+        InstalledApps,
+        Updates
     };
     Q_ENUM(Filter);
 

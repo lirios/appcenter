@@ -2,7 +2,6 @@
  * This file is part of App Center.
  *
  * Copyright (C) 2017 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
- * Copyright (C) 2016 Michael Spencer <sonrisesoftware@gmail.com>
  *
  * $BEGIN_LICENSE:GPL3+$
  *
@@ -22,45 +21,31 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-import QtQuick 2.4
-import QtQuick.Layouts 1.0
-import QtQuick.Controls 2.0
-import QtQuick.Controls.Material 2.0
+import QtQuick 2.0
+import QtQuick.Controls 2.2
 import Fluid.Controls 1.0 as FluidControls
-import Liri.AppCenter 1.0 as AppCenter
 
-FluidControls.ApplicationWindow {
-    id: demo
+FluidControls.Tab {
+    title: qsTr("Sources")
 
-    title: qsTr("App Center")
+    ScrollView {
+        anchors.fill: parent
 
-    width: 800
-    height: 600
-    visible: true
-
-    Material.primary: Material.Blue
-    Material.accent: Material.Blue
-
-    FluidControls.Action {
-        id: searchAction
-
-        icon.name: "action/search"
-        text: "Search"
+        ListView {
+            model: softwareManager.sourcesModel
+            section.delegate: FluidControls.Subheader {
+                text: section
+            }
+            section.property: "section"
+            delegate: FluidControls.ListItem {
+                leftItem: CheckBox {
+                    anchors.verticalCenter: parent.verticalCenter
+                    checked: model.enabled
+                    onCheckedChanged: model.source.enabled = checked
+                }
+                text: qsTr("%1 (%2)").arg(model.title).arg(model.name)
+                subText: model.url
+            }
+        }
     }
-
-    initialPage: FluidControls.TabbedPage {
-        title: qsTr("App Center")
-
-        actions: [searchAction]
-
-        AllTab {}
-        InstalledTab {}
-        SourcesTab {}
-    }
-
-    AppCenter.SoftwareManager {
-        id: softwareManager
-    }
-
-    Component.onCompleted: softwareManager.initialize()
 }

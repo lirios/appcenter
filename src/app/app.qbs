@@ -30,7 +30,7 @@ QtGuiApplication {
     Group {
         condition: qbs.targetOS.contains("linux")
         name: "Desktop File"
-        files: ["../data/io.liri.AppCenter.desktop"]
+        files: ["io.liri.AppCenter.desktop"]
         qbs.install: true
         qbs.installDir: lirideployment.applicationsDir
     }
@@ -38,7 +38,7 @@ QtGuiApplication {
     Group {
         condition: qbs.targetOS.contains("linux")
         name: "AppStream Metadata"
-        files: ["../data/io.liri.AppCenter.appdata.xml"]
+        files: ["io.liri.AppCenter.appdata.xml"]
         qbs.install: true
         qbs.installDir: lirideployment.appDataDir
     }

@@ -2,7 +2,7 @@ import qbs 1.0
 import qbs.FileInfo
 
 LiriDynamicLibrary {
-    name: "flatpakplugin"
+    name: "FlatpakBackend"
     targetName: "flatpak"
 
     Depends { name: "lirideployment" }
