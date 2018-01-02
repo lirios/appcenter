@@ -41,13 +41,30 @@ FluidControls.ApplicationWindow {
     AppCenter.SoftwareManager {
         id: softwareManager
 
+        onSourceAddFailed: snackBar.open(errorMessage)
+
         Component.onCompleted: softwareManager.initialize()
+    }
+
+    AddSourceDialog {
+        id: addSourceDialog
+        onFailed: snackBar.open(errorMessage)
+    }
+
+    FluidControls.InfoBar {
+        id: snackBar
     }
 
     initialPage: FluidControls.TabbedPage {
         title: qsTr("App Center")
 
         actions: [
+            FluidControls.Action {
+                icon.name: "content/add"
+                text: qsTr("Add source")
+                toolTip: qsTr("Add a new source")
+                onTriggered: addSourceDialog.open()
+            },
             FluidControls.Action {
                 icon.name: "action/search"
                 text: qsTr("Search")

@@ -28,6 +28,27 @@ import Fluid.Controls 1.0 as FluidControls
 FluidControls.Tab {
     title: qsTr("Sources")
 
+    Dialog {
+        id: editDialog
+
+        property var source: null
+
+        title: qsTr("Edit %1").arg(source ? source.name : "")
+
+        x: (parent.width - width) / 2
+        y: (parent.height - height) / 2
+        modal: true
+
+        Label {
+            text: "Not implemented yet"
+        }
+
+        function show(source) {
+            editDialog.source = source;
+            editDialog.open();
+        }
+    }
+
     ScrollView {
         anchors.fill: parent
 
@@ -42,6 +63,25 @@ FluidControls.Tab {
                     anchors.verticalCenter: parent.verticalCenter
                     checked: model.enabled
                     onCheckedChanged: model.source.enabled = checked
+                }
+                rightItem: Row {
+                    anchors.verticalCenter: parent.verticalCenter
+
+                    ToolButton {
+                        icon.name: "content/create"
+                        onClicked: editDialog.show(model.source)
+
+                        ToolTip.text: qsTr("Edit")
+                        ToolTip.visible: hovered
+                    }
+
+                    ToolButton {
+                        icon.name: "content/remove"
+                        onClicked: softwareManager.removeSource(model.source)
+
+                        ToolTip.text: qsTr("Remove")
+                        ToolTip.visible: hovered
+                    }
                 }
                 text: qsTr("%1 (%2)").arg(model.title).arg(model.name)
                 subText: model.url
