@@ -66,6 +66,12 @@ FluidControls.ApplicationWindow {
                 onTriggered: addSourceDialog.open()
             },
             FluidControls.Action {
+                icon.name: "navigation/refresh"
+                text: qsTr("Check for updates")
+                toolTip: qsTr("Check for updates")
+                onTriggered: softwareManager.checkForUpdates()
+            },
+            FluidControls.Action {
                 icon.name: "action/search"
                 text: qsTr("Search")
                 toolTip: qsTr("Search apps")
