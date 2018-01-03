@@ -23,9 +23,9 @@
  ***************************************************************************/
 
 import QtQuick 2.4
-import QtQuick.Controls 2.0
-import QtQuick.Controls.Material 2.0
-import QtQuick.Layouts 1.0
+import QtQuick.Controls 2.2
+import QtQuick.Controls.Material 2.2
+import QtQuick.Layouts 1.2
 import Liri.Core 1.0 as LiriCore
 import Fluid.Controls 1.0 as FluidControls
 import Liri.AppCenter 1.0 as AppCenter
@@ -36,7 +36,6 @@ FluidControls.Page {
     property var app
 
     title: app.name
-    padding: 16
 
     FluidControls.OverlayView {
         id: screenshotOverlay
@@ -67,24 +66,26 @@ FluidControls.Page {
         }
     }
 
-    Flickable {
+    ScrollView {
         id: scrollView
+
         anchors.fill: parent
+        spacing: FluidControls.Units.smallSpacing * 2
 
-        contentHeight: column.height + column.anchors.margins * 2
-
-        ScrollBar.vertical: ScrollBar {}
+        contentWidth: appPage.width - (appPage.padding * 2)
+        contentHeight: column.height
 
         ColumnLayout {
             id: column
-            anchors.fill: parent
 
-            spacing: 16
+            spacing: FluidControls.Units.smallSpacing * 2
 
             RowLayout {
-                Layout.fillWidth: true
+                Layout.leftMargin: spacing
+                Layout.rightMargin: spacing
+                Layout.topMargin: spacing
 
-                spacing: 16
+                spacing: FluidControls.Units.smallSpacing * 2
 
                 FluidControls.Icon {
                     id: icon
@@ -98,7 +99,7 @@ FluidControls.Page {
                     id: image
 
                     width: 64
-                    height: 64
+                    height: width
                     source: app.iconUrl
                     visible: app.iconUrl.toString() !== ""
                 }
@@ -115,6 +116,13 @@ FluidControls.Page {
                         color: Material.secondaryTextColor
                     }
                 }
+            }
+
+            RowLayout {
+                Layout.leftMargin: spacing
+                Layout.rightMargin: spacing
+
+                spacing: FluidControls.Units.smallSpacing * 2
 
                 Button {
                     Layout.alignment: Qt.AlignVCenter
@@ -176,7 +184,9 @@ FluidControls.Page {
             }
 
             Label {
-                Layout.fillWidth: true
+                Layout.preferredWidth: appPage.width - (FluidControls.Units.smallSpacing * 2) * 2
+                Layout.leftMargin: FluidControls.Units.smallSpacing * 2
+                Layout.rightMargin: FluidControls.Units.smallSpacing * 2
 
                 text: app.description
                 wrapMode: Label.WordWrap
@@ -184,9 +194,10 @@ FluidControls.Page {
             }
 
             RowLayout {
-                Layout.fillWidth: true
+                Layout.leftMargin: spacing
+                Layout.rightMargin: spacing
 
-                spacing: 16
+                spacing: FluidControls.Units.smallSpacing * 2
 
                 Button {
                     text: qsTr("Website")
@@ -201,10 +212,12 @@ FluidControls.Page {
                 Layout.alignment: Qt.AlignTop
                 Layout.preferredHeight: 120
                 Layout.fillWidth: true
+                Layout.leftMargin: FluidControls.Units.smallSpacing * 2
+                Layout.rightMargin: FluidControls.Units.smallSpacing * 2
 
                 clip: true
                 orientation: ListView.Horizontal
-                spacing: 8
+                spacing: FluidControls.Units.smallSpacing
                 model: AppCenter.ScreenshotsModel {
                     id: screenshotsModel
                     app: appPage.app
@@ -231,18 +244,25 @@ FluidControls.Page {
             }
 
             FluidControls.TitleLabel {
+                Layout.leftMargin: FluidControls.Units.smallSpacing * 2
+
                 text: qsTr("Details")
             }
 
             RowLayout {
-                Layout.fillWidth: true
+                Layout.preferredWidth: appPage.width - ((FluidControls.Units.smallSpacing * 2) * 2)
+                Layout.leftMargin: spacing
+                Layout.rightMargin: spacing
 
-                spacing: 16
+                spacing: FluidControls.Units.smallSpacing * 2
 
                 GridLayout {
+                    id: kudosGrid
+
                     rows: 5
                     columns: 2
-                    columnSpacing: 8
+                    rowSpacing: FluidControls.Units.smallSpacing
+                    columnSpacing: FluidControls.Units.smallSpacing
 
                     // Localization
 
@@ -301,13 +321,16 @@ FluidControls.Page {
                 }
 
                 Item {
-                    Layout.fillWidth: true
+                    Layout.preferredWidth: appPage.width - ((FluidControls.Units.smallSpacing * 2) * 4) - kudosGrid.width - infoGrid.width
                 }
 
                 GridLayout {
+                    id: infoGrid
+
                     rows: 6
                     columns: 2
-                    columnSpacing: 8
+                    rowSpacing: FluidControls.Units.smallSpacing
+                    columnSpacing: FluidControls.Units.smallSpacing
 
                     // Version
 
@@ -374,10 +397,15 @@ FluidControls.Page {
             }
 
             FluidControls.TitleLabel {
+                Layout.leftMargin: FluidControls.Units.smallSpacing * 2
+
                 text: qsTr("Reviews")
             }
 
             Label {
+                Layout.leftMargin: FluidControls.Units.smallSpacing * 2
+                Layout.rightMargin: FluidControls.Units.smallSpacing * 2
+
                 text: qsTr("Sorry, but reviews are not implemented yet.")
                 color: Material.secondaryTextColor
             }
