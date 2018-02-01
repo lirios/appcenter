@@ -60,19 +60,19 @@ FluidControls.ApplicationWindow {
 
         actions: [
             FluidControls.Action {
-                icon.name: "content/add"
+                icon.source: FluidControls.Utils.iconUrl("content/add")
                 text: qsTr("Add source")
                 toolTip: qsTr("Add a new source")
                 onTriggered: addSourceDialog.open()
             },
             FluidControls.Action {
-                icon.name: "navigation/refresh"
+                icon.source: FluidControls.Utils.iconUrl("navigation/refresh")
                 text: qsTr("Check for updates")
                 toolTip: qsTr("Check for updates")
                 onTriggered: softwareManager.checkForUpdates()
             },
             FluidControls.Action {
-                icon.name: "action/search"
+                icon.source: FluidControls.Utils.iconUrl("action/search")
                 text: qsTr("Search")
                 toolTip: qsTr("Search apps")
             }

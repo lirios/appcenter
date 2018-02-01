@@ -68,7 +68,7 @@ FluidControls.Tab {
                     anchors.verticalCenter: parent.verticalCenter
 
                     ToolButton {
-                        icon.name: "content/create"
+                        icon.source: FluidControls.Utils.iconUrl("content/create")
                         onClicked: editDialog.show(model.source)
 
                         ToolTip.text: qsTr("Edit")
@@ -76,7 +76,7 @@ FluidControls.Tab {
                     }
 
                     ToolButton {
-                        icon.name: "content/remove"
+                        icon.source: FluidControls.Utils.iconUrl("content/remove")
                         onClicked: softwareManager.removeSource(model.source)
 
                         ToolTip.text: qsTr("Remove")
