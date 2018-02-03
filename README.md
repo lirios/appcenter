@@ -25,7 +25,6 @@ The following modules and their dependencies are required:
  * [libliri](https://github.com/lirios/libliri)
  * [flatpak](https://github.com/flatpak/flatpak)
  * [AppStream](https://github.com/ximion/appstream)
- * [karchive](http://quickgit.kde.org/?p=karchive.git)
 
 ## Installation
 
