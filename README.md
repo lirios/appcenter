@@ -34,16 +34,21 @@ If you want to learn more, please read the [Qbs manual](http://doc.qt.io/qbs/ind
 especially the [setup guide](http://doc.qt.io/qbs/configuring.html) and how to install artifacts
 from the [installation guide](http://doc.qt.io/qbs/installing-files.html).
 
-From the root of the repository, run:
+If you haven't already, start by setting up a `qt5` profile for `qbs`:
 
 ```sh
 qbs setup-toolchains --type gcc /usr/bin/g++ gcc
-qbs setup-qt /usr/bin/qmake-qt5 qt5
+qbs setup-qt $(which qmake) qt5 # make sure that qmake is in PATH
 qbs config profiles.qt5.baseProfile gcc
+```
+
+Then, from the root of the repository, run:
+
+```sh
 qbs -d build -j $(nproc) profile:qt5 # use sudo if necessary
 ```
 
-On the last `qbs` line, you can specify additional configuration parameters at the end:
+To the `qbs` call above you can append additional configuration parameters:
 
  * `modules.lirideployment.prefix:/path/to/prefix` where most files are installed (default: `/usr/local`)
  * `modules.lirideployment.dataDir:path/to/lib` where data files are installed (default: `/usr/local/share`)
