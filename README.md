@@ -46,25 +46,19 @@ qbs -d build -j $(nproc) profile:qt5 # use sudo if necessary
 
 On the last `qbs` line, you can specify additional configuration parameters at the end:
 
- * `qbs.installRoot:/path/to/install` (for example `/`)
- * `qbs.installPrefix:path/to/install` (for example `opt/liri` or `usr`)
-
-The following are only needed if `qbs.installPrefix` is a system-wide path such as `usr`
-and the default value doesn't suit your needs. All are relative to `qbs.installRoot`:
-
- * `modules.lirideployment.libDir:path/to/lib` where libraries are installed (default: `lib`)
- * `modules.lirideployment.qmlDir:path/to/qml` where QML plugins are installed (default: `lib/qml`)
- * `modules.lirideployment.qbsModulesDir:path/to/qbs` where Qbs modules are installed (default: `share/qbs/modules`)
+ * `modules.lirideployment.prefix:/path/to/prefix` where most files are installed (default: `/usr/local`)
+ * `modules.lirideployment.dataDir:path/to/lib` where data files are installed (default: `/usr/local/share`)
+ * `modules.lirideployment.libDir:path/to/lib` where libraries are installed (default: `/usr/local/lib`)
+ * `modules.lirideployment.qmlDir:path/to/qml` where QML plugins are installed (default: `/usr/local/lib/qml`)
+ * `modules.lirideployment.pluginsDir:path/to/plugins` where Qt plugins are installed (default: `/usr/local/lib/plugins`)
+ * `modules.lirideployment.qbsModulesDir:path/to/qbs` where Qbs modules are installed (default: `/usr/local/share/qbs/modules`)
 
 See [lirideployment.qbs](https://github.com/lirios/qbs-shared/blob/develop/modules/lirideployment/lirideployment.qbs)
 for more deployment-related parameters.
 
-If you specify `qbs.installRoot` you might need to prefix the entire line with `sudo`,
-depending on whether you have permissions to write there or not.
-
 ### Logging categories
 
-Qt 5.2 introduced logging categories and Hawaii takes advantage of
+Qt 5.2 introduced logging categories and we take advantage of
 them to make debugging easier.
 
 Please refer to the [Qt](http://doc.qt.io/qt-5/qloggingcategory.html) documentation
