@@ -51,7 +51,7 @@ FluidControls.ApplicationWindow {
         onFailed: snackBar.open(errorMessage)
     }
 
-    FluidControls.InfoBar {
+    FluidControls.SnackBar {
         id: snackBar
     }
 
