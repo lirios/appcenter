@@ -11,7 +11,9 @@ sudo apt-get install -y desktop-file-utils appstream-util
 sudo apt-get install -y libappstream-dev libappstreamqt-dev flatpak libflatpak-dev
 travis_end "install_packages"
 
-# Build libqtxdg
+# Install libqtxdg
+# It uses Qt private API but it's not built by KDE Neon CI therefore it
+# still needs ABI of the original Ubuntu packages and doesn't work
 travis_start "build_libqtxdg"
 msg "Build libqtxdg..."
 pushd /usr/src
@@ -20,7 +22,7 @@ cd libqtxdg
 mkdir build
 cd build
 cmake -DCMAKE_INSTALL_PREFIX=/usr ..
-make
+make -j$(nproc)
 sudo make install
 popd
 travis_end "build_libqtxdg"
