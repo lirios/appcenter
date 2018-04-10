@@ -10,7 +10,7 @@ Project {
 
     condition: qbs.targetOS.contains("linux") && !qbs.targetOS.contains("android")
 
-    minimumQbsVersion: "1.8.0"
+    minimumQbsVersion: "1.9.0"
 
     references: [
         "src/imports/imports.qbs",
