@@ -8,11 +8,17 @@ LiriDynamicLibrary {
     Depends { name: "lirideployment" }
     Depends { name: "Qt"; submodules: ["core", "concurrent", "network"] }
     Depends { name: "flatpak" }
+    Depends { name: "AppStreamQt" }
     Depends { name: "LiriAppCenter" }
 
     condition: {
         if (!flatpak.found) {
             console.error("flatpak is required to build " + targetName);
+            return false;
+        }
+
+        if (!AppStreamQt.found) {
+            console.error("AppStreamQt is required to build " + targetName);
             return false;
         }
 
