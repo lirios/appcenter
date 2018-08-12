@@ -29,15 +29,15 @@
 #include "flatpakresource.h"
 #include "flatpaktransactionjob.h"
 
-class FlatpakTransaction : public Liri::AppCenter::Transaction
+class LiriFlatpakTransaction : public Liri::AppCenter::Transaction
 {
     Q_OBJECT
 public:
-    explicit FlatpakTransaction(Liri::AppCenter::Transaction::Type type,
-                                const QString &name,
-                                const QString &description,
-                                Liri::AppCenter::SoftwareResource *resource,
-                                QObject *parent = nullptr);
+    explicit LiriFlatpakTransaction(Liri::AppCenter::Transaction::Type type,
+                                    const QString &name,
+                                    const QString &description,
+                                    Liri::AppCenter::SoftwareResource *resource,
+                                    QObject *parent = nullptr);
 
     Q_INVOKABLE void run() override;
     Q_INVOKABLE void cancel() override;

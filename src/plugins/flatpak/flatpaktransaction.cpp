@@ -25,13 +25,13 @@
 
 using namespace Liri::AppCenter;
 
-FlatpakTransaction::FlatpakTransaction(Type type, const QString &name, const QString &description, SoftwareResource *resource, QObject *parent)
+LiriFlatpakTransaction::LiriFlatpakTransaction(Type type, const QString &name, const QString &description, SoftwareResource *resource, QObject *parent)
     : Transaction(type, name, description, resource, parent)
 {
     setCancellable(true);
 }
 
-void FlatpakTransaction::run()
+void LiriFlatpakTransaction::run()
 {
     m_job = new FlatpakTransactionJob(qobject_cast<FlatpakResource *>(resource()), type());
     connect(m_job, &FlatpakTransactionJob::progressChanged, this, [&](int value) {
@@ -50,7 +50,7 @@ void FlatpakTransaction::run()
     m_job->start();
 }
 
-void FlatpakTransaction::cancel()
+void LiriFlatpakTransaction::cancel()
 {
     if (isCancellable())
         m_job->cancel();

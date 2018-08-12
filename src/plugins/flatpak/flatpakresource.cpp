@@ -230,7 +230,7 @@ bool FlatpakResource::launch() const
 
 bool FlatpakResource::install()
 {
-    FlatpakTransaction *transaction = new FlatpakTransaction(
+    LiriFlatpakTransaction *transaction = new LiriFlatpakTransaction(
                 Liri::AppCenter::Transaction::Install,
                 tr("Install %1").arg(packageName()),
                 tr("Installing \"%1\" from %2...").arg(name()).arg(origin()),
@@ -244,7 +244,7 @@ bool FlatpakResource::install()
 
 bool FlatpakResource::uninstall()
 {
-    FlatpakTransaction *transaction = new FlatpakTransaction(
+    LiriFlatpakTransaction *transaction = new LiriFlatpakTransaction(
                 Liri::AppCenter::Transaction::Uninstall,
                 tr("Uninstall %1 %2").arg(packageName()).arg(installedVersion()),
                 tr("Uninstalling \"%1\" %2...").arg(name()).arg(installedVersion()),
@@ -258,7 +258,7 @@ bool FlatpakResource::uninstall()
 
 bool FlatpakResource::update()
 {
-    FlatpakTransaction *transaction = new FlatpakTransaction(
+    LiriFlatpakTransaction *transaction = new LiriFlatpakTransaction(
                 Liri::AppCenter::Transaction::Update,
                 tr("Update %1 %2").arg(packageName()).arg(installedVersion()),
                 tr("Updating \"%1\" %2...").arg(name()).arg(installedVersion()),
