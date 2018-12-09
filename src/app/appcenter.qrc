@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/AddSourceDialog.qml</file>
+        <file>qml/AllAppsTab.qml</file>
+        <file>qml/AppPage.qml</file>
+        <file>qml/InstalledAppsTab.qml</file>
+        <file>qml/main.qml</file>
+        <file>qml/SourcesTab.qml</file>
+        <file>qml/UpdatesTab.qml</file>
+    </qresource>
+</RCC>
