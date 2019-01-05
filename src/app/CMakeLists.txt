@@ -1,8 +1,15 @@
+# Translations
+file(GLOB LiriAppCenter_TRANSLATIONS "${CMAKE_CURRENT_SOURCE_DIR}/translations/*_*.ts")
+qt5_add_translation(LiriAppCenter_QM_FILES ${LiriAppCenter_TRANSLATIONS})
+install(FILES ${LiriAppCenter_QM_FILES}
+        DESTINATION "${INSTALL_DATADIR}/liri-appcenter/translations")
+
 liri_add_executable(LiriAppCenter
     OUTPUT_NAME
         "liri-appcenter"
     SOURCES
         main.cpp
+        ${LiriAppCenter_QM_FILES}
     RESOURCES
         appcenter.qrc
     DEFINES
