@@ -5,6 +5,8 @@ endif()
 liri_add_qml_plugin(liriappcenter
     MODULE_PATH
         "Liri/AppCenter"
+    VERSION
+        "1.0"
     SOURCES
         filteredresourcesmodel.cpp
         filteredresourcesmodel.h
