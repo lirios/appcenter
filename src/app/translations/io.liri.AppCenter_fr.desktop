@@ -1,0 +1,14 @@
+[Desktop Entry]
+Name=App Center
+Comment=App Center for Liri
+Exec=liri-appcenter
+Icon=software-store
+Terminal=false
+Type=Application
+Categories=X-Liri;Qt;System;PackageManager;
+
+
+# Translations
+Icon[fr]=software-store
+Name[fr]=Centre d'applications
+Comment[fr]=Centre d'applications pour Liri
