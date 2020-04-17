@@ -4,19 +4,17 @@ host = https://www.transifex.com
 [liri-appcenter.app]
 type = QT
 source_lang = en
-source_file = src/app/translations/appcenter.ts
-file_filter = src/app/translations/appcenter_<lang>.ts
+source_file = translations/app/appcenter.ts
+file_filter = translations/app/appcenter_<lang>.ts
 
 [liri-appcenter.notifier]
 type = QT
 source_lang = en
-source_file = src/notifier/translations/notifier.ts
-file_filter = src/notifier/translations/notifier_<lang>.ts
+source_file = translations/notifier/notifier.ts
+file_filter = translations/notifier/notifier_<lang>.ts
 
 [liri-appcenter.desktop-file]
 type = DESKTOP
 source_lang = en
 source_file = src/app/io.liri.AppCenter.desktop.in
-liri_dest_file = src/app/io.liri.AppCenter.desktop
-file_filter = src/app/translations/io.liri.AppCenter_<lang>.desktop
-
+file_filter = translations/app/io.liri.AppCenter_<lang>.desktop

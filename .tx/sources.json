@@ -1,10 +1,17 @@
 [
   {
+    "type": "ts",
     "directory": "src/app",
     "output_path": "src/app/translations/appcenter.ts"
   },
   {
+    "type": "ts",
     "directory": "src/notifier",
     "output_path": "src/notifier/translations/notifier.ts"
+  },
+  {
+    "type": "desktop",
+    "source_filter": "translations/app/io.liri.AppCenter_<lang>.desktop",
+    "output_path": "src/app/io.liri.AppCenter.desktop"
   }
 ]
