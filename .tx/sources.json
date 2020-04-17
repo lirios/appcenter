@@ -1,0 +1,10 @@
+[
+  {
+    "directory": "src/app",
+    "output_path": "src/app/translations/appcenter.ts"
+  },
+  {
+    "directory": "src/notifier",
+    "output_path": "src/notifier/translations/notifier.ts"
+  }
+]

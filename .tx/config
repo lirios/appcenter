@@ -4,14 +4,12 @@ host = https://www.transifex.com
 [liri-appcenter.app]
 type = QT
 source_lang = en
-liri_source_directory = src/app
 source_file = src/app/translations/appcenter.ts
 file_filter = src/app/translations/appcenter_<lang>.ts
 
 [liri-appcenter.notifier]
 type = QT
 source_lang = en
-liri_source_directory = src/notifier
 source_file = src/notifier/translations/notifier.ts
 file_filter = src/notifier/translations/notifier_<lang>.ts
 
