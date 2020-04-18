@@ -2,12 +2,12 @@
   {
     "type": "ts",
     "directory": "src/app",
-    "output_path": "src/app/translations/appcenter.ts"
+    "output_path": "translations/appcenter.ts"
   },
   {
     "type": "ts",
     "directory": "src/notifier",
-    "output_path": "src/notifier/translations/notifier.ts"
+    "output_path": "translations/notifier.ts"
   },
   {
     "type": "desktop",
