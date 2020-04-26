@@ -3,9 +3,8 @@ App Center
 
 [![License](https://img.shields.io/badge/license-GPLv3.0-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.html)
 [![GitHub release](https://img.shields.io/github/release/lirios/appcenter.svg)](https://github.com/lirios/appcenter)
-[![Build Status](https://travis-ci.org/lirios/appcenter.svg?branch=develop)](https://travis-ci.org/lirios/appcenter)
 [![GitHub issues](https://img.shields.io/github/issues/lirios/appcenter.svg)](https://github.com/lirios/appcenter/issues)
-[![Maintained](https://img.shields.io/maintenance/yes/2018.svg)](https://github.com/lirios/appcenter/commits/develop)
+[![CI](https://github.com/lirios/appcenter/workflows/CI/badge.svg?branch=develop&event=push)](https://github.com/lirios/appcenter/actions?query=workflow%3ACI)
 
 This is the App Center for Liri OS for installing, updating, and managing applications built using Flatpak.
 
