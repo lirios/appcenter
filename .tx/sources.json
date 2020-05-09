@@ -15,5 +15,12 @@
     "dest_file": "src/app/io.liri.AppCenter.desktop",
     "file_filter": "translations/data/desktop/<lang>.po",
     "output_path": "translations/data/desktop/desktop.pot"
+  },
+  {
+    "type": "metainfo",
+    "source_file": "src/app/io.liri.AppCenter.appdata.xml.in",
+    "dest_file": "src/app/io.liri.AppCenter.appdata.xml.in",
+    "file_filter": "translations/data/metainfo/<lang>.po",
+    "output_path": "translations/data/metainfo/metainfo.pot"
   }
 ]

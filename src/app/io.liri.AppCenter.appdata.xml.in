@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop">
+  <id>io.liri.AppCenter.desktop</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0+</project_license>
+  <name>App Center</name>
+  <summary>Application manager for Liri OS</summary>
+  <description>
+    <p>
+      App Center allows you to find and install new applications.
+    </p>
+  </description>
+  <!-- TODO: Add screenshots -->
+  <url type="homepage">https://liri.io</url>
+  <update_contact>info@liri.io</update_contact>
+</component>
