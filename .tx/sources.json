@@ -19,7 +19,7 @@
   {
     "type": "metainfo",
     "source_file": "src/app/io.liri.AppCenter.appdata.xml.in",
-    "dest_file": "src/app/io.liri.AppCenter.appdata.xml.in",
+    "dest_file": "src/app/io.liri.AppCenter.appdata.xml",
     "file_filter": "translations/data/metainfo/<lang>.po",
     "output_path": "translations/data/metainfo/metainfo.pot"
   }
