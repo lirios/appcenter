@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-09 15:08+0200\n"
+"POT-Creation-Date: 2020-05-09 17:39+0000\n"
 "PO-Revision-Date: 2020-05-09 13:10+0000\n"
 "Last-Translator: Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>, 2020\n"
 "Language-Team: Portuguese (Brazil) (https://www.transifex.com/lirios/teams/71982/pt_BR/)\n"
@@ -28,3 +28,7 @@ msgstr "Central de aplicativos"
 #: src/app/io.liri.AppCenter.desktop.in.in:4
 msgid "App Center for Liri"
 msgstr "Central de aplicativos para o Liri"
+
+#: src/app/io.liri.AppCenter.desktop.in.in:6
+msgid "software-store"
+msgstr ""
