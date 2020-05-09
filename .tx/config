@@ -14,7 +14,7 @@ source_file = translations/notifier/notifier.ts
 file_filter = translations/notifier/notifier_<lang>.ts
 
 [liri-appcenter.desktop-file]
-type = DESKTOP
+type = PO
 source_lang = en
-source_file = src/app/io.liri.AppCenter.desktop.in
-file_filter = translations/app/io.liri.AppCenter_<lang>.desktop
+source_file = translations/data/desktop/desktop.pot
+file_filter = translations/data/desktop/<lang>.po

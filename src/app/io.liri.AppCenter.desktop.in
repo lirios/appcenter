@@ -1,6 +1,6 @@
 [Desktop Entry]
-Name=App Center
-Comment=App Center for Liri
+_Name=App Center
+_Comment=App Center for Liri
 Exec=liri-appcenter
 Icon=software-store
 Terminal=false

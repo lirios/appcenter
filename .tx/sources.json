@@ -12,7 +12,8 @@
   {
     "type": "desktop",
     "source_file": "src/app/io.liri.AppCenter.desktop.in",
-    "file_filter": "translations/app/io.liri.AppCenter_<lang>.desktop",
-    "output_path": "src/app/io.liri.AppCenter.desktop"
+    "dest_file": "src/app/io.liri.AppCenter.desktop",
+    "file_filter": "translations/data/desktop/<lang>.po",
+    "output_path": "translations/data/desktop/desktop.pot"
   }
 ]
