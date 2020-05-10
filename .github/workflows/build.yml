@@ -10,6 +10,9 @@ on:
       - master
       - develop
 
+env:
+  CLAZY_CHECKS: "level1"
+
 jobs:
   build:
     if: "!contains(github.event.head_commit.message, 'ci skip')"
@@ -76,12 +79,14 @@ jobs:
       - name: Build
         run: |
           set -x
+          mkdir -p build
+          cd build
           if [ "${{ matrix.compiler }}" == "clang" ]; then
             export CC=clang
             export CXX=clang++
+            cmake .. -DLIRI_ENABLE_CLAZY:BOOL=ON -DCMAKE_INSTALL_PREFIX=/usr
+          else
+            cmake .. -DCMAKE_INSTALL_PREFIX=/usr
           fi
-          mkdir -p build
-          cd build
-          cmake .. -DCMAKE_INSTALL_PREFIX=/usr
           make -j $(getconf _NPROCESSORS_ONLN)
           sudo make install
