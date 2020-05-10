@@ -5,15 +5,16 @@
 # 
 # Translators:
 # Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>, 2020
+# scootergrisen, 2020
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-09 17:39+0000\n"
+"POT-Creation-Date: 2020-05-10 00:11+0000\n"
 "PO-Revision-Date: 2020-05-09 13:10+0000\n"
-"Last-Translator: Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>, 2020\n"
+"Last-Translator: scootergrisen, 2020\n"
 "Language-Team: Danish (https://www.transifex.com/lirios/teams/71982/da/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -31,4 +32,4 @@ msgstr "Programcenter til Liri"
 
 #: src/app/io.liri.AppCenter.desktop.in.in:6
 msgid "software-store"
-msgstr ""
+msgstr "software-store"

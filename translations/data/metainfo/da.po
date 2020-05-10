@@ -1,26 +1,32 @@
+# 
+# Translators:
+# scootergrisen, 2020
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "POT-Creation-Date: 2020-05-10 00:11+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2020-05-09 13:24+0000\n"
+"Last-Translator: scootergrisen, 2020\n"
+"Language-Team: Danish (https://www.transifex.com/lirios/teams/71982/da/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: da\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. (itstool) path: component/name
 #: src/app/io.liri.AppCenter.appdata.xml.in:6
 msgid "App Center"
-msgstr ""
+msgstr "Programcenter"
 
 #. (itstool) path: component/summary
 #: src/app/io.liri.AppCenter.appdata.xml.in:7
 msgid "Application manager for Liri OS"
-msgstr ""
+msgstr "Programhåndtering til Liri OS"
 
 #. (itstool) path: description/p
 #: src/app/io.liri.AppCenter.appdata.xml.in:9
 msgid "App Center allows you to find and install new applications."
 msgstr ""
-
+"Programcenter giver dig mulighed for at finde og installere nye programmer."
