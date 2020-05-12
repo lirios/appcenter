@@ -34,7 +34,7 @@
     <message>
         <location filename="../updatenotifier.cpp" line="71"/>
         <source>%1, %2, and %3 other apps are ready to update</source>
-        <translation type="unfinished"/>
+        <translation>%1, %2 e %3 altre applicazioni sono pronte per l&apos;aggiornamento</translation>
     </message>
 </context>
 </TS>
