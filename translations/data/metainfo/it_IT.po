@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2020-05-24 00:19+0000\n"
+"POT-Creation-Date: 2020-05-25 00:18+0000\n"
 "PO-Revision-Date: 2020-05-09 13:24+0000\n"
 "Last-Translator: Man from Mars, 2020\n"
 "Language-Team: Italian (Italy) (https://www.transifex.com/lirios/teams/71982/it_IT/)\n"
@@ -18,7 +18,7 @@ msgstr ""
 #. (itstool) path: component/name
 #: src/app/io.liri.AppCenter.appdata.xml.in:6
 msgid "App Center"
-msgstr ""
+msgstr "Centro App"
 
 #. (itstool) path: component/summary
 #: src/app/io.liri.AppCenter.appdata.xml.in:7
@@ -29,3 +29,4 @@ msgstr "Gestore applicazioni per Liri OS"
 #: src/app/io.liri.AppCenter.appdata.xml.in:9
 msgid "App Center allows you to find and install new applications."
 msgstr ""
+"Il Centro App ti permette di trovare ed installare nuove applicazioni."

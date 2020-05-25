@@ -4,12 +4,12 @@
     <message>
         <location filename="../qml/AddSourceDialog.qml" line="32"/>
         <source>Add Source</source>
-        <translation type="unfinished"/>
+        <translation>Aggiungi fonte</translation>
     </message>
     <message>
         <location filename="../qml/AddSourceDialog.qml" line="47"/>
         <source>Failed to retrieve source</source>
-        <translation type="unfinished"/>
+        <translation>Impossibile scaricare dalla fonte</translation>
     </message>
     <message>
         <location filename="../qml/AddSourceDialog.qml" line="55"/>
@@ -80,7 +80,7 @@
     <message>
         <location filename="../qml/AppPage.qml" line="319"/>
         <source>Sandboxed</source>
-        <translation type="unfinished"/>
+        <translation>In sandbox</translation>
     </message>
     <message>
         <location filename="../qml/AppPage.qml" line="338"/>
@@ -113,7 +113,7 @@
     <message>
         <location filename="../qml/AppPage.qml" line="379"/>
         <source>Source</source>
-        <translation type="unfinished"/>
+        <translation>Fonte</translation>
     </message>
     <message>
         <location filename="../qml/AppPage.qml" line="390"/>
@@ -149,7 +149,7 @@
     <message>
         <location filename="../qml/SourcesTab.qml" line="29"/>
         <source>Sources</source>
-        <translation type="unfinished"/>
+        <translation>Fonti</translation>
     </message>
     <message>
         <location filename="../qml/SourcesTab.qml" line="36"/>
@@ -186,17 +186,17 @@
         <location filename="../qml/main.qml" line="32"/>
         <location filename="../qml/main.qml" line="59"/>
         <source>App Center</source>
-        <translation type="unfinished"/>
+        <translation>Centro App</translation>
     </message>
     <message>
         <location filename="../qml/main.qml" line="64"/>
         <source>Add source</source>
-        <translation type="unfinished"/>
+        <translation>Aggiungi fonte</translation>
     </message>
     <message>
         <location filename="../qml/main.qml" line="65"/>
         <source>Add a new source</source>
-        <translation type="unfinished"/>
+        <translation>Aggiungi una nuova fonte</translation>
     </message>
     <message>
         <location filename="../qml/main.qml" line="70"/>
