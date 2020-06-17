@@ -1,32 +1,31 @@
 # 
 # Translators:
-# Man from Mars, 2020
+# Irina Fedulova <istartlin@gmail.com>, 2020
 # 
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "POT-Creation-Date: 2020-06-17 00:15+0000\n"
 "PO-Revision-Date: 2020-05-09 13:24+0000\n"
-"Last-Translator: Man from Mars, 2020\n"
-"Language-Team: Italian (Italy) (https://www.transifex.com/lirios/teams/71982/it_IT/)\n"
+"Last-Translator: Irina Fedulova <istartlin@gmail.com>, 2020\n"
+"Language-Team: Russian (https://www.transifex.com/lirios/teams/71982/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: it_IT\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: ru\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
 
 #. (itstool) path: component/name
 #: src/app/io.liri.AppCenter.appdata.xml.in:6
 msgid "App Center"
-msgstr "Centro App"
+msgstr "Центр приложений"
 
 #. (itstool) path: component/summary
 #: src/app/io.liri.AppCenter.appdata.xml.in:7
 msgid "Application manager for Liri OS"
-msgstr "Gestore applicazioni per Liri OS"
+msgstr "Менеджер приложений для Liri ОС"
 
 #. (itstool) path: description/p
 #: src/app/io.liri.AppCenter.appdata.xml.in:9
 msgid "App Center allows you to find and install new applications."
-msgstr ""
-"Il Centro App ti permette di trovare ed installare nuove applicazioni."
+msgstr "Центр приложений позволяет вам найти и установить новые приложения."
