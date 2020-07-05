@@ -98,6 +98,7 @@ void FlatpakBackend::initialize(Liri::AppCenter::SoftwareManager *manager)
     m_manager = manager;
 
     g_autoptr(GError) error = nullptr;
+
     GPtrArray *installations = flatpak_get_system_installations(m_cancellable, &error);
     if (!installations) {
         qCWarning(lcFlatpakBackend,
@@ -341,6 +342,7 @@ bool FlatpakBackend::listInstalledApps(FlatpakInstallation *installation)
     Q_ASSERT(G_IS_OBJECT(installation));
 
     g_autoptr(GError) error = nullptr;
+
     g_autoptr(GPtrArray) refs =
             flatpak_installation_list_installed_refs(installation, m_cancellable, &error);
     if (!refs) {
@@ -353,9 +355,14 @@ bool FlatpakBackend::listInstalledApps(FlatpakInstallation *installation)
     // Process refs
     for (uint i = 0; i < refs->len; i++) {
         FlatpakInstalledRef *ref = FLATPAK_INSTALLED_REF(g_ptr_array_index(refs, i));
+        const QString name = QString::fromUtf8(flatpak_ref_get_name(FLATPAK_REF(ref)));
+
+        // Ignore special apps
+        if (name.endsWith(QLatin1String(".Debug")) || name.endsWith(QLatin1String(".Locale")) ||
+                name.endsWith(QLatin1String(".BaseApp")) || name.endsWith(QLatin1String(".Docs")))
+            continue;
 
         // Desktop entry
-        const QString name = QString::fromUtf8(flatpak_ref_get_name(FLATPAK_REF(ref)));
         const QDir exportsDir = FlatpakResource::installationDir(installation).absoluteFilePath(QLatin1String("exports/"));
         const QString desktopFilePath = exportsDir.absoluteFilePath(QLatin1String("share/applications/") +
                                                                     name + QLatin1String(".desktop"));
