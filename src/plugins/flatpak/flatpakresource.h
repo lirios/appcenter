@@ -135,6 +135,7 @@ public:
     void updateFromRemote(FlatpakRemote *remote);
     void updateFromRef(FlatpakRef *ref);
     void updateFromInstalledRef(FlatpakInstalledRef *ref);
+    void updateDownloadSize(FlatpakResource *remoteResource, FlatpakRef *ref);
     bool updateFromMetadata();
 
     static QDir installationDir(FlatpakInstallation *installation);

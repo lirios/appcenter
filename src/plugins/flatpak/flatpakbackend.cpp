@@ -269,6 +269,23 @@ FlatpakResource *FlatpakBackend::findResourceFromInstalledRef(FlatpakInstallatio
     return m_resources.value(FlatpakResource::keyFromInstalledRef(installation, ref));
 }
 
+FlatpakResource *FlatpakBackend::findRuntimeResource(const QString &runtime)
+{
+    const auto runtimeInfo = runtime.splitRef(QLatin1Char('/'));
+    if (runtimeInfo.count() != 3)
+        return nullptr;
+
+    for (auto it = m_resources.constBegin(); it != m_resources.constEnd(); ++it) {
+        const auto &key = it.key();
+
+        if (key.type == SoftwareResource::Runtime && key.desktopId == runtimeInfo[0] &&
+                key.branch == runtimeInfo[2])
+            return *it;
+    }
+
+    return nullptr;
+}
+
 bool FlatpakBackend::extractRepositories(FlatpakInstallation *installation)
 {
     Q_ASSERT(installation != nullptr);
@@ -598,6 +615,9 @@ void FlatpakBackend::updatesFetched(FlatpakInstallation *installation, GPtrArray
             // We might not have the latest commit ready to be installed:
             // force state given that Flatpak tells us this is upgradable
             resource->setState(SoftwareResource::UpgradableState);
+
+            // Now we can update the download size
+            resource->updateDownloadSize(findRuntimeResource(resource->runtime()), FLATPAK_REF(ref));
         }
     }
 

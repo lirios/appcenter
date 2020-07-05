@@ -69,6 +69,7 @@ private:
     QHash<FlatpakResource::Key, FlatpakResource *> m_resources;
 
     FlatpakResource *findResourceFromInstalledRef(FlatpakInstallation *installation, FlatpakInstalledRef *ref) const;
+    FlatpakResource *findRuntimeResource(const QString &runtime);
 
     bool extractRepositories(FlatpakInstallation *installation);
     bool listAvailableApps(FlatpakInstallation *installation);

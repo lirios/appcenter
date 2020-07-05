@@ -21,6 +21,8 @@
  * $END_LICENSE$
  ***************************************************************************/
 
+#include <QtConcurrentRun>
+#include <QFutureWatcher>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QVector>
@@ -34,6 +36,23 @@
 #include "flatpakplugin.h"
 #include "flatpakresource.h"
 #include "flatpaktransaction.h"
+
+static quint64 fetchRemoteSize(FlatpakResource *app, FlatpakRef *ref)
+{
+    g_autoptr(GCancellable) cancellable = g_cancellable_new();
+    g_autoptr(GError) error = nullptr;
+
+    guint64 downloadSize = 0, installedSize = 0;
+    if (!flatpak_installation_fetch_remote_size_sync(
+                app->installation(), qPrintable(app->origin()),
+                ref, &downloadSize, &installedSize, cancellable, &error)) {
+        qCWarning(lcFlatpakBackend, "Failed to fetch remote size for %s: %s",
+                  qPrintable(app->name()), error->message);
+        return 0;
+    }
+
+    return downloadSize;
+}
 
 FlatpakResource::FlatpakResource(const AppStream::Component &component,
                                  FlatpakInstallation *installation,
@@ -375,6 +394,29 @@ void FlatpakResource::updateFromInstalledRef(FlatpakInstalledRef *ref)
     Q_EMIT installedVersionChanged();
     Q_EMIT availableVersionChanged();
     Q_EMIT updatesAvailableChanged();
+}
+
+void FlatpakResource::updateDownloadSize(FlatpakResource *runtimeResource, FlatpakRef *ref)
+{
+    if (m_key.type != SoftwareResource::App)
+        return;
+
+    quint64 size = 0;
+
+    // If the runtime is not installed we count its size too
+    if (runtimeResource && runtimeResource->state() != SoftwareResource::InstalledState)
+        size = runtimeResource->downloadSize();
+
+    // Now calculate this app download size
+    if (state() != SoftwareResource::InstalledState) {
+        auto *watcher = new QFutureWatcher<quint64>(this);
+        auto future = QtConcurrent::run(fetchRemoteSize, this, ref);
+        connect(watcher, &QFutureWatcher<quint64>::finished, this, [this, size, watcher] {
+            m_downloadSize = watcher->result() + size;
+            watcher->deleteLater();
+        });
+        watcher->setFuture(future);
+    }
 }
 
 bool FlatpakResource::updateFromMetadata()
