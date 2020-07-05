@@ -441,7 +441,6 @@ FlatpakResource *FlatpakBackend::installFromFlatpakRef(const QString &filePath)
     }
 
     FlatpakRef *ref = FLATPAK_REF(remoteRef);
-    const char *remoteName = flatpak_remote_ref_get_remote_name(remoteRef);
 
     AppStream::Component component;
     component.setId(settings.value(QLatin1String("Name")).toString());
@@ -605,7 +604,7 @@ void FlatpakBackend::addAppsFromRemote(FlatpakInstallation *installation, Flatpa
     }
 
     // Create a resource for each component
-    for (const auto component : metadata.components()) {
+    for (const auto &component : metadata.components()) {
         FlatpakResource *resource = new FlatpakResource(component, installation);
         resource->updateFromRemote(remote);
 
