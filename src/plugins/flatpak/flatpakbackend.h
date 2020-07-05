@@ -66,7 +66,9 @@ private:
     FlatpakInstallation *m_userInstallation = nullptr;
     uint m_userInstallationUpdates = 0;
     uint m_systemInstallationUpdates = 0;
-    QVector<Liri::AppCenter::SoftwareResource *> m_resources;
+    QHash<FlatpakResource::Key, FlatpakResource *> m_resources;
+
+    FlatpakResource *findResourceFromInstalledRef(FlatpakInstallation *installation, FlatpakInstalledRef *ref) const;
 
     bool extractRepositories(FlatpakInstallation *installation);
     bool listAvailableApps(FlatpakInstallation *installation);
@@ -78,6 +80,7 @@ private:
 
     void fetchAppStreamMetadata(FlatpakInstallation *installation, FlatpakRemote *remote);
 
+    bool checkLocalUpdatesForInstallation(FlatpakInstallation *installation);
     void checkUpdatesForInstallation(FlatpakInstallation *installation);
     void updatesFetched(FlatpakInstallation *installation, GPtrArray *refs);
 

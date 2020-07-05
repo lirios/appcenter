@@ -155,6 +155,7 @@ void SoftwareManager::initialize()
                 backend->listSources();
                 backend->listAvailableApps();
                 backend->listInstalledApps();
+                backend->checkForUpdates();
             } else {
                 loader.unload();
             }

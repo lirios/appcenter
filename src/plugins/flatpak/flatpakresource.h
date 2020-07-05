@@ -42,6 +42,37 @@ public:
                              FlatpakInstallation *installation,
                              QObject *parent = nullptr);
 
+    // Everything that makes this resource unique is here
+    struct Key {
+        Liri::AppCenter::SoftwareResource::Type type = Liri::AppCenter::SoftwareResource::App;
+        FlatpakInstallation *installation = nullptr;
+        QString desktopId;
+        QString origin;
+        QString branch;
+        QString architecture;
+
+        bool operator!=(const Key &other) const
+        {
+            return !operator==(other);
+        }
+
+        bool operator==(const Key &other) const
+        {
+            return &other == this || (
+                        other.type == type &&
+                        other.installation == installation &&
+                        other.desktopId == desktopId &&
+                        other.origin == origin &&
+                        other.branch == branch &&
+                        other.architecture == architecture
+                        );
+        }
+    };
+
+    static FlatpakResource::Key keyFromInstalledRef(FlatpakInstallation *installation, FlatpakInstalledRef *ref);
+
+    Key key() const;
+
     AppStream::Component component() const;
     FlatpakInstallation *installation() const;
     FlatpakRefKind kind() const;
@@ -109,17 +140,12 @@ public:
     static QDir installationDir(FlatpakInstallation *installation);
 
 private:
-    Liri::AppCenter::SoftwareResource::Type m_type = Liri::AppCenter::SoftwareResource::App;
+    FlatpakResource::Key m_key;
     Liri::AppCenter::SoftwareResource::State m_state = Liri::AppCenter::SoftwareResource::NotInstalledState;
     AppStream::Component m_appdata;
-    FlatpakInstallation *m_installation = nullptr;
     FlatpakRefKind m_kind = FLATPAK_REF_KIND_APP;
-    QString m_desktopId;
     QString m_packageName;
-    QString m_architecture;
-    QString m_origin;
     QString m_runtime;
-    QString m_branch;
     QString m_commit;
     QString m_latestCommit;
     QString m_changeLog;
@@ -134,6 +160,18 @@ private:
     void setFlatpakType(FlatpakRefKind kind);
     void setState(State state);
     void updateComponent(const AppStream::Component &component);
+
+    friend class FlatpakBackend;
 };
+
+inline uint qHash(const FlatpakResource::Key &key)
+{
+    return qHash(key.type)
+            ^ qHash(key.installation)
+            ^ qHash(key.desktopId)
+            ^ qHash(key.origin)
+            ^ qHash(key.branch)
+            ^ qHash(key.architecture);
+}
 
 #endif // FLATPAKRESOURCE_H

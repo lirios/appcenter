@@ -161,8 +161,10 @@ void FlatpakBackend::listInstalledApps()
 
 void FlatpakBackend::checkForUpdates()
 {
-    for (auto installation : m_installations)
+    for (auto installation : m_installations) {
+        checkLocalUpdatesForInstallation(installation);
         checkUpdatesForInstallation(installation);
+    }
 }
 
 QVector<Liri::AppCenter::SoftwareResource *> FlatpakBackend::updates() const
@@ -260,6 +262,11 @@ GPtrArray *FlatpakBackend::listUpdates(FlatpakInstallation *installation)
     }
 
     return refs;
+}
+
+FlatpakResource *FlatpakBackend::findResourceFromInstalledRef(FlatpakInstallation *installation, FlatpakInstalledRef *ref) const
+{
+    return m_resources.value(FlatpakResource::keyFromInstalledRef(installation, ref));
 }
 
 bool FlatpakBackend::extractRepositories(FlatpakInstallation *installation)
@@ -381,29 +388,16 @@ bool FlatpakBackend::listInstalledApps(FlatpakInstallation *installation)
 
         for (auto component : metadata.components()) {
             // Create resource
-            FlatpakResource *resource = new FlatpakResource(component, installation);
+            auto *resource = findResourceFromInstalledRef(installation, ref);
+            if (!resource || resource->component().id() != component.id())
+                resource = new FlatpakResource(component, installation);
             resource->updateFromRef(FLATPAK_REF(ref));
             resource->updateFromInstalledRef(ref);
 
-            // Update an existing resource if any
-            bool resourceFound = false;
-            for (auto r : m_resources) {
-                auto existingResource = qobject_cast<FlatpakResource *>(r);
-                if (existingResource->desktopId() == resource->desktopId() &&
-                        existingResource->name() == resource->name()) {
-                    resourceFound = true;
-                    existingResource->updateFromRef(FLATPAK_REF(ref));
-                    existingResource->updateFromInstalledRef(ref);
-                    break;
-                }
-            }
-
-            // Add resource if it's new
-            if (resourceFound) {
-                resource->deleteLater();
-            } else {
+            // Add the resource
+            if (!m_resources.contains(resource->key())) {
                 m_manager->resourcesModel()->addResource(resource);
-                m_resources.append(resource);
+                m_resources[resource->key()] = resource;
             }
         }
     }
@@ -539,6 +533,35 @@ void FlatpakBackend::fetchAppStreamMetadata(FlatpakInstallation *installation, F
     job->start();
 }
 
+bool FlatpakBackend::checkLocalUpdatesForInstallation(FlatpakInstallation *installation)
+{
+    g_autoptr(GError) error = nullptr;
+
+    g_autoptr(GPtrArray) refs =
+            flatpak_installation_list_installed_refs(installation, m_cancellable, &error);
+    if (!refs) {
+        const char *name = flatpak_installation_get_display_name(installation);
+        qCWarning(lcFlatpakBackend, "Failed to list installed apps from installation %s: %s",
+                  name, error->message);
+        return false;
+    }
+
+    // Process refs
+    for (uint i = 0; i < refs->len; i++) {
+        FlatpakInstalledRef *ref = FLATPAK_INSTALLED_REF(g_ptr_array_index(refs, i));
+
+        // Check the status again from the installed ref, we might have already
+        // download a new version
+        auto *resource = findResourceFromInstalledRef(installation, ref);
+        if (resource) {
+            resource->updateFromRef(FLATPAK_REF(ref));
+            resource->updateFromInstalledRef(ref);
+        }
+    }
+
+    return true;
+}
+
 void FlatpakBackend::checkUpdatesForInstallation(FlatpakInstallation *installation)
 {
     auto watcher = new QFutureWatcher<GPtrArray *>(this);
@@ -566,16 +589,15 @@ void FlatpakBackend::updatesFetched(FlatpakInstallation *installation, GPtrArray
 
     for (uint i = 0; i < refs->len; i++) {
         FlatpakInstalledRef *ref = FLATPAK_INSTALLED_REF(g_ptr_array_index(refs, i));
-        const QString packageName = QString::fromUtf8(flatpak_ref_get_name(FLATPAK_REF(ref)));
 
-        for (auto r : m_resources) {
-            if (r->packageName() == packageName) {
-                FlatpakResource *resource = qobject_cast<FlatpakResource *>(r);
-                if (resource) {
-                    resource->updateFromRef(FLATPAK_REF(ref));
-                    resource->updateFromInstalledRef(ref);
-                }
-            }
+        auto *resource = findResourceFromInstalledRef(installation, ref);
+        if (resource) {
+            resource->updateFromRef(FLATPAK_REF(ref));
+            resource->updateFromInstalledRef(ref);
+
+            // We might not have the latest commit ready to be installed:
+            // force state given that Flatpak tells us this is upgradable
+            resource->setState(SoftwareResource::UpgradableState);
         }
     }
 
@@ -608,24 +630,10 @@ void FlatpakBackend::addAppsFromRemote(FlatpakInstallation *installation, Flatpa
         FlatpakResource *resource = new FlatpakResource(component, installation);
         resource->updateFromRemote(remote);
 
-        // Update an existing resource if any
-        bool resourceFound = false;
-        for (auto r : m_resources) {
-            auto existingResource = qobject_cast<FlatpakResource *>(r);
-            if (existingResource->desktopId() == resource->desktopId() &&
-                    existingResource->name() == resource->name()) {
-                resourceFound = true;
-                existingResource->updateFromResource(resource);
-                break;
-            }
-        }
-
-        // Add resource if it's new
-        if (resourceFound) {
-            resource->deleteLater();
-        } else {
+        // Add resource
+        if (!m_resources.contains(resource->key())) {
             m_manager->resourcesModel()->addResource(resource);
-            m_resources.append(resource);
+            m_resources[resource->key()] = resource;
         }
     }
 

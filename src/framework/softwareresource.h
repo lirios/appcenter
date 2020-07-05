@@ -162,6 +162,8 @@ private:
     SoftwareResourcePrivate *const d_ptr;
 };
 
+typedef QVector<SoftwareResource *> SoftwareResources;
+
 } // namespace AppCenter
 
 } // namespace Liri
