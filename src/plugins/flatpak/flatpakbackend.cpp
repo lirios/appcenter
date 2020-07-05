@@ -141,16 +141,9 @@ void FlatpakBackend::initialize(Liri::AppCenter::SoftwareManager *manager)
 
 void FlatpakBackend::listSources()
 {
-    m_flatHubFound = false;
-
     // List sources
     for (auto installation : qAsConst(m_installations))
         extractRepositories(installation);
-
-    // Make sure the Flathub repo is always installed so that users
-    // will immediately see the list of available apps
-    if (!m_flatHubFound && m_userInstallation)
-        addFlathubRemote();
 }
 
 void FlatpakBackend::listAvailableApps()
@@ -306,9 +299,6 @@ bool FlatpakBackend::extractRepositories(FlatpakInstallation *installation)
         source->setPriority(priority);
         m_manager->sourcesModel()->addSource(source);
         Q_EMIT m_manager->sourceAdded(source);
-
-        if (url.host() == QLatin1String("flathub.org") && url.path().startsWith(QLatin1String("/repo")))
-            m_flatHubFound = true;
     }
 
     return true;
@@ -533,70 +523,6 @@ bool FlatpakBackend::addLocalSource(const QString &name, const QUrl &url)
     }
 
     return true;
-}
-
-void FlatpakBackend::addFlathubRemote()
-{
-    // Find a suitable name for the remote
-    QString name = QLatin1String("flathub");
-    if (flatpak_installation_get_remote_by_name(m_userInstallation, name.toUtf8().constData(), nullptr, nullptr)) {
-        // The flathub remote name is already used, add a number
-        int number = 1;
-        bool keepGoing = true;
-        while (keepGoing) {
-            name = QStringLiteral("flathub-%1").arg(number);
-            if (!flatpak_installation_get_remote_by_name(m_userInstallation, name.toUtf8().constData(), nullptr, nullptr))
-                keepGoing = false;
-        }
-    }
-
-    // Create remote
-    FlatpakRemote *remote = flatpak_remote_new(name.toUtf8().constData());
-    flatpak_remote_set_title(remote, "Flathub");
-    flatpak_remote_set_url(remote, "https://flathub.org/repo/");
-    flatpak_remote_set_noenumerate(remote, false);
-    flatpak_remote_set_disabled(remote, false);
-
-    // Download GPG key
-    QNetworkAccessManager *manager = new QNetworkAccessManager(this);
-    connect(manager, &QNetworkAccessManager::finished, this, [this, manager, remote](QNetworkReply *reply) {
-        g_autoptr(GCancellable) cancellable = g_cancellable_new();
-        g_autoptr(GError) error = nullptr;
-
-        // Set GPG key
-        if (reply->error() == QNetworkReply::NoError) {
-            QByteArray gpgKey = reply->readAll();
-            g_autoptr(GBytes) bytes = g_bytes_new(gpgKey.constData(), gpgKey.size());
-            flatpak_remote_set_gpg_key(remote, bytes);
-            flatpak_remote_set_gpg_verify(remote, true);
-
-            // And save it
-            if (flatpak_installation_modify_remote(m_userInstallation, remote, cancellable, &error)) {
-                FlatpakSource *source = new FlatpakSource(m_userInstallation, remote);
-                source->setBackend(this);
-                source->setName(QString::fromUtf8(flatpak_remote_get_name(remote)));
-                source->setTitle(QString::fromUtf8(flatpak_remote_get_title(remote)));
-                source->setEnabled(true);
-                source->setSection(QLatin1String("Flatpak"));
-                source->setUrl(QString::fromUtf8(flatpak_remote_get_url(remote)));
-                source->setPriority(flatpak_remote_get_prio(remote));
-                m_manager->sourcesModel()->addSource(source);
-                Q_EMIT m_manager->sourceAdded(source);
-
-                m_flatHubFound = true;
-            } else {
-                qCWarning(lcFlatpakBackend,
-                          "Unable to add the Flathub source to the user installation: %s",
-                          error->message);
-            }
-        } else {
-            qCWarning(lcFlatpakBackend,
-                      "Unable to add the Flathub source to the user installation: failed to download GPG key");
-        }
-
-        manager->deleteLater();
-    });
-    manager->get(QNetworkRequest(QUrl(QLatin1String("https://flathub.org/repo/flathub.gpg"))));
 }
 
 void FlatpakBackend::fetchAppStreamMetadata(FlatpakInstallation *installation, FlatpakRemote *remote)

@@ -67,7 +67,6 @@ private:
     uint m_userInstallationUpdates = 0;
     uint m_systemInstallationUpdates = 0;
     QVector<Liri::AppCenter::SoftwareResource *> m_resources;
-    bool m_flatHubFound = false;
 
     bool extractRepositories(FlatpakInstallation *installation);
     bool listAvailableApps(FlatpakInstallation *installation);
@@ -76,8 +75,6 @@ private:
     FlatpakResource *installFromFlatpakRef(const QString &filePath);
 
     bool addLocalSource(const QString &name, const QUrl &url);
-
-    void addFlathubRemote();
 
     void fetchAppStreamMetadata(FlatpakInstallation *installation, FlatpakRemote *remote);
 
