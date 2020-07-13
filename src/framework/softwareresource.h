@@ -50,6 +50,7 @@ class LIRIAPPCENTER_EXPORT SoftwareResource : public QObject
     Q_PROPERTY(bool updatesAvailable READ updatesAvailable NOTIFY updatesAvailableChanged)
     Q_PROPERTY(quint64 downloadSize READ downloadSize CONSTANT)
     Q_PROPERTY(quint64 installedSize READ installedSize CONSTANT)
+    Q_PROPERTY(quint64 size READ size CONSTANT)
     Q_PROPERTY(QString changeLog READ changeLog CONSTANT)
     Q_PROPERTY(bool installed READ isInstalled NOTIFY stateChanged)
     Q_PROPERTY(bool localized READ isLocalized CONSTANT)
@@ -144,6 +145,7 @@ public:
 
     virtual bool updatesAvailable() const = 0;
 
+    qint64 size() const;
     virtual quint64 downloadSize() const = 0;
     virtual quint64 installedSize() const = 0;
 
@@ -180,6 +182,10 @@ public:
     QList<Review *> reviews() const;
     void fetchReviews();
 
+    Q_INVOKABLE void submitReview(const QString &summary,
+                                  const QString &description,
+                                  int rating);
+
 Q_SIGNALS:
     void stateChanged();
     void versionChanged();
@@ -194,6 +200,18 @@ Q_SIGNALS:
     void kudosChanged();
     void ratingChanged();
     void reviewsFetched();
+    void reviewSubmitFinished(Review *review);
+    void reviewSubmitFailed(Review *review, const QString &errorMessage);
+    void reviewReportFinished(Review *review);
+    void reviewReportFailed(Review *review, const QString &errorMessage);
+    void reviewUpVoteFinished(Review *review);
+    void reviewUpVoteFailed(Review *review, const QString &errorMessage);
+    void reviewDownVoteFinished(Review *review);
+    void reviewDownVoteFailed(Review *review, const QString &errorMessage);
+    void reviewDismissFinished(Review *review);
+    void reviewDismissFailed(Review *review, const QString &errorMessage);
+    void reviewRemoveFinished(Review *review);
+    void reviewRemoveFailed(Review *review, const QString &errorMessage);
 
 private:
     SoftwareResourcePrivate *const d_ptr;

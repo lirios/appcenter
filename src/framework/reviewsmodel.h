@@ -21,16 +21,21 @@ class LIRIAPPCENTER_EXPORT ReviewsModel : public QAbstractListModel
     Q_DECLARE_PRIVATE(ReviewsModel)
     Q_DISABLE_COPY(ReviewsModel)
     Q_PROPERTY(SoftwareResource *resource READ resource WRITE setResource NOTIFY resourceChanged)
+    Q_PROPERTY(int count READ rowCount NOTIFY countChanged)
 public:
     enum Roles {
-        CreationDateRole = Qt::UserRole + 1,
+        ReviewRole = Qt::UserRole + 1,
+        CreationDateRole,
         RatingRole,
         PriorityRole,
+        KarmaUpRole,
+        KarmaDownRole,
         ReviewerIdRole,
         ReviewerNameRole,
         SummaryRole,
         DescriptionRole,
         VersionRole,
+        SelfMadeRole,
         HasAlreadyVotedRole,
         MetadataRole,
     };
@@ -47,11 +52,15 @@ public:
 
 Q_SIGNALS:
     void resourceChanged();
+    void countChanged();
+    void reviewsFetched();
 
 private:
     ReviewsModelPrivate *const d_ptr;
 
     Q_PRIVATE_SLOT(d_func(), void handleReviewsFetched())
+    Q_PRIVATE_SLOT(d_func(), void handleReviewSubmitted(Review*))
+    Q_PRIVATE_SLOT(d_func(), void handleReviewRemoved(Review*))
 };
 
 } // namespace AppCenter

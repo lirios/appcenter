@@ -81,6 +81,15 @@ QString SoftwareResource::version() const
     return availableVersion();
 }
 
+qint64 SoftwareResource::size() const
+{
+    if (state() == BrokenState)
+        return 0;
+    else if (state() == InstalledState)
+        return installedSize();
+    return downloadSize();
+}
+
 bool SoftwareResource::isInstalled() const
 {
     return state() == InstalledState;
@@ -238,6 +247,19 @@ void SoftwareResource::fetchReviews()
     const auto list = SoftwareManagerPrivate::get(d->manager)->reviewsBackends;
     for (auto *backend : qAsConst(list))
         backend->fetchReviews(this);
+}
+
+void SoftwareResource::submitReview(const QString &summary,
+                                    const QString &description,
+                                    int rating)
+{
+    Q_D(SoftwareResource);
+
+    const auto list = SoftwareManagerPrivate::get(d->manager)->reviewsBackends;
+    for (auto *backend : qAsConst(list)) {
+        if (backend->submitReview(this, summary, description, rating))
+            break;
+    }
 }
 
 } // namespace AppCenter

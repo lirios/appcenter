@@ -7,9 +7,21 @@
         <file>qml/main.qml</file>
         <file>qml/SourcesTab.qml</file>
         <file>qml/UpdatesTab.qml</file>
-        <file>qml/Transaction.qml</file>
-        <file>qml/Rating.qml</file>
-        <file>qml/StarRatings.qml</file>
-        <file>qml/RatingStar.qml</file>
+        <file>qml/app/Buttons.qml</file>
+        <file>qml/app/Details.qml</file>
+        <file>qml/app/Header.qml</file>
+        <file>qml/app/HeaderRatings.qml</file>
+        <file>qml/app/Icon.qml</file>
+        <file>qml/app/Info.qml</file>
+        <file>qml/app/RatingsReviews.qml</file>
+        <file>qml/app/Review.qml</file>
+        <file>qml/app/Screenshots.qml</file>
+        <file>qml/app/Transaction.qml</file>
+        <file>qml/pages/AddReviewPage.qml</file>
+        <file>qml/pages/ReviewsPage.qml</file>
+        <file>qml/ratings/RatingNumber.qml</file>
+        <file>qml/ratings/RatingStar.qml</file>
+        <file>qml/ratings/StarIcon.qml</file>
+        <file>qml/ratings/StarRatings.qml</file>
     </qresource>
 </RCC>

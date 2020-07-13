@@ -72,6 +72,28 @@ void ReviewPrivate::setPriority(int value)
     Q_EMIT q->priorityChanged();
 }
 
+void ReviewPrivate::setKarmaUp(int value)
+{
+    Q_Q(Review);
+
+    if (karmaUp == value)
+        return;
+
+    karmaUp = value;
+    Q_EMIT q->karmaUpChanged();
+}
+
+void ReviewPrivate::setKarmaDown(int value)
+{
+    Q_Q(Review);
+
+    if (karmaDown == value)
+        return;
+
+    karmaDown = value;
+    Q_EMIT q->karmaDownChanged();
+}
+
 void ReviewPrivate::setReviewerId(const QString &value)
 {
     Q_Q(Review);
@@ -127,6 +149,17 @@ void ReviewPrivate::setVersion(const QString &value)
     Q_EMIT q->versionChanged();
 }
 
+void ReviewPrivate::setSelfMade(bool value)
+{
+    Q_Q(Review);
+
+    if (selfMade == value)
+        return;
+
+    selfMade = value;
+    Q_EMIT q->selfMadeChanged();
+}
+
 void ReviewPrivate::setAlreadyVoted(bool value)
 {
     Q_Q(Review);
@@ -151,6 +184,12 @@ Review::Review(QObject *parent)
 Review::~Review()
 {
     delete d_ptr;
+}
+
+ReviewsBackend *Review::backend() const
+{
+    Q_D(const Review);
+    return d->backend;
 }
 
 SoftwareResource *Review::resource() const
@@ -213,10 +252,28 @@ QString Review::version() const
     return d->version;
 }
 
+bool Review::isSelfMade() const
+{
+    Q_D(const Review);
+    return d->selfMade;
+}
+
 bool Review::hasAlreadyVoted() const
 {
     Q_D(const Review);
     return d->alreadyVoted;
+}
+
+int Review::karmaUp() const
+{
+    Q_D(const Review);
+    return d->karmaUp;
+}
+
+int Review::karmaDown() const
+{
+    Q_D(const Review);
+    return d->karmaDown;
 }
 
 QVariantMap Review::metadata() const
@@ -237,6 +294,36 @@ QVariant Review::getMetadataValue(const QString &key)
 {
     Q_D(const Review);
     return d->metadata.value(key);
+}
+
+void Review::upVote()
+{
+    Q_D(Review);
+    d->backend->upVoteReview(this);
+}
+
+void Review::downVote()
+{
+    Q_D(Review);
+    d->backend->downVoteReview(this);
+}
+
+void Review::report()
+{
+    Q_D(Review);
+    d->backend->reportReview(this);
+}
+
+void Review::dismiss()
+{
+    Q_D(Review);
+    d->backend->dismissReview(this);
+}
+
+void Review::remove()
+{
+    Q_D(Review);
+    d->backend->removeReview(this);
 }
 
 } // namespace AppCenter

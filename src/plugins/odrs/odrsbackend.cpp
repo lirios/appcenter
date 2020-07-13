@@ -14,6 +14,8 @@
 #include <QNetworkReply>
 #include <QStandardPaths>
 
+#include <Qt5AccountsService/UserAccount>
+
 #include <LiriAppCenter/Rating>
 #include <LiriAppCenter/Review>
 #include <LiriAppCenter/SoftwareResource>
@@ -79,13 +81,16 @@ void OdrsBackend::fetchRatings()
             for (const auto &error : errors)
                 qCWarning(lcOdrsBackend, "\t%s", qPrintable(error.errorString()));
         });
-#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
-        connect(reply, &QNetworkReply::errorOccurred, this,
-                [](QNetworkReply::NetworkError error) {
+        auto errorHandler = [reply](QNetworkReply::NetworkError error) {
             if (error != QNetworkReply::NoError)
                 qCWarning(lcOdrsBackend, "Failed to fetch ratings: %s",
                           qPrintable(reply->errorString()));
-        });
+        };
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+        connect(reply, &QNetworkReply::errorOccurred, errorHandler);
+#else
+        connect(reply, static_cast<void (QNetworkReply::*)(QNetworkReply::NetworkError)>(&QNetworkReply::error),
+                errorHandler);
 #endif
         connect(reply, &QNetworkReply::finished, this, [this, cacheFileName, reply] {
             QFile file(cacheFileName);
@@ -135,28 +140,29 @@ void OdrsBackend::fetchReviews(SoftwareResource *resource)
     auto *reply = m_manager->post(request, data);
     connect(reply, &QNetworkReply::sslErrors, this,
             [resource](const QList<QSslError> &errors) {
-        qCWarning(lcOdrsBackend, "Failed to fetch reviews for \"%s\":",
+        qCWarning(lcOdrsBackend, "Failed to fetch reviews for \"%s\" due to SSL errors:",
                   qPrintable(resource->appId()));
         for (const auto &error : errors)
             qCWarning(lcOdrsBackend, "\t%s", qPrintable(error.errorString()));
     });
-#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
-        connect(reply, &QNetworkReply::errorOccurred, this,
-                [](QNetworkReply::NetworkError error) {
-            if (error != QNetworkReply::NoError)
-                qCWarning(lcOdrsBackend, "Failed to fetch reviews: %s",
-                          qPrintable(reply->errorString()));
-        });
-#endif
-    connect(reply, &QNetworkReply::finished, this, [this, reply] {
-        auto *resource = qobject_cast<SoftwareResource *>(reply->request().originatingObject());
-
-        if (reply->error() != QNetworkReply::NoError) {
+    auto errorHandler = [reply, resource](QNetworkReply::NetworkError error) {
+        if (error != QNetworkReply::NoError)
             qCWarning(lcOdrsBackend, "Failed to fetch reviews for \"%s\": %s",
                       qPrintable(resource->appId()),
                       qPrintable(reply->errorString()));
+    };
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+    connect(reply, &QNetworkReply::errorOccurred, errorHandler);
+#else
+    connect(reply, static_cast<void (QNetworkReply::*)(QNetworkReply::NetworkError)>(&QNetworkReply::error),
+            errorHandler);
+#endif
+    connect(reply, &QNetworkReply::finished, this, [this, reply] {
+        // We deal with errors in the appropriate slot
+        if (reply->error() != QNetworkReply::NoError)
             return;
-        }
+
+        auto *resource = qobject_cast<SoftwareResource *>(reply->request().originatingObject());
 
         QJsonParseError parseError;
         const auto json = QJsonDocument::fromJson(reply->readAll(), &parseError);
@@ -188,34 +194,61 @@ QList<Review *> OdrsBackend::reviews() const
     return m_reviews;
 }
 
-void OdrsBackend::submitReview(Review *review)
+bool OdrsBackend::submitReview(SoftwareResource *resource,
+                               const QString &summary,
+                               const QString &description,
+                               int rating)
 {
-    postReview(QUrl(QStringLiteral(ODRS_URL "/submit")), review);
+    auto *review = new Review();
+    auto *dReview = ReviewPrivate::get(review);
+
+    dReview->backend = this;
+
+    dReview->setResource(resource);
+    dReview->setId(0);
+    dReview->setCreationDate(QDateTime::currentDateTime());
+    dReview->setRating(rating * 20);
+    dReview->setKarmaUp(0);
+    dReview->setKarmaDown(0);
+    dReview->setPriority(0);
+    dReview->setReviewerId(getUserHash());
+    dReview->setSelfMade(true);
+
+    auto *account = new QtAccountsService::UserAccount();
+    dReview->setReviewerName(account->realName());
+
+    dReview->setSummary(summary);
+    dReview->setDescription(description);
+    dReview->setVersion(resource->version());
+
+    postReview(SubmitReview, review);
+
+    return true;
 }
 
 void OdrsBackend::reportReview(Review *review)
 {
-    postReview(QUrl(QStringLiteral(ODRS_URL "/report")), review);
+    postReview(ReportReview, review);
 }
 
-void OdrsBackend::upvoteReview(Review *review)
+void OdrsBackend::upVoteReview(Review *review)
 {
-    postReview(QUrl(QStringLiteral(ODRS_URL "/upvote")), review);
+    postReview(UpVoteReview, review);
 }
 
-void OdrsBackend::downvoteReview(Review *review)
+void OdrsBackend::downVoteReview(Review *review)
 {
-    postReview(QUrl(QStringLiteral(ODRS_URL "/downvote")), review);
+    postReview(DownVoteReview, review);
 }
 
 void OdrsBackend::dismissReview(Review *review)
 {
-    postReview(QUrl(QStringLiteral(ODRS_URL "/dismiss")), review);
+    postReview(DismissReview, review);
 }
 
 void OdrsBackend::removeReview(Review *review)
 {
-    postReview(QUrl(QStringLiteral(ODRS_URL "/remove")), review);
+    postReview(RemoveReview, review);
 }
 
 void OdrsBackend::parseRatings(const QString &fileName)
@@ -252,14 +285,14 @@ void OdrsBackend::parseRatings(const QString &fileName)
     }
 }
 
-void OdrsBackend::postReview(const QUrl &url, Review *review)
+void OdrsBackend::postReview(ReviewAction action, Review *review)
 {
     auto *osRelease = new Liri::OsRelease(this);
 
     const QJsonObject object = {
         { QStringLiteral("user_hash"), review->reviewerId() },
         { QStringLiteral("user_display"), review->reviewerName() },
-        { QStringLiteral("user_skey"), review->getMetadataValue(QStringLiteral("ODRS::user_skey")).toString() },
+        { QStringLiteral("user_skey"), review->resource()->getMetadata(QStringLiteral("ODRS::user_skey")).toString() },
         { QStringLiteral("app_id"), review->resource()->appId() },
         { QStringLiteral("locale"), QLocale::system().name() },
         { QStringLiteral("distro"), osRelease->name() },
@@ -277,7 +310,27 @@ void OdrsBackend::postReview(const QUrl &url, Review *review)
     review->addMetadata(QStringLiteral("ODRS::json"), document.toVariant());
 
     QNetworkRequest request;
-    request.setUrl(url);
+    switch (action) {
+    case SubmitReview:
+        request.setUrl(QUrl(QStringLiteral(ODRS_URL "/submit")));
+        break;
+    case ReportReview:
+        request.setUrl(QUrl(QStringLiteral(ODRS_URL "/report")));
+        break;
+    case UpVoteReview:
+        request.setUrl(QUrl(QStringLiteral(ODRS_URL "/upvote")));
+        break;
+    case DownVoteReview:
+        request.setUrl(QUrl(QStringLiteral(ODRS_URL "/downvote")));
+        break;
+    case DismissReview:
+        request.setUrl(QUrl(QStringLiteral(ODRS_URL "/dismiss")));
+        break;
+    case RemoveReview:
+        request.setUrl(QUrl(QStringLiteral(ODRS_URL "/remove")));
+        break;
+    }
+
     request.setHeader(QNetworkRequest::UserAgentHeader, USER_AGENT);
     request.setHeader(QNetworkRequest::ContentTypeHeader, QStringLiteral("application/json; charset=utf-8"));
     request.setHeader(QNetworkRequest::ContentLengthHeader, data.size());
@@ -286,28 +339,55 @@ void OdrsBackend::postReview(const QUrl &url, Review *review)
     auto *reply = m_manager->post(request, data);
     connect(reply, &QNetworkReply::sslErrors, this,
             [review](const QList<QSslError> &errors) {
-        qCWarning(lcOdrsBackend, "Failed to post review for \"%s\":",
+        qCWarning(lcOdrsBackend, "Failed to post review for \"%s\" due to SSL errors:",
                   qPrintable(review->resource()->appId()));
         for (const auto &error : errors)
             qCWarning(lcOdrsBackend, "\t%s", qPrintable(error.errorString()));
     });
-#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
-        connect(reply, &QNetworkReply::errorOccurred, this,
-                [](QNetworkReply::NetworkError error) {
-            if (error != QNetworkReply::NoError)
-                qCWarning(lcOdrsBackend, "Failed to fetch reviews: %s",
-                          qPrintable(reply->errorString()));
-        });
-#endif
-    connect(reply, &QNetworkReply::finished, this, [this, reply] {
-        auto *review = qobject_cast<Review *>(reply->request().originatingObject());
-
-        if (reply->error() != QNetworkReply::NoError) {
+    auto errorHandler = [reply, review, action](QNetworkReply::NetworkError error) {
+        if (error != QNetworkReply::NoError) {
             qCWarning(lcOdrsBackend, "Failed to post review for \"%s\": %s",
                       qPrintable(review->resource()->appId()),
                       qPrintable(reply->errorString()));
-            return;
+            switch (action) {
+            case SubmitReview:
+                Q_EMIT review->resource()->reviewSubmitFailed(review, reply->errorString());
+                break;
+            case ReportReview:
+                Q_EMIT review->reportFailed(reply->errorString());
+                Q_EMIT review->resource()->reviewReportFailed(review, reply->errorString());
+                break;
+            case UpVoteReview:
+                Q_EMIT review->upVoteFailed(reply->errorString());
+                Q_EMIT review->resource()->reviewUpVoteFailed(review, reply->errorString());
+                break;
+            case DownVoteReview:
+                Q_EMIT review->downVoteFailed(reply->errorString());
+                Q_EMIT review->resource()->reviewDownVoteFailed(review, reply->errorString());
+                break;
+            case DismissReview:
+                Q_EMIT review->dismissFailed(reply->errorString());
+                Q_EMIT review->resource()->reviewDismissFailed(review, reply->errorString());
+                break;
+            case RemoveReview:
+                Q_EMIT review->removeFailed(reply->errorString());
+                Q_EMIT review->resource()->reviewRemoveFailed(review, reply->errorString());
+                break;
+            }
         }
+    };
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+    connect(reply, &QNetworkReply::errorOccurred, errorHandler);
+#else
+    connect(reply, static_cast<void (QNetworkReply::*)(QNetworkReply::NetworkError)>(&QNetworkReply::error),
+            errorHandler);
+#endif
+    connect(reply, &QNetworkReply::finished, this, [this, reply, action] {
+        // We deal with errors in the appropriate slot
+        if (reply->error() != QNetworkReply::NoError)
+            return;
+
+        auto *review = qobject_cast<Review *>(reply->request().originatingObject());
 
         QJsonParseError parseError;
         const auto json = QJsonDocument::fromJson(reply->readAll(), &parseError);
@@ -318,13 +398,47 @@ void OdrsBackend::postReview(const QUrl &url, Review *review)
             return;
         }
 
-        Q_EMIT reviewSubmitted(review);
+        switch (action) {
+        case SubmitReview:
+            Q_EMIT reviewSubmitted(review);
+            Q_EMIT review->resource()->reviewSubmitFinished(review);
+            break;
+        case ReportReview:
+            Q_EMIT reviewReported(review);
+            Q_EMIT review->reportFinished();
+            Q_EMIT review->resource()->reviewReportFinished(review);
+            break;
+        case UpVoteReview:
+            Q_EMIT reviewUpVoted(review);
+            Q_EMIT review->upVoteFinished();
+            Q_EMIT review->resource()->reviewUpVoteFinished(review);
+            break;
+        case DownVoteReview:
+            Q_EMIT reviewDownVoted(review);
+            Q_EMIT review->downVoteFinished();
+            Q_EMIT review->resource()->reviewDownVoteFinished(review);
+            break;
+        case DismissReview:
+            Q_EMIT reviewDismissed(review);
+            Q_EMIT review->dismissFinished();
+            Q_EMIT review->resource()->reviewDismissFinished(review);
+            break;
+        case RemoveReview:
+            Q_EMIT reviewRemoved(review);
+            Q_EMIT review->removeFinished();
+            Q_EMIT review->resource()->reviewRemoveFinished(review);
+            break;
+        }
 
-        ReviewPrivate::get(review)->setAlreadyVoted(true);
+        if (action == RemoveReview) {
+            review->deleteLater();
+        } else {
+            ReviewPrivate::get(review)->setAlreadyVoted(true);
 
-        const QJsonDocument document =
-                review->getMetadataValue(QStringLiteral("ODRS::json")).toJsonDocument();
-        parseReviews(document, review->resource());
+            const QJsonDocument document =
+                    review->getMetadataValue(QStringLiteral("ODRS::json")).toJsonDocument();
+            parseReviews(document, review->resource());
+        }
     });
 }
 
@@ -344,12 +458,16 @@ void OdrsBackend::parseReviews(const QJsonDocument &json, SoftwareResource *reso
             if (!object.isEmpty()) {
                 int reviewId = object.value(QLatin1String("review_id")).toInt();
 
+                // Some resources like runtimes don't have valid reviews
+                if (reviewId == 0 && object.value(QLatin1String("reviewer_id")).toString().isEmpty())
+                        continue;
+
                 bool alreadyExisting = false;
                 Review *review = nullptr;
 
                 if (reviewId > 0) {
                     for (auto *curReview : qAsConst(m_reviews)) {
-                        if (curReview->id() == reviewId) {
+                        if (curReview->backend() == this && curReview->id() == reviewId) {
                             alreadyExisting = true;
                             review = curReview;
                             break;
@@ -361,6 +479,8 @@ void OdrsBackend::parseReviews(const QJsonDocument &json, SoftwareResource *reso
                     review = new Review();
                 auto *dReview = ReviewPrivate::get(review);
 
+                dReview->backend = this;
+
                 dReview->setResource(resource);
                 dReview->setId(reviewId);
 
@@ -370,13 +490,15 @@ void OdrsBackend::parseReviews(const QJsonDocument &json, SoftwareResource *reso
 
                 dReview->setRating(object.value(QLatin1String("rating")).toInt());
 
+                int karmaUp = object.value(QLatin1String("karma_up")).toInt();
+                int karmaDown = object.value(QLatin1String("karma_down")).toInt();
+                dReview->setKarmaUp(karmaUp);
+                dReview->setKarmaDown(karmaDown);
+
                 if (object.contains(QLatin1String("score"))) {
                     dReview->setPriority(object.value(QLatin1String("score")).toInt());
                 } else if (object.contains(QLatin1String("karma_up")) &&
                            object.contains(QLatin1String("karma_down"))) {
-                    int karmaUp = object.value(QLatin1String("karma_up")).toInt();
-                    int karmaDown = object.value(QLatin1String("karma_down")).toInt();
-
                     // Calculate average rating (from http://www.evanmiller.org/how-not-to-sort-by-average-rating.html)
                     qreal ku = qreal(karmaUp);
                     qreal kd = qreal(karmaDown);
@@ -389,7 +511,10 @@ void OdrsBackend::parseReviews(const QJsonDocument &json, SoftwareResource *reso
                     dReview->setPriority(qFloor(wilson));
                 }
 
-                dReview->setReviewerId(object.value(QLatin1String("user_hash")).toString());
+                auto reviewerId = object.value(QLatin1String("user_hash")).toString();
+                dReview->setReviewerId(reviewerId);
+                dReview->setSelfMade(reviewerId == getUserHash());
+
                 dReview->setReviewerName(object.value(QLatin1String("user_display")).toString());
                 dReview->setSummary(object.value(QLatin1String("summary")).toString());
                 dReview->setDescription(object.value(QLatin1String("description")).toString());

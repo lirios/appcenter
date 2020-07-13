@@ -12,12 +12,14 @@ import Liri.AppCenter 1.0 as AppCenter
 FluidControls.ApplicationWindow {
     title: qsTr("App Center")
 
-    width: 800
-    height: 600
+    width: 1024
+    height: 768
+    minimumWidth: 600
+    minimumHeight: 600
     visible: true
 
-    Material.primary: Material.Blue
-    Material.accent: Material.Blue
+    Material.primary: Material.color(Material.Green, Material.Shade800)
+    Material.accent: Material.color(Material.Green, Material.Shade600)
 
     AppCenter.SoftwareManager {
         id: softwareManager
@@ -34,6 +36,8 @@ FluidControls.ApplicationWindow {
 
     FluidControls.SnackBar {
         id: snackBar
+
+        duration: 5000
     }
 
     initialPage: FluidControls.TabbedPage {

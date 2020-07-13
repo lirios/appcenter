@@ -23,6 +23,16 @@ class OdrsBackend : public ReviewsBackend
 {
     Q_OBJECT
 public:
+    enum ReviewAction {
+        SubmitReview = 0,
+        ReportReview,
+        UpVoteReview,
+        DownVoteReview,
+        DismissReview,
+        RemoveReview
+    };
+    Q_ENUM(ReviewAction)
+
     explicit OdrsBackend(SoftwareManager *manager,
                          QObject *parent = nullptr);
 
@@ -34,10 +44,13 @@ public:
 
     QList<Review *> reviews() const override;
 
-    void submitReview(Review *review) override;
+    bool submitReview(SoftwareResource *resource,
+                      const QString &summary,
+                      const QString &description,
+                      int rating) override;
     void reportReview(Review *review) override;
-    void upvoteReview(Review *review) override;
-    void downvoteReview(Review *review) override;
+    void upVoteReview(Review *review) override;
+    void downVoteReview(Review *review) override;
     void dismissReview(Review *review) override;
     void removeReview(Review *review) override;
 
@@ -47,7 +60,7 @@ private:
     QList<Review *> m_reviews;
 
     void parseRatings(const QString &fileName);
-    void postReview(const QUrl &url, Review *review);
+    void postReview(ReviewAction action, Review *review);
     void parseReviews(const QJsonDocument &json, SoftwareResource *resource);
 };
 

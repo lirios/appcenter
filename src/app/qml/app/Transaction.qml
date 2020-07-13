@@ -79,8 +79,12 @@ RowLayout {
 
     Button {
         text: qsTr("Cancel")
+        flat: true
         enabled: {
             if (!transaction)
+                return false;
+
+            if (!transaction.cancellable)
                 return false;
 
             switch (transaction.status) {
@@ -91,7 +95,6 @@ RowLayout {
                 return true;
             }
         }
-        visible: transaction && transaction.cancellable
         onClicked: {
             transaction.cancel();
         }

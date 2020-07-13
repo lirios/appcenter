@@ -18,6 +18,10 @@ ScreenshotsModel::ScreenshotsModel(QObject *parent)
     : QAbstractListModel(parent)
     , d_ptr(new ScreenshotsModelPrivate(this))
 {
+    connect(this, &QAbstractListModel::rowsInserted,
+            this, &ScreenshotsModel::countChanged);
+    connect(this, &QAbstractListModel::rowsRemoved,
+            this, &ScreenshotsModel::countChanged);
 }
 
 ScreenshotsModel::~ScreenshotsModel()

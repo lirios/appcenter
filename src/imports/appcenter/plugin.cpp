@@ -17,6 +17,7 @@
 #include <LiriAppCenter/Transaction>
 
 #include "filteredresourcesmodel.h"
+#include "filteredreviewsmodel.h"
 #include "paginatemodel.h"
 
 using namespace Liri::AppCenter;
@@ -32,6 +33,7 @@ public:
         Q_ASSERT(QLatin1String(uri) == QLatin1String("Liri.AppCenter"));
 
         qmlRegisterType<FilteredResourcesModel>(uri, 1, 0, "FilteredResourcesModel");
+        qmlRegisterType<FilteredReviewsModel>(uri, 1, 0, "FilteredReviewsModel");
         qmlRegisterType<ScreenshotsModel>(uri, 1, 0, "ScreenshotsModel");
         qmlRegisterType<SoftwareManager>(uri, 1, 0, "SoftwareManager");
         qmlRegisterType<SourcesModel>(uri, 1, 0, "SourcesModel");

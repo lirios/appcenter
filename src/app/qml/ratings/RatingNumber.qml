@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import QtQml 2.0
 import QtQuick 2.0
 import QtQuick.Controls 2.0
 import QtQuick.Controls.Material 2.0
@@ -12,7 +13,7 @@ Column {
 
     FluidControls.DisplayLabel {
         level: 3
-        text: app.rating ? app.rating.rating.toFixed(1) : 0.0.toFixed(1)
+        text: (app.rating ? app.rating.rating.toFixed(1) : 0.0.toFixed(1)).toLocaleString(Qt.locale())
     }
 
     Row {
@@ -21,11 +22,12 @@ Column {
 
             RatingStar {
                 star: index + 1
+                rating: app.rating ? app.rating.rating : 0
             }
         }
     }
 
     FluidControls.BodyLabel {
-        text: app.rating ? app.rating.numVotes : "0"
+        text: qsTr("%1 Ratings").arg(Number(app.rating ? app.rating.numVotes : 0).toFixed(0).toLocaleString(Qt.locale()))
     }
 }

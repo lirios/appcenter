@@ -11,6 +11,7 @@ class FilteredResourcesModel : public QSortFilterProxyModel
 {
     Q_OBJECT
     Q_PROPERTY(Filter filter READ filter WRITE setFilter NOTIFY filterChanged)
+    Q_PROPERTY(int count READ rowCount NOTIFY countChanged)
 public:
     enum Filter {
         AllApps,
@@ -27,6 +28,7 @@ public:
 
 Q_SIGNALS:
     void filterChanged();
+    void countChanged();
 
 protected:
     bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;

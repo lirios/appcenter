@@ -2,18 +2,24 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import QtQuick 2.1
-import QtQuick.Controls 2.0
+import QtQuick 2.4
+import QtQuick.Controls 2.2
+import QtQuick.Controls.Material 2.2
 import Fluid.Controls 1.0 as FluidControls
 
 Grid {
     rows: 5
     columns: 2
     spacing: FluidControls.Units.smallSpacing / 2
+    horizontalItemAlignment: Grid.AlignRight
     verticalItemAlignment: Grid.AlignVCenter
 
-    Label {
-        text: "5"
+    Row {
+        Repeater {
+            model: 5
+
+            StarIcon {}
+        }
     }
 
     ProgressBar {
@@ -22,8 +28,14 @@ Grid {
         value: app.rating ? app.rating.star5 : 0
     }
 
-    Label {
-        text: "4"
+    ///
+
+    Row {
+        Repeater {
+            model: 4
+
+            StarIcon {}
+        }
     }
 
     ProgressBar {
@@ -32,8 +44,14 @@ Grid {
         value: app.rating ? app.rating.star4 : 0
     }
 
-    Label {
-        text: "3"
+    ///
+
+    Row {
+        Repeater {
+            model: 3
+
+            StarIcon {}
+        }
     }
 
     ProgressBar {
@@ -42,8 +60,14 @@ Grid {
         value: app.rating ? app.rating.star3 : 0
     }
 
-    Label {
-        text: "2"
+    ///
+
+    Row {
+        Repeater {
+            model: 2
+
+            StarIcon {}
+        }
     }
 
     ProgressBar {
@@ -52,9 +76,9 @@ Grid {
         value: app.rating ? app.rating.star2 : 0
     }
 
-    Label {
-        text: "1"
-    }
+    ///
+
+    StarIcon {}
 
     ProgressBar {
         from: 0

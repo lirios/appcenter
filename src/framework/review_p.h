@@ -18,6 +18,7 @@
 
 #include <QVariantMap>
 
+#include <LiriAppCenter/ReviewsBackend>
 #include <LiriAppCenter/Review>
 
 namespace Liri {
@@ -35,25 +36,32 @@ public:
     void setCreationDate(const QDateTime &value);
     void setRating(int value);
     void setPriority(int value);
+    void setKarmaUp(int value);
+    void setKarmaDown(int value);
     void setReviewerId(const QString &value);
     void setReviewerName(const QString &value);
     void setSummary(const QString &value);
     void setDescription(const QString &value);
     void setVersion(const QString &value);
+    void setSelfMade(bool value);
     void setAlreadyVoted(bool value);
 
     static ReviewPrivate *get(Review *review) { return review->d_func(); }
 
+    ReviewsBackend *backend = nullptr;
     SoftwareResource *resource = nullptr;
     int id = 0;
     QDateTime dateCreated;
     int rating = 0;
     int priority = 0;
+    int karmaUp = 0;
+    int karmaDown = 0;
     QString reviewerId;
     QString reviewerName;
     QString summary;
     QString description;
     QString version;
+    bool selfMade = false;
     bool alreadyVoted = false;
     QVariantMap metadata;
 

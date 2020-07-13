@@ -30,6 +30,8 @@ public:
     explicit ReviewsModelPrivate(ReviewsModel *self);
 
     void handleReviewsFetched();
+    void handleReviewSubmitted(Review *review);
+    void handleReviewRemoved(Review *review);
 
     SoftwareResource *resource = nullptr;
     QList<Review *> reviews;

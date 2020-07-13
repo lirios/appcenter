@@ -33,10 +33,13 @@ public:
 
     virtual QList<Review *> reviews() const = 0;
 
-    virtual void submitReview(Review *review) = 0;
+    virtual bool submitReview(SoftwareResource *resource,
+                              const QString &summary,
+                              const QString &description,
+                              int rating) = 0;
     virtual void reportReview(Review *review) = 0;
-    virtual void upvoteReview(Review *review) = 0;
-    virtual void downvoteReview(Review *review) = 0;
+    virtual void upVoteReview(Review *review) = 0;
+    virtual void downVoteReview(Review *review) = 0;
     virtual void dismissReview(Review *review) = 0;
     virtual void removeReview(Review *review) = 0;
 
@@ -45,6 +48,11 @@ Q_SIGNALS:
     void ratingsReady();
     void reviewAdded(Review *review);
     void reviewSubmitted(Review *review);
+    void reviewReported(Review *review);
+    void reviewUpVoted(Review *review);
+    void reviewDownVoted(Review *review);
+    void reviewDismissed(Review *review);
+    void reviewRemoved(Review *review);
 };
 
 } // namespace AppCenter

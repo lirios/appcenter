@@ -14,6 +14,8 @@ liri_add_qml_plugin(liriappcenter
     SOURCES
         filteredresourcesmodel.cpp
         filteredresourcesmodel.h
+        filteredreviewsmodel.cpp
+        filteredreviewsmodel.h
         logging.cpp
         logging.h
         paginatemodel.cpp

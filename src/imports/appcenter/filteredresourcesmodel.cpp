@@ -12,6 +12,15 @@ using namespace Liri::AppCenter;
 FilteredResourcesModel::FilteredResourcesModel(QObject *parent)
     : QSortFilterProxyModel(parent)
 {
+    connect(this, &QAbstractListModel::rowsInserted,
+            this, &FilteredResourcesModel::countChanged);
+    connect(this, &QAbstractListModel::rowsRemoved,
+            this, &FilteredResourcesModel::countChanged);
+
+    setDynamicSortFilter(true);
+    setSortRole(Liri::AppCenter::ResourcesModel::NameRole);
+    setSortLocaleAware(true);
+    sort(0);
 }
 
 FilteredResourcesModel::Filter FilteredResourcesModel::filter() const
@@ -54,7 +63,10 @@ bool FilteredResourcesModel::filterAcceptsRow(int source_row, const QModelIndex 
 
 bool FilteredResourcesModel::lessThan(const QModelIndex &source_left, const QModelIndex &source_right) const
 {
-    QString nameLeft = sourceModel()->data(source_left, ResourcesModel::NameRole).toString();
-    QString nameRight = sourceModel()->data(source_right, ResourcesModel::NameRole).toString();
-    return nameLeft < nameRight;
+    QVariant left = sourceModel()->data(source_left, sortRole());
+    QVariant right = sourceModel()->data(source_right, sortRole());
+
+    if (left.userType() == QMetaType::QString)
+        return QString::localeAwareCompare(left.toString(), right.toString()) < 0;
+    return left < right;
 }
