@@ -50,7 +50,7 @@
     <message>
         <location filename="../qml/AppPage.qml" line="203"/>
         <source>Website</source>
-        <translation>Вебсайт</translation>
+        <translation>Веб-сайт</translation>
     </message>
     <message>
         <location filename="../qml/AppPage.qml" line="249"/>
@@ -60,7 +60,7 @@
     <message>
         <location filename="../qml/AppPage.qml" line="275"/>
         <source>Localized in your language</source>
-        <translation type="unfinished"/>
+        <translation>Переведено на ваш язык</translation>
     </message>
     <message>
         <location filename="../qml/AppPage.qml" line="286"/>
@@ -154,7 +154,7 @@
     <message>
         <location filename="../qml/SourcesTab.qml" line="36"/>
         <source>Edit %1</source>
-        <translation type="unfinished"/>
+        <translation>Изменить %1</translation>
     </message>
     <message>
         <location filename="../qml/SourcesTab.qml" line="74"/>
@@ -169,7 +169,7 @@
     <message>
         <location filename="../qml/SourcesTab.qml" line="86"/>
         <source>%1 (%2)</source>
-        <translation type="unfinished"/>
+        <translation>%1 (%2)</translation>
     </message>
 </context>
 <context>

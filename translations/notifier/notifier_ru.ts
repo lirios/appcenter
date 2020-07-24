@@ -19,12 +19,12 @@
     <message>
         <location filename="../updatenotifier.cpp" line="64"/>
         <source>%1 is ready to update</source>
-        <translation type="unfinished"/>
+        <translation>%1 готово к обновлению</translation>
     </message>
     <message>
         <location filename="../updatenotifier.cpp" line="66"/>
         <source>%1 and %2 are ready to update</source>
-        <translation type="unfinished"/>
+        <translation>%1 и %2 готовы к обновлению</translation>
     </message>
     <message>
         <location filename="../updatenotifier.cpp" line="68"/>
@@ -34,7 +34,7 @@
     <message>
         <location filename="../updatenotifier.cpp" line="71"/>
         <source>%1, %2, and %3 other apps are ready to update</source>
-        <translation type="unfinished"/>
+        <translation>%1, %2, и %3 других приложений готовы к обновлению</translation>
     </message>
 </context>
 </TS>
