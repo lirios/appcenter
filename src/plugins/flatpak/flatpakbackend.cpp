@@ -42,6 +42,8 @@
 #include "flatpakplugin.h"
 #include "flatpaksource.h"
 
+#include <sys/stat.h>
+
 Q_LOGGING_CATEGORY(lcFlatpakBackend, "liri.backends.flatpak")
 
 using namespace Liri::AppCenter;
@@ -93,8 +95,16 @@ FlatpakBackend::~FlatpakBackend()
 
 void FlatpakBackend::initialize(Liri::AppCenter::SoftwareManager *manager)
 {
-    Q_ASSERT(manager);
+    /* Override the umask to 022 to make it possible to share files between
+     * the liri-appcenter process and flatpak system helper process.
+     * Ideally this should be set when needed in the flatpak plugin, but
+     * umask is thread-unsafe so there is really no local way to fix this.
+     *
+     * See https://github.com/flatpak/flatpak/pull/2856/
+     */
+    umask(022);
 
+    Q_ASSERT(manager);
     m_manager = manager;
 
     g_autoptr(GError) error = nullptr;
