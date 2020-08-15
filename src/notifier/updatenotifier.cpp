@@ -27,8 +27,8 @@
 
 UpdateNotifier::UpdateNotifier(QObject *parent)
     : QObject(parent)
+    , m_softwareManager(new AppCenter::SoftwareManager(this))
 {
-    m_softwareManager = new AppCenter::SoftwareManager(this);
     connect(m_softwareManager, &AppCenter::SoftwareManager::updatesAvailable, this,
             &UpdateNotifier::updatesAvailable);
     m_softwareManager->initialize();
@@ -55,7 +55,7 @@ void UpdateNotifier::updatesAvailable(uint count)
 
 QString UpdateNotifier::updatesSummary()
 {
-    QVector<AppCenter::SoftwareResource *> updates = m_softwareManager->updates();
+    AppCenter::SoftwareResources updates = m_softwareManager->updates();
     int updatesCount = updates.size();
 
     if (updatesCount == 0) {

@@ -105,11 +105,11 @@ bool SoftwareManager::removeSource(SoftwareSource *source)
     return false;
 }
 
-QVector<SoftwareResource *> SoftwareManager::updates() const
+SoftwareResources SoftwareManager::updates() const
 {
     Q_D(const SoftwareManager);
 
-    QVector<SoftwareResource *> list;
+    SoftwareResources list;
 
     for (auto backend : d->backends)
         list += backend->updates();

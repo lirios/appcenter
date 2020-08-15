@@ -54,7 +54,7 @@ public:
     Q_INVOKABLE bool addSource(const QString &name);
     Q_INVOKABLE bool removeSource(SoftwareSource *source);
 
-    QVector<SoftwareResource *> updates() const;
+    SoftwareResources updates() const;
     bool hasUpdates() const;
     uint updatesCount() const;
 
