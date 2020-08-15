@@ -337,6 +337,23 @@ QString FlatpakResource::commit() const
     return m_commit;
 }
 
+QString FlatpakResource::ref() const
+{
+    QString refKind;
+
+    switch (kind()) {
+    case FLATPAK_REF_KIND_APP:
+        refKind = QStringLiteral("app");
+        break;
+    case FLATPAK_REF_KIND_RUNTIME:
+        refKind = QStringLiteral("runtime");
+        break;
+    }
+
+    return QStringLiteral("%1/%2/%3/%4").arg(
+                refKind, packageName(), architecture(), branch());
+}
+
 void FlatpakResource::updateFromResource(FlatpakResource *resource)
 {
     setState(resource->state());

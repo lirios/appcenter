@@ -130,6 +130,7 @@ public:
     QString runtime() const;
     QString branch() const;
     QString commit() const;
+    QString ref() const;
 
     void updateFromResource(FlatpakResource *resource);
     void updateFromRemote(FlatpakRemote *remote);

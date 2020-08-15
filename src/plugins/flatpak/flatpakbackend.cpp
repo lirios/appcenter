@@ -453,10 +453,15 @@ FlatpakResource *FlatpakBackend::installFromFlatpakRef(const QString &filePath)
         QByteArray contents = file.readAll();
         g_autoptr(GBytes) bytes = g_bytes_new(contents.data(), contents.size());
 
-        remoteRef = flatpak_installation_install_ref_file(m_userInstallation, bytes, m_cancellable, &error);
-        if (!remoteRef) {
+        g_autoptr(FlatpakTransaction) transaction = flatpak_transaction_new_for_installation(m_userInstallation, m_cancellable, &error);
+        if (!transaction) {
             qCWarning(lcFlatpakBackend, "Failed to install ref file \"%s\": %s",
-                      filePath.toUtf8().constData(), error->message);
+                      qPrintable(filePath), error->message);
+            return nullptr;
+        }
+        if (!flatpak_transaction_add_install_flatpakref(transaction, bytes, &error)) {
+            qCWarning(lcFlatpakBackend, "Failed to install ref file \"%s\": %s",
+                      qPrintable(filePath), error->message);
             return nullptr;
         }
     }

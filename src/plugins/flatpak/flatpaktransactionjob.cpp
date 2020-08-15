@@ -24,29 +24,37 @@
 #include "flatpakplugin.h"
 #include "flatpaktransactionjob.h"
 
-static void flatpakProgress(const gchar *stats, guint progress, gboolean estimating, gpointer userData)
+static void flatpakNewOperation(FlatpakTransaction *transaction,
+                                FlatpakTransactionOperation *operation,
+                                FlatpakTransactionProgress *progress,
+                                gpointer data)
 {
-    Q_UNUSED(stats);
-    Q_UNUSED(estimating);
+    Q_UNUSED(transaction);
+    Q_UNUSED(operation);
 
-    FlatpakTransactionJob *job = static_cast<FlatpakTransactionJob *>(userData);
+    auto *job = static_cast<FlatpakTransactionJob *>(data);
     if (!job)
         return;
 
-    job->setProgress(progress);
+    job->setProgress(flatpak_transaction_progress_get_progress(progress));
 }
 
-FlatpakTransactionJob::FlatpakTransactionJob(FlatpakResource *app, Liri::AppCenter::Transaction::Type type, QObject *parent)
+FlatpakTransactionJob::FlatpakTransactionJob(FlatpakResource *app,
+                                             Liri::AppCenter::Transaction::Type type,
+                                             bool cancellable,
+                                             QObject *parent)
     : QThread(parent)
     , m_app(app)
     , m_type(type)
-    , m_cancellable(g_cancellable_new())
 {
+    if (cancellable)
+        m_cancellable = g_cancellable_new();
 }
 
 FlatpakTransactionJob::~FlatpakTransactionJob()
 {
-    g_object_unref(m_cancellable);
+    if (m_cancellable)
+        g_object_unref(m_cancellable);
 }
 
 int FlatpakTransactionJob::progress() const
@@ -67,63 +75,96 @@ void FlatpakTransactionJob::run()
 {
     g_autoptr(GError) error = nullptr;
 
+    // Create the transaction
+    g_autoptr(FlatpakTransaction) transaction =
+            flatpak_transaction_new_for_installation(m_app->installation(),
+                                                     m_cancellable,
+                                                     &error);
+    if (!transaction) {
+        qCWarning(lcFlatpakBackend,
+                  "Failed to create a transaction for \"%s\": %s",
+                  qPrintable(m_app->name()),
+                  error->message);
+        Q_EMIT failed(QString::fromUtf8(error->message));
+        return;
+    }
+
+    // Update the progress
+    g_signal_connect(transaction, "new-operation", G_CALLBACK(flatpakNewOperation), this);
+
+    // Add the operation
     if (m_type == Liri::AppCenter::Transaction::Install) {
-        FlatpakInstalledRef *ref =
-                flatpak_installation_install(m_app->installation(),
+        if (!flatpak_transaction_add_install(transaction,
                                              m_app->origin().toUtf8().constData(),
-                                             m_app->kind(),
-                                             m_app->packageName().toUtf8().constData(),
-                                             m_app->architecture().toUtf8().constData(),
-                                             m_app->branch().toUtf8().constData(),
-                                             flatpakProgress, this,
-                                             m_cancellable, &error);
-        if (!ref) {
-            qCWarning(lcFlatpakBackend, "Failed to install \"%s\": %s",
-                      m_app->name().toUtf8().constData(),
+                                             m_app->ref().toUtf8().constData(),
+                                             nullptr,
+                                             &error)) {
+            qCWarning(lcFlatpakBackend,
+                      "Failed to add installation of \"%s\" to the transaction: %s",
+                      qPrintable(m_app->name()),
                       error->message);
             Q_EMIT failed(QString::fromUtf8(error->message));
             return;
         }
-
-        m_app->updateFromRef(FLATPAK_REF(ref));
-        m_app->updateFromInstalledRef(ref);
     } else if (m_type == Liri::AppCenter::Transaction::Uninstall) {
-        if (!flatpak_installation_uninstall(m_app->installation(),
-                                            m_app->kind(),
-                                            m_app->packageName().toUtf8().constData(),
-                                            m_app->architecture().toUtf8().constData(),
-                                            m_app->branch().toUtf8().constData(),
-                                            flatpakProgress, this,
-                                            m_cancellable, &error)) {
-            qCWarning(lcFlatpakBackend, "Failed to uninstall \"%s\": %s",
-                      m_app->name().toUtf8().constData(),
+        if (!flatpak_transaction_add_uninstall(transaction,
+                                               m_app->ref().toUtf8().constData(),
+                                               &error)) {
+            qCWarning(lcFlatpakBackend,
+                      "Failed to add uninstallation of \"%s\" to the transaction: %s",
+                      qPrintable(m_app->name()),
+                      error->message);
+            Q_EMIT failed(QString::fromUtf8(error->message));
+            return;
+        }
+    } else if (m_type == Liri::AppCenter::Transaction::Update) {
+        if (!flatpak_transaction_add_update(transaction,
+                                            m_app->ref().toUtf8().constData(),
+                                            nullptr, nullptr, &error)) {
+            qCWarning(lcFlatpakBackend,
+                      "Failed to add update of \"%s\" to the transaction: %s",
+                      qPrintable(m_app->name()),
+                      error->message);
+            Q_EMIT failed(QString::fromUtf8(error->message));
+            return;
+        }
+    }
+
+    // Run the transaction
+    if (!flatpak_transaction_run(transaction, m_cancellable, &error)) {
+        qCWarning(lcFlatpakBackend,
+                  "Failed to run the transaction for \"%s\": %s",
+                  qPrintable(m_app->name()),
+                  error->message);
+        Q_EMIT failed(QString::fromUtf8(error->message));
+        return;
+    }
+
+    // Update resource
+    if (m_type == Liri::AppCenter::Transaction::Install ||
+            m_type == Liri::AppCenter::Transaction::Update) {
+        auto *installedRef =
+                flatpak_installation_get_installed_ref(
+                    m_app->installation(),
+                    m_app->kind(),
+                    m_app->packageName().toUtf8().constData(),
+                    m_app->architecture().toUtf8().constData(),
+                    m_app->branch().toUtf8().constData(),
+                    m_cancellable,
+                    &error);
+        if (!installedRef) {
+            qCWarning(lcFlatpakBackend, "Failed to refresh \"%s\": %s",
+                      qPrintable(m_app->name()),
                       error->message);
             Q_EMIT failed(QString::fromUtf8(error->message));
             return;
         }
 
+        m_app->updateFromRef(FLATPAK_REF(installedRef));
+        m_app->updateFromInstalledRef(installedRef);
+    } else if (m_type == Liri::AppCenter::Transaction::Uninstall) {
         m_app->updateFromRef(nullptr);
         m_app->updateFromInstalledRef(nullptr);
-    } else if (m_type == Liri::AppCenter::Transaction::Update) {
-        FlatpakInstalledRef *ref =
-                flatpak_installation_update(m_app->installation(),
-                                            FLATPAK_UPDATE_FLAGS_NONE,
-                                            m_app->kind(),
-                                            m_app->packageName().toUtf8().constData(),
-                                            m_app->architecture().toUtf8().constData(),
-                                            m_app->branch().toUtf8().constData(),
-                                            flatpakProgress, this,
-                                            m_cancellable, &error);
-        if (!ref) {
-            qCWarning(lcFlatpakBackend, "Failed to update \"%s\": %s",
-                      m_app->name().toUtf8().constData(),
-                      error->message);
-            Q_EMIT failed(QString::fromUtf8(error->message));
-            return;
-        }
-
-        m_app->updateFromRef(FLATPAK_REF(ref));
-        m_app->updateFromInstalledRef(ref);
     }
 
     // Job finished
@@ -133,6 +174,7 @@ void FlatpakTransactionJob::run()
 
 void FlatpakTransactionJob::cancel()
 {
-    g_cancellable_cancel(m_cancellable);
+    if (m_cancellable)
+        g_cancellable_cancel(m_cancellable);
     Q_EMIT cancelled();
 }

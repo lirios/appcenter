@@ -43,6 +43,7 @@ public:
     Q_INVOKABLE void cancel() override;
 
 private:
+    FlatpakResource *m_resource = nullptr;
     FlatpakTransactionJob *m_job = nullptr;
 };
 

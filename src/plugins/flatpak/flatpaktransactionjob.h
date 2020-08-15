@@ -37,6 +37,7 @@ class FlatpakTransactionJob : public QThread
 public:
     explicit FlatpakTransactionJob(FlatpakResource *app,
                                    Liri::AppCenter::Transaction::Type type,
+                                   bool cancellable = true,
                                    QObject *parent = nullptr);
     ~FlatpakTransactionJob();
 
