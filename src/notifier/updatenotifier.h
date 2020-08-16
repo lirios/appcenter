@@ -26,9 +26,12 @@
 #define BACKEND_H
 
 #include <QObject>
+#include <QLoggingCategory>
 
 #include <LiriAppCenter/SoftwareManager>
 #include <LiriNotifications/Notification>
+
+Q_DECLARE_LOGGING_CATEGORY(lcUpdateNotifier)
 
 using namespace Liri;
 
@@ -38,10 +41,11 @@ class UpdateNotifier : public QObject
 public:
     explicit UpdateNotifier(QObject *parent = nullptr);
 
-    void checkForUpdates();
+    void initialize();
 
 private Q_SLOTS:
     void updatesAvailable(uint count);
+    void appUpdated();
 
 private:
     AppCenter::SoftwareManager *m_softwareManager = nullptr;

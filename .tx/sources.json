@@ -17,6 +17,13 @@
     "output_path": "translations/data/desktop/desktop.pot"
   },
   {
+    "type": "desktop",
+    "source_file": "src/notifier/io.liri.AppCenter.Notifier.desktop.in",
+    "dest_file": "src/notifier/io.liri.AppCenter.Notifier.desktop",
+    "file_filter": "translations/data/desktop/notifier/<lang>.po",
+    "output_path": "translations/data/desktop/notifier/desktop.pot"
+  },
+  {
     "type": "metainfo",
     "source_file": "src/app/io.liri.AppCenter.appdata.xml.in",
     "dest_file": "src/app/io.liri.AppCenter.appdata.xml",

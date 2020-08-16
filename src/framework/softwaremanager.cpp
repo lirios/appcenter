@@ -24,7 +24,6 @@
 #include <QCoreApplication>
 #include <QDir>
 #include <QPluginLoader>
-#include <QTimer>
 
 #include "backend.h"
 #include "backendplugin.h"
@@ -57,11 +56,6 @@ SoftwareManager::SoftwareManager(QObject *parent)
     qRegisterMetaType<SoftwareResource *>("SoftwareResource*");
     qRegisterMetaType<SourcesModel *>("SourcesModel*");
     qRegisterMetaType<ResourcesModel *>("ResourcesModel*");
-
-    // Check for updates every single day
-    QTimer *timer = new QTimer(this);
-    timer->setInterval(24 * 60 * 60 * 1000);
-    connect(timer, &QTimer::timeout, this, &SoftwareManager::checkForUpdates);
 }
 
 SoftwareManager::~SoftwareManager()

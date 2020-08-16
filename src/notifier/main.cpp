@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
     loadAppTranslations();
 
     UpdateNotifier notifier;
-    notifier.checkForUpdates();
+    notifier.initialize();
 
     return app.exec();
 }

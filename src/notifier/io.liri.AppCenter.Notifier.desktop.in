@@ -1,0 +1,8 @@
+[Desktop Entry]
+_Name=App Center
+Exec=@LIBEXECDIR@/liri-appcenter-notifier
+Icon=system-software-update
+Terminal=false
+Type=Application
+Categories=X-Liri;Qt;System;PackageManager;
+OnlyShowIn=X-Liri

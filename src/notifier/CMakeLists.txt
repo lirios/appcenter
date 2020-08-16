@@ -8,9 +8,28 @@ qt5_add_translation(LiriAppCenter_QM_FILES ${LiriAppCenter_TRANSLATIONS})
 install(FILES ${LiriAppCenter_QM_FILES}
         DESTINATION "${INSTALL_DATADIR}/liri-appcenter/translations")
 
-liri_add_executable(LiriUpdateNotifier
+if(IS_ABSOLUTE "${INSTALL_LIBEXECDIR}")
+    set(LIBEXECDIR "${INSTALL_LIBEXECDIR}")
+else()
+    set(LIBEXECDIR "${CMAKE_INSTALL_PREFIX}/${INSTALL_LIBEXECDIR}")
+endif()
+configure_file(
+    "io.liri.AppCenter.Notifier.desktop"
+    "${CMAKE_CURRENT_BINARY_DIR}/io.liri.AppCenter.Notifier.desktop"
+    @ONLY
+)
+install(
+    FILES
+        "${CMAKE_CURRENT_BINARY_DIR}/io.liri.AppCenter.Notifier.desktop"
+    DESTINATION
+        "${INSTALL_SYSCONFDIR}/xdg/autostart"
+)
+
+liri_add_executable(LiriAppCenterNotifier
     OUTPUT_NAME
-        "liri-update-notifier"
+        "liri-appcenter-notifier"
+    INSTALL_DIRECTORY
+        "${INSTALL_LIBEXECDIR}"
     SOURCES
         main.cpp
         updatenotifier.cpp
@@ -19,7 +38,9 @@ liri_add_executable(LiriUpdateNotifier
     DEFINES
         QT_NO_CAST_FROM_ASCII
         QT_NO_FOREACH
-        APPCENTER_VERSION="${PROJECT_VERSION}"
+        VERSION="${PROJECT_VERSION}"
+    DESKTOP
+        "${CMAKE_CURRENT_BINARY_DIR}/io.liri.AppCenter.Notifier.desktop"
     LIBRARIES
         Qt5::Core
         Liri::AppCenter

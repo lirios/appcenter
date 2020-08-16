@@ -21,22 +21,34 @@
  * $END_LICENSE$
  ***************************************************************************/
 
+#include <QTimer>
+
 #include <LiriAppCenter/SoftwareResource>
 
 #include "updatenotifier.h"
+
+Q_LOGGING_CATEGORY(lcUpdateNotifier, "liri.appcenter", QtInfoMsg)
 
 UpdateNotifier::UpdateNotifier(QObject *parent)
     : QObject(parent)
     , m_softwareManager(new AppCenter::SoftwareManager(this))
 {
-    connect(m_softwareManager, &AppCenter::SoftwareManager::updatesAvailable, this,
-            &UpdateNotifier::updatesAvailable);
-    m_softwareManager->initialize();
+    connect(m_softwareManager, &AppCenter::SoftwareManager::updatesAvailable,
+            this, &UpdateNotifier::updatesAvailable);
 }
 
-void UpdateNotifier::checkForUpdates()
+void UpdateNotifier::initialize()
 {
-    m_softwareManager->checkForUpdates();
+    // Initialize
+    m_softwareManager->initialize();
+
+    // Check for updates every hour
+    // TODO: The interval should be configurable
+    QTimer *timer = new QTimer(this);
+    timer->setInterval(1 * 60 * 60 * 1000);
+    connect(timer, &QTimer::timeout,
+            m_softwareManager,
+            &AppCenter::SoftwareManager::checkForUpdates);
 }
 
 void UpdateNotifier::updatesAvailable(uint count)
@@ -44,13 +56,38 @@ void UpdateNotifier::updatesAvailable(uint count)
     if (count == 0)
         return;
 
+    AppCenter::SoftwareResources updates = m_softwareManager->updates();
+    for (const auto &app : m_softwareManager->updates()) {
+        connect(app, &AppCenter::SoftwareResource::updated,
+                this, &UpdateNotifier::appUpdated);
+    }
+
     Notification *notification = new Notification(this);
+    connect(notification, &Notification::actionInvoked, this,
+            [this, notification](const QString &actionId) {
+        if (actionId == QLatin1String("default") || actionId == QLatin1String("2")) {
+            for (const auto &app : m_softwareManager->updates()) {
+                if (!app->update())
+                    qCWarning(lcUpdateNotifier) << "Failed to update" << app->name();
+            }
+        }
+        notification->deleteLater();
+    });
     notification->setApplicationName(QLatin1String("App Center"));
     notification->setApplicationIcon(QLatin1String("software-store"));
     notification->setSummary(tr("Updates available"));
     notification->setBody(updatesSummary());
-    notification->setActions(QStringList(tr("Install updates")));
+    notification->setActions(QStringList{tr("Not now"), tr("Install updates")});
+    notification->setDefaultAction(tr("Install updates"));
     notification->send();
+}
+
+void UpdateNotifier::appUpdated()
+{
+    auto *app = qobject_cast<AppCenter::SoftwareResource *>(sender());
+    disconnect(app, &AppCenter::SoftwareResource::updated,
+               this, &UpdateNotifier::appUpdated);
+    qCInfo(lcUpdateNotifier) << app->name() << "updated successfully!";
 }
 
 QString UpdateNotifier::updatesSummary()
