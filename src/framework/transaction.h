@@ -26,12 +26,13 @@
 
 #include <QObject>
 
-#include <LiriAppCenter/SoftwareResource>
+#include <LiriAppCenter/liriappcenterglobal.h>
 
 namespace Liri {
 
 namespace AppCenter {
 
+class SoftwareResource;
 class TransactionPrivate;
 
 class LIRIAPPCENTER_EXPORT Transaction : public QObject
@@ -59,7 +60,7 @@ public:
 
     enum Status {
         Starting,
-        Waiting,
+        Preparing,
         Downloading,
         Committing,
         Succeeded,
@@ -72,6 +73,7 @@ public:
                          const QString &name,
                          const QString &description,
                          SoftwareResource *resource,
+                         bool cancellable = true,
                          QObject *parent = nullptr);
     ~Transaction();
 
@@ -89,7 +91,6 @@ public:
     void setErrorMessage(const QString &message);
 
     bool isCancellable() const;
-    void setCancellable(bool value);
 
     int progress() const;
     void setProgress(int value);
@@ -101,6 +102,8 @@ public:
 
 Q_SIGNALS:
     void statusChanged();
+    void succeeded();
+    void failed();
     void cancellableChanged();
     void progressChanged();
     void errorMessageChanged();

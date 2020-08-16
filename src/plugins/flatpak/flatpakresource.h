@@ -29,6 +29,7 @@
 #include <QVector>
 
 #include <LiriAppCenter/SoftwareResource>
+#include <LiriAppCenter/Transaction>
 
 #include <AppStreamQt/component.h>
 
@@ -120,9 +121,9 @@ public:
     bool isLocalized() const override;
 
     Q_INVOKABLE bool launch() const override;
-    Q_INVOKABLE bool install() override;
-    Q_INVOKABLE bool uninstall() override;
-    Q_INVOKABLE bool update() override;
+    Q_INVOKABLE Liri::AppCenter::Transaction *install() override;
+    Q_INVOKABLE Liri::AppCenter::Transaction *uninstall() override;
+    Q_INVOKABLE Liri::AppCenter::Transaction *update() override;
 
     QDir installationDir() const;
     QDir exportsDir() const;

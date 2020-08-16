@@ -37,6 +37,7 @@ public:
                                     const QString &name,
                                     const QString &description,
                                     Liri::AppCenter::SoftwareResource *resource,
+                                    bool cancellable = true,
                                     QObject *parent = nullptr);
 
     Q_INVOKABLE void run() override;

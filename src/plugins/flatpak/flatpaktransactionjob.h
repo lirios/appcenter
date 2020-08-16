@@ -33,29 +33,31 @@
 class FlatpakTransactionJob : public QThread
 {
     Q_OBJECT
-    Q_PROPERTY(int progress READ progress WRITE setProgress NOTIFY progressChanged)
+    Q_PROPERTY(Liri::AppCenter::SoftwareResource *resource READ resource CONSTANT)
+    Q_PROPERTY(Liri::AppCenter::Transaction *transaction READ transaction CONSTANT)
+    Q_PROPERTY(bool isCancellable READ isCancellable CONSTANT)
 public:
     explicit FlatpakTransactionJob(FlatpakResource *app,
-                                   Liri::AppCenter::Transaction::Type type,
+                                   Liri::AppCenter::Transaction *transaction,
                                    bool cancellable = true,
                                    QObject *parent = nullptr);
     ~FlatpakTransactionJob();
 
-    int progress() const;
-    void setProgress(int progress);
+    Liri::AppCenter::SoftwareResource *resource() const;
+    Liri::AppCenter::Transaction *transaction() const;
+    bool isCancellable() const;
 
     void run() override;
     void cancel();
 
 Q_SIGNALS:
-    void progressChanged(int progress);
     void succeeded();
     void failed(const QString &message);
     void cancelled();
 
 private:
     FlatpakResource *m_app = nullptr;
-    Liri::AppCenter::Transaction::Type m_type;
+    Liri::AppCenter::Transaction *m_transaction = nullptr;
     GCancellable *m_cancellable = nullptr;
     int m_progress = 0;
 };

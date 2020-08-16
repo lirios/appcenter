@@ -270,46 +270,40 @@ bool FlatpakResource::launch() const
     return true;
 }
 
-bool FlatpakResource::install()
+Liri::AppCenter::Transaction *FlatpakResource::install()
 {
     LiriFlatpakTransaction *transaction = new LiriFlatpakTransaction(
                 Liri::AppCenter::Transaction::Install,
                 tr("Install %1").arg(packageName()),
                 tr("Installing \"%1\" from %2...").arg(name()).arg(origin()),
-                this, this);
-    transaction->run();
-
-    Q_EMIT installed();
-
-    return true;
+                this, true, this);
+    connect(transaction, &LiriFlatpakTransaction::succeeded,
+            this, &FlatpakResource::installed);
+    return transaction;
 }
 
-bool FlatpakResource::uninstall()
+Liri::AppCenter::Transaction *FlatpakResource::uninstall()
 {
     LiriFlatpakTransaction *transaction = new LiriFlatpakTransaction(
                 Liri::AppCenter::Transaction::Uninstall,
                 tr("Uninstall %1 %2").arg(packageName()).arg(installedVersion()),
                 tr("Uninstalling \"%1\" %2...").arg(name()).arg(installedVersion()),
-                this, this);
-    transaction->run();
-
-    Q_EMIT uninstalled();
-
-    return true;
+                this, true, this);
+    connect(transaction, &LiriFlatpakTransaction::succeeded,
+            this, &FlatpakResource::uninstalled);
+    return transaction;
 }
 
-bool FlatpakResource::update()
+Liri::AppCenter::Transaction *FlatpakResource::update()
 {
     LiriFlatpakTransaction *transaction = new LiriFlatpakTransaction(
                 Liri::AppCenter::Transaction::Update,
                 tr("Update %1 %2").arg(packageName()).arg(installedVersion()),
                 tr("Updating \"%1\" %2...").arg(name()).arg(installedVersion()),
-                this, this);
-    transaction->run();
-
-    Q_EMIT updated();
-
-    return true;
+                this, true, this);
+    connect(transaction, &LiriFlatpakTransaction::succeeded,
+            this, &FlatpakResource::updated);
+    return transaction;
 }
 
 QDir FlatpakResource::installationDir() const

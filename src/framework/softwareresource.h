@@ -35,6 +35,7 @@ namespace Liri {
 namespace AppCenter {
 
 class SoftwareResourcePrivate;
+class Transaction;
 
 class LIRIAPPCENTER_EXPORT SoftwareResource : public QObject
 {
@@ -141,9 +142,9 @@ public:
     virtual bool isLocalized() const = 0;
 
     Q_INVOKABLE virtual bool launch() const;
-    Q_INVOKABLE virtual bool install();
-    Q_INVOKABLE virtual bool uninstall();
-    Q_INVOKABLE virtual bool update();
+    Q_INVOKABLE virtual Transaction *install();
+    Q_INVOKABLE virtual Transaction *uninstall();
+    Q_INVOKABLE virtual Transaction *update();
 
     void addMetadata(const QString &key, const QVariant &value);
     QVariant getMetadata(const QString &key);

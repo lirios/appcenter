@@ -23,6 +23,7 @@
 
 #include "softwareresource.h"
 #include "softwareresource_p.h"
+#include "transaction.h"
 
 namespace Liri {
 
@@ -84,19 +85,19 @@ bool SoftwareResource::launch() const
     return false;
 }
 
-bool SoftwareResource::install()
+Transaction *SoftwareResource::install()
 {
-    return false;
+    return nullptr;
 }
 
-bool SoftwareResource::uninstall()
+Transaction *SoftwareResource::uninstall()
 {
-    return false;
+    return nullptr;
 }
 
-bool SoftwareResource::update()
+Transaction *SoftwareResource::update()
 {
-    return false;
+    return nullptr;
 }
 
 void SoftwareResource::addMetadata(const QString &key, const QVariant &value)

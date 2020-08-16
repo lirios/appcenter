@@ -24,10 +24,21 @@
 #include "flatpakplugin.h"
 #include "flatpaktransactionjob.h"
 
-static void flatpakNewOperation(FlatpakTransaction *transaction,
-                                FlatpakTransactionOperation *operation,
-                                FlatpakTransactionProgress *progress,
-                                gpointer data)
+static void progressCb(FlatpakTransactionProgress *progress,
+                       gpointer data)
+{
+    auto *job = static_cast<FlatpakTransactionJob *>(data);
+    if (!job)
+        return;
+
+    job->transaction()->setStatus(Liri::AppCenter::Transaction::Downloading);
+    job->transaction()->setProgress(flatpak_transaction_progress_get_progress(progress));
+}
+
+static void newOpCb(FlatpakTransaction *transaction,
+                    FlatpakTransactionOperation *operation,
+                    FlatpakTransactionProgress *progress,
+                    gpointer data)
 {
     Q_UNUSED(transaction);
     Q_UNUSED(operation);
@@ -36,16 +47,62 @@ static void flatpakNewOperation(FlatpakTransaction *transaction,
     if (!job)
         return;
 
-    job->setProgress(flatpak_transaction_progress_get_progress(progress));
+    job->transaction()->setStatus(Liri::AppCenter::Transaction::Preparing);
+
+    //flatpak_transaction_progress_set_update_frequency(progress, 250);
+    g_signal_connect(progress, "changed", G_CALLBACK(progressCb), job);
+}
+
+static void readyCb(FlatpakTransaction *transaction,
+                    gpointer data)
+{
+    Q_UNUSED(transaction);
+
+    auto *job = static_cast<FlatpakTransactionJob *>(data);
+    if (!job)
+        return;
+
+    job->transaction()->setStatus(Liri::AppCenter::Transaction::Committing);
+}
+
+static void doneCb(FlatpakTransaction *transaction,
+                   FlatpakTransactionOperation *operation,
+                   gchar *commit, gint result, gpointer data)
+{
+    Q_UNUSED(transaction);
+    Q_UNUSED(operation);
+    Q_UNUSED(commit);
+    Q_UNUSED(result);
+
+    auto *job = static_cast<FlatpakTransactionJob *>(data);
+    if (!job)
+        return;
+
+    Q_EMIT job->succeeded();
+}
+
+static void errorCb(FlatpakTransaction *transaction,
+                    FlatpakTransactionOperation *operation,
+                    GError *error, gint details, gpointer data)
+{
+    Q_UNUSED(transaction);
+    Q_UNUSED(operation);
+    Q_UNUSED(details);
+
+    auto *job = static_cast<FlatpakTransactionJob *>(data);
+    if (!job)
+        return;
+
+    Q_EMIT job->failed(QString::fromUtf8(error->message));
 }
 
 FlatpakTransactionJob::FlatpakTransactionJob(FlatpakResource *app,
-                                             Liri::AppCenter::Transaction::Type type,
+                                             Liri::AppCenter::Transaction *transaction,
                                              bool cancellable,
                                              QObject *parent)
     : QThread(parent)
     , m_app(app)
-    , m_type(type)
+    , m_transaction(transaction)
 {
     if (cancellable)
         m_cancellable = g_cancellable_new();
@@ -57,18 +114,19 @@ FlatpakTransactionJob::~FlatpakTransactionJob()
         g_object_unref(m_cancellable);
 }
 
-int FlatpakTransactionJob::progress() const
+Liri::AppCenter::SoftwareResource *FlatpakTransactionJob::resource() const
 {
-    return m_progress;
+    return m_app;
 }
 
-void FlatpakTransactionJob::setProgress(int progress)
+Liri::AppCenter::Transaction *FlatpakTransactionJob::transaction() const
 {
-    if (m_progress == progress)
-        return;
+    return m_transaction;
+}
 
-    m_progress = progress;
-    Q_EMIT progressChanged(progress);
+bool FlatpakTransactionJob::isCancellable() const
+{
+    return m_cancellable;
 }
 
 void FlatpakTransactionJob::run()
@@ -90,10 +148,13 @@ void FlatpakTransactionJob::run()
     }
 
     // Update the progress
-    g_signal_connect(transaction, "new-operation", G_CALLBACK(flatpakNewOperation), this);
+    g_signal_connect(transaction, "new-operation", G_CALLBACK(newOpCb), this);
+    g_signal_connect(transaction, "ready", G_CALLBACK(readyCb), this);
+    g_signal_connect(transaction, "operation-done", G_CALLBACK(doneCb), this);
+    g_signal_connect(transaction, "operation-error", G_CALLBACK(errorCb), this);
 
     // Add the operation
-    if (m_type == Liri::AppCenter::Transaction::Install) {
+    if (m_transaction->type() == Liri::AppCenter::Transaction::Install) {
         if (!flatpak_transaction_add_install(transaction,
                                              m_app->origin().toUtf8().constData(),
                                              m_app->ref().toUtf8().constData(),
@@ -106,7 +167,7 @@ void FlatpakTransactionJob::run()
             Q_EMIT failed(QString::fromUtf8(error->message));
             return;
         }
-    } else if (m_type == Liri::AppCenter::Transaction::Uninstall) {
+    } else if (m_transaction->type() == Liri::AppCenter::Transaction::Uninstall) {
         if (!flatpak_transaction_add_uninstall(transaction,
                                                m_app->ref().toUtf8().constData(),
                                                &error)) {
@@ -117,7 +178,7 @@ void FlatpakTransactionJob::run()
             Q_EMIT failed(QString::fromUtf8(error->message));
             return;
         }
-    } else if (m_type == Liri::AppCenter::Transaction::Update) {
+    } else if (m_transaction->type() == Liri::AppCenter::Transaction::Update) {
         if (!flatpak_transaction_add_update(transaction,
                                             m_app->ref().toUtf8().constData(),
                                             nullptr, nullptr, &error)) {
@@ -141,8 +202,8 @@ void FlatpakTransactionJob::run()
     }
 
     // Update resource
-    if (m_type == Liri::AppCenter::Transaction::Install ||
-            m_type == Liri::AppCenter::Transaction::Update) {
+    if (m_transaction->type() == Liri::AppCenter::Transaction::Install ||
+            m_transaction->type() == Liri::AppCenter::Transaction::Update) {
         auto *installedRef =
                 flatpak_installation_get_installed_ref(
                     m_app->installation(),
@@ -162,14 +223,10 @@ void FlatpakTransactionJob::run()
 
         m_app->updateFromRef(FLATPAK_REF(installedRef));
         m_app->updateFromInstalledRef(installedRef);
-    } else if (m_type == Liri::AppCenter::Transaction::Uninstall) {
+    } else if (m_transaction->type() == Liri::AppCenter::Transaction::Uninstall) {
         m_app->updateFromRef(nullptr);
         m_app->updateFromInstalledRef(nullptr);
     }
-
-    // Job finished
-    setProgress(100);
-    Q_EMIT succeeded();
 }
 
 void FlatpakTransactionJob::cancel()

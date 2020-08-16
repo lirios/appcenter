@@ -7,5 +7,6 @@
         <file>qml/main.qml</file>
         <file>qml/SourcesTab.qml</file>
         <file>qml/UpdatesTab.qml</file>
+        <file>qml/Transaction.qml</file>
     </qresource>
 </RCC>

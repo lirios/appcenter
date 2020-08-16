@@ -124,14 +124,21 @@ FluidControls.Page {
 
                 spacing: FluidControls.Units.smallSpacing * 2
 
+                visible: !transactionIndicator.visible
+
                 Button {
                     Layout.alignment: Qt.AlignVCenter
 
                     text: qsTr("Install")
                     visible: app.state === AppCenter.SoftwareResource.NotInstalledState
                     onClicked: {
-                        if (!app.install())
-                            console.log("Something went wrong!")
+                        var transaction = app.install();
+                        if (!transaction) {
+                            console.warn("Installation of", app.name, "has failed: null transaction");
+                            return;
+                        }
+                        transactionIndicator.transaction = transaction;
+                        transaction.run();
                     }
 
                     Material.foreground: Material.color(Material.Green, Material.Shade100)
@@ -145,8 +152,13 @@ FluidControls.Page {
                     visible: app.state === AppCenter.SoftwareResource.InstalledState ||
                              app.state === AppCenter.SoftwareResource.UpgradableState
                     onClicked: {
-                        if (!app.uninstall())
-                            console.log("Something went wrong!")
+                        var transaction = app.uninstall();
+                        if (!transaction) {
+                            console.warn("Uninstallation of", app.name, "has failed: null transaction");
+                            return;
+                        }
+                        transactionIndicator.transaction = transaction;
+                        transaction.run();
                     }
 
                     Material.foreground: Material.color(Material.Red, Material.Shade100)
@@ -159,8 +171,13 @@ FluidControls.Page {
                     visible: app.state === AppCenter.SoftwareResource.UpgradableState
                     text: qsTr("Update")
                     onClicked: {
-                        if (!app.update())
-                            console.log("Something went wrong!")
+                        var transaction = app.update();
+                        if (!transaction) {
+                            console.warn("Update of", app.name, "has failed: null transaction");
+                            return;
+                        }
+                        transactionIndicator.transaction = transaction;
+                        transaction.run();
                     }
 
                     Material.foreground: Material.color(Material.Green, Material.Shade100)
@@ -175,12 +192,16 @@ FluidControls.Page {
                     text: qsTr("Launch")
                     onClicked: {
                         if (!app.launch())
-                            console.log("Something went wrong!")
+                            console.warn("Execution of", app.name, "has failed")
                     }
 
                     Material.foreground: Material.color(Material.Green, Material.Shade100)
                     Material.background: Material.color(Material.Green, Material.Shade500)
                 }
+            }
+
+            Transaction {
+                id: transactionIndicator
             }
 
             Label {

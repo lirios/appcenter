@@ -53,6 +53,7 @@ public:
     Transaction::Status status = Transaction::Starting;
     QString errorMessage;
     bool cancellable = false;
+    bool shouldCancel = true;
     int progress = 0;
     bool visible = true;
 };

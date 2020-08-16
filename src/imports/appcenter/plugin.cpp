@@ -30,6 +30,7 @@
 #include <LiriAppCenter/SoftwareResource>
 #include <LiriAppCenter/SoftwareSource>
 #include <LiriAppCenter/SourcesModel>
+#include <LiriAppCenter/Transaction>
 
 #include "filteredresourcesmodel.h"
 
@@ -53,6 +54,8 @@ public:
         qmlRegisterUncreatableType<ResourcesModel>(uri, 1, 0, "ResourcesModel", QLatin1String("Unable to instantiate ResourcesModel"));
         qmlRegisterUncreatableType<SoftwareResource>(uri, 1, 0, "SoftwareResource", QLatin1String("Unable to instantiate SoftwareResource"));
         qmlRegisterUncreatableType<SoftwareSource>(uri, 1, 0, "SoftwareSource", QLatin1String("Unable to instantiate SoftwareSource"));
+        qmlRegisterUncreatableType<Transaction>(uri, 1, 0, "Transaction",
+                                                QLatin1String("Unable to instantiate Transaction"));
 
         qmlProtectModule(uri, 1);
     }

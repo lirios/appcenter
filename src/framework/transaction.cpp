@@ -21,6 +21,7 @@
  * $END_LICENSE$
  ***************************************************************************/
 
+#include "softwareresource.h"
 #include "transaction.h"
 #include "transaction_p.h"
 #include "transactionsmanager.h"
@@ -33,7 +34,11 @@ TransactionPrivate::TransactionPrivate()
 {
 }
 
-Transaction::Transaction(Type type, const QString &name, const QString &description, SoftwareResource *resource, QObject *parent)
+Transaction::Transaction(Type type, const QString &name,
+                         const QString &description,
+                         SoftwareResource *resource,
+                         bool cancellable,
+                         QObject *parent)
     : QObject(parent)
     , d_ptr(new TransactionPrivate())
 {
@@ -42,6 +47,7 @@ Transaction::Transaction(Type type, const QString &name, const QString &descript
     d->name = name;
     d->description = description;
     d->resource = resource;
+    d->cancellable = cancellable;
 
     TransactionsManager::instance()->addTransaction(this);
 }
@@ -92,8 +98,14 @@ void Transaction::setStatus(Transaction::Status status)
     d->status = status;
     Q_EMIT statusChanged();
 
+    if (d->status == Succeeded)
+        Q_EMIT succeeded();
+    else if (d->status == Failed)
+        Q_EMIT failed();
+
     if (d->status == Succeeded || d->status == Failed || d->status == Cancelled) {
-        setCancellable(false);
+        d->cancellable = false;
+        Q_EMIT cancellableChanged();
         TransactionsManager::instance()->removeTransaction(this);
     }
 }
@@ -119,17 +131,6 @@ bool Transaction::isCancellable() const
 {
     Q_D(const Transaction);
     return d->cancellable;
-}
-
-void Transaction::setCancellable(bool value)
-{
-    Q_D(Transaction);
-
-    if (d->cancellable == value)
-        return;
-
-    d->cancellable = value;
-    Q_EMIT cancellableChanged();
 }
 
 int Transaction::progress() const
