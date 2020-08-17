@@ -44,7 +44,7 @@
 
 #include <sys/stat.h>
 
-Q_LOGGING_CATEGORY(lcFlatpakBackend, "liri.backends.flatpak")
+Q_LOGGING_CATEGORY(lcFlatpakBackend, "liri.appcenter.flatpak")
 
 using namespace Liri::AppCenter;
 
