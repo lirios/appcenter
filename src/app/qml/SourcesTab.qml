@@ -33,7 +33,7 @@ FluidControls.Tab {
 
         property var source: null
 
-        title: qsTr("Edit %1").arg(source ? source.name : "")
+        title: source ? qsTr("Edit %1").arg(source.name) : qsTr("Edit source")
 
         x: (parent.width - width) / 2
         y: (parent.height - height) / 2
