@@ -64,8 +64,6 @@ private:
     QVector<FlatpakInstallation *> m_installations;
     QVector<GFileMonitor *> m_installationMonitors;
     FlatpakInstallation *m_userInstallation = nullptr;
-    uint m_userInstallationUpdates = 0;
-    uint m_systemInstallationUpdates = 0;
     QHash<FlatpakResource::Key, FlatpakResource *> m_resources;
 
     FlatpakResource *findResourceFromInstalledRef(FlatpakInstallation *installation, FlatpakInstalledRef *ref) const;

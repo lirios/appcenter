@@ -597,16 +597,7 @@ void FlatpakBackend::checkUpdatesForInstallation(FlatpakInstallation *installati
 
 void FlatpakBackend::updatesFetched(FlatpakInstallation *installation, GPtrArray *refs)
 {
-    uint numUpdates = refs->len;
-    bool hasChanged = false;
-
-    if (flatpak_installation_get_is_user(installation)) {
-        hasChanged = m_userInstallationUpdates != numUpdates;
-        m_userInstallationUpdates = numUpdates;
-    } else {
-        hasChanged = m_systemInstallationUpdates != numUpdates;
-        m_systemInstallationUpdates = numUpdates;
-    }
+    uint numUpdates = 0;
 
     for (uint i = 0; i < refs->len; i++) {
         FlatpakInstalledRef *ref = FLATPAK_INSTALLED_REF(g_ptr_array_index(refs, i));
@@ -622,11 +613,12 @@ void FlatpakBackend::updatesFetched(FlatpakInstallation *installation, GPtrArray
 
             // Now we can update the download size
             resource->updateDownloadSize(findRuntimeResource(resource->runtime()), FLATPAK_REF(ref));
+
+            numUpdates++;
         }
     }
 
-    if (hasChanged)
-        Q_EMIT updatesAvailable(m_userInstallationUpdates + m_systemInstallationUpdates);
+    Q_EMIT updatesAvailable(numUpdates);
 }
 
 void FlatpakBackend::addAppsFromRemote(FlatpakInstallation *installation, FlatpakRemote *remote)
