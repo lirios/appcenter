@@ -20,6 +20,8 @@ liri_add_plugin(flatpak
         flatpaktransaction.h
         flatpaktransactionjob.cpp
         flatpaktransactionjob.h
+    DEFINES
+        QT_NO_KEYWORD
     PUBLIC_LIBRARIES
         Qt5::Core
         Qt5::Concurrent
