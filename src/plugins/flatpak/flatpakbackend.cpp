@@ -71,6 +71,8 @@ FlatpakBackend::FlatpakBackend(QObject *parent)
 
 FlatpakBackend::~FlatpakBackend()
 {
+    g_cancellable_cancel(m_cancellable);
+
     while (!m_installationMonitors.isEmpty())
         g_object_unref(m_installationMonitors.takeFirst());
 
@@ -102,10 +104,10 @@ void FlatpakBackend::initialize(Liri::AppCenter::SoftwareManager *manager)
                   "Unable to list system installations: %s", error->message);
     }
     for (uint i = 0; installations && i < installations->len; i++) {
-        auto system = FLATPAK_INSTALLATION(g_ptr_array_index(installations, i));
+        auto *system = FLATPAK_INSTALLATION(g_ptr_array_index(installations, i));
         m_installations.append(system);
 
-        auto monitor = flatpak_installation_create_monitor(system, m_cancellable, &error);
+        auto *monitor = flatpak_installation_create_monitor(system, m_cancellable, &error);
         if (monitor) {
             g_signal_connect(monitor, "changed", G_CALLBACK(changedCb), this);
             m_installationMonitors.append(monitor);
@@ -116,12 +118,12 @@ void FlatpakBackend::initialize(Liri::AppCenter::SoftwareManager *manager)
         }
     }
 
-    auto user = flatpak_installation_new_user(m_cancellable, &error);
+    auto *user = flatpak_installation_new_user(m_cancellable, &error);
     if (user) {
         m_userInstallation = user;
         m_installations.append(user);
 
-        auto monitor = flatpak_installation_create_monitor(user, m_cancellable, &error);
+        auto *monitor = flatpak_installation_create_monitor(user, m_cancellable, &error);
         if (monitor) {
             g_signal_connect(monitor, "changed", G_CALLBACK(changedCb), this);
             m_installationMonitors.append(monitor);
@@ -169,7 +171,8 @@ QVector<Liri::AppCenter::SoftwareResource *> FlatpakBackend::updates() const
     QVector<SoftwareResource *> list;
 
     for (auto resource : m_resources) {
-        if (resource->type() == SoftwareResource::App && resource->state() == SoftwareResource::UpgradableState)
+        if (resource->type() == SoftwareResource::App &&
+                resource->state() == SoftwareResource::UpgradableState)
             list.append(resource);
     }
 
@@ -222,10 +225,11 @@ bool FlatpakBackend::removeSource(Liri::AppCenter::SoftwareSource *softwareSourc
 {
     FlatpakSource *source = qobject_cast<FlatpakSource *>(softwareSource);
     if (source) {
-        g_autoptr(GCancellable) cancellable = g_cancellable_new();
         g_autoptr(GError) error = nullptr;
 
-        if (flatpak_installation_remove_remote(source->installation(), source->name().toUtf8().constData(), cancellable, &error)) {
+        if (flatpak_installation_remove_remote(source->installation(),
+                                               source->name().toUtf8().constData(),
+                                               m_cancellable, &error)) {
             m_manager->sourcesModel()->removeSource(source);
             return true;
         } else {
@@ -290,9 +294,8 @@ bool FlatpakBackend::extractRepositories(FlatpakInstallation *installation)
 
     const char *installationName = flatpak_installation_get_display_name(installation);
 
-    g_autoptr(GCancellable) cancellable = g_cancellable_new();
     g_autoptr(GError) error = nullptr;
-    GPtrArray *remotes = flatpak_installation_list_remotes(installation, cancellable, &error);
+    GPtrArray *remotes = flatpak_installation_list_remotes(installation, m_cancellable, &error);
     if (!remotes) {
         qCWarning(lcFlatpakBackend, "Failed to list repositories from installation \"%s\": %s",
                   installationName, error->message);
@@ -513,9 +516,8 @@ bool FlatpakBackend::addLocalSource(const QString &name, const QUrl &url)
     flatpak_remote_set_disabled(remote, false);
 
     // Install it
-    g_autoptr(GCancellable) cancellable = g_cancellable_new();
     g_autoptr(GError) error = nullptr;
-    if (flatpak_installation_modify_remote(m_userInstallation, remote, cancellable, &error)) {
+    if (flatpak_installation_modify_remote(m_userInstallation, remote, m_cancellable, &error)) {
         // Refresh available apps
         fetchAppStreamMetadata(m_userInstallation, remote);
 
