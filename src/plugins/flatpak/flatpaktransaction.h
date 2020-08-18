@@ -21,8 +21,8 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef FLATPAKTRANSACTION_H
-#define FLATPAKTRANSACTION_H
+#ifndef LIRI_FLATPAKTRANSACTION_H
+#define LIRI_FLATPAKTRANSACTION_H
 
 #include <LiriAppCenter/Transaction>
 
@@ -48,4 +48,4 @@ private:
     FlatpakTransactionJob *m_job = nullptr;
 };
 
-#endif // FLATPAKTRANSACTION_H
+#endif // LIRI_FLATPAKTRANSACTION_H

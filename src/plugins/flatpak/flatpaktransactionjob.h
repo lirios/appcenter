@@ -21,8 +21,8 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef FLATPAKTRANSACTIONJOB_H
-#define FLATPAKTRANSACTIONJOB_H
+#ifndef LIRI_FLATPAKTRANSACTIONJOB_H
+#define LIRI_FLATPAKTRANSACTIONJOB_H
 
 #include <QThread>
 
@@ -62,4 +62,4 @@ private:
     int m_progress = 0;
 };
 
-#endif // FLATPAKTRANSACTIONJOB_H
+#endif // LIRI_FLATPAKTRANSACTIONJOB_H

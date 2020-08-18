@@ -21,8 +21,8 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef FLATPAKAPPSTREAMJOB_H
-#define FLATPAKAPPSTREAMJOB_H
+#ifndef LIRI_FLATPAKAPPSTREAMJOB_H
+#define LIRI_FLATPAKAPPSTREAMJOB_H
 
 #include <QThread>
 
@@ -50,4 +50,4 @@ private:
     GCancellable *m_cancellable = nullptr;
 };
 
-#endif // FLATPAKAPPSTREAMJOB_H
+#endif // LIRI_FLATPAKAPPSTREAMJOB_H

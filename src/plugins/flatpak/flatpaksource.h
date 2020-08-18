@@ -21,8 +21,8 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef FLATPAKSOURCE_H
-#define FLATPAKSOURCE_H
+#ifndef LIRI_FLATPAKSOURCE_H
+#define LIRI_FLATPAKSOURCE_H
 
 #include <QDir>
 
@@ -52,4 +52,4 @@ private:
     FlatpakRemote *m_remote = nullptr;
 };
 
-#endif // FLATPAKSOURCE_H
+#endif // LIRI_FLATPAKSOURCE_H

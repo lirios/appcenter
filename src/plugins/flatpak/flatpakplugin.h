@@ -21,8 +21,8 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef FLATPAKPLUGIN_H
-#define FLATPAKPLUGIN_H
+#ifndef LIRI_FLATPAKPLUGIN_H
+#define LIRI_FLATPAKPLUGIN_H
 
 #include <LiriAppCenter/BackendPlugin>
 
@@ -39,4 +39,4 @@ public:
     Liri::AppCenter::Backend *create() override;
 };
 
-#endif // FLATPAKPLUGIN_H
+#endif // LIRI_FLATPAKPLUGIN_H

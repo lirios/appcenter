@@ -21,8 +21,8 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef FLATPAKBACKEND_H
-#define FLATPAKBACKEND_H
+#ifndef LIRI_FLATPAKBACKEND_H
+#define LIRI_FLATPAKBACKEND_H
 
 #include <QLoggingCategory>
 
@@ -89,4 +89,4 @@ private Q_SLOTS:
     void addAppsFromRemote(FlatpakInstallation *installation, FlatpakRemote *remote);
 };
 
-#endif // FLATPAKBACKENS_H
+#endif // LIRI_FLATPAKBACKENS_H

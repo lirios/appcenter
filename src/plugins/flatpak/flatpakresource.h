@@ -21,8 +21,8 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef FLATPAKRESOURCE_H
-#define FLATPAKRESOURCE_H
+#ifndef LIRI_FLATPAKRESOURCE_H
+#define LIRI_FLATPAKRESOURCE_H
 
 #include <QDir>
 #include <QUrl>
@@ -177,4 +177,4 @@ inline uint qHash(const FlatpakResource::Key &key)
             ^ qHash(key.architecture);
 }
 
-#endif // FLATPAKRESOURCE_H
+#endif // LIRI_FLATPAKRESOURCE_H

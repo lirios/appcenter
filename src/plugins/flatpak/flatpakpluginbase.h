@@ -21,8 +21,8 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef FLATPAKPLUGINBASE_H
-#define FLATPAKPLUGINBASE_H
+#ifndef LIRI_FLATPAKPLUGINBASE_H
+#define LIRI_FLATPAKPLUGINBASE_H
 
 #undef signals
 
@@ -32,4 +32,4 @@ extern "C" {
 
 #include <QtCore/qglobal.h>
 
-#endif // FLATPAKPLUGINBASE_H
+#endif // LIRI_FLATPAKPLUGINBASE_H
