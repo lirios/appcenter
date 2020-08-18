@@ -68,7 +68,8 @@ void UpdateNotifier::updatesAvailable(uint count)
         if (actionId == QLatin1String("default") || actionId == QLatin1String("2")) {
             for (const auto &app : m_softwareManager->updates()) {
                 if (!app->update())
-                    qCWarning(lcUpdateNotifier) << "Failed to update" << app->name();
+                    qCWarning(lcUpdateNotifier, "Failed to update \"%s\"",
+                              qPrintable(app->name()));
             }
         }
         notification->deleteLater();
@@ -87,7 +88,8 @@ void UpdateNotifier::appUpdated()
     auto *app = qobject_cast<AppCenter::SoftwareResource *>(sender());
     disconnect(app, &AppCenter::SoftwareResource::updated,
                this, &UpdateNotifier::appUpdated);
-    qCInfo(lcUpdateNotifier) << app->name() << "updated successfully!";
+    qCInfo(lcUpdateNotifier, "\"%s\" updated successfully!",
+           qPrintable(app->name()));
 }
 
 QString UpdateNotifier::updatesSummary()

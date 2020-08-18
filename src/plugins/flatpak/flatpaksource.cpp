@@ -237,7 +237,8 @@ QDir FlatpakSource::appStreamDir() const
 {
     g_autoptr(GFile) dir = flatpak_remote_get_appstream_dir(m_remote, nullptr);
     if (!dir) {
-        qCWarning(lcFlatpakBackend) << "No AppStream directory for" << name();
+        qCWarning(lcFlatpakBackend, "No AppStream directory for \"%s\"",
+                  qPrintable(name()));
         return QDir();
     }
 

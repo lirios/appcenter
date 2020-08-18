@@ -187,7 +187,10 @@ bool FlatpakBackend::addSource(const QString &source)
         return false;
 
     if (!m_userInstallation) {
-        qCWarning(lcFlatpakBackend) << "Repository file" << url.toLocalFile() << "won't be installed because no user installation is available";
+        qCWarning(lcFlatpakBackend,
+                  "Repository file \"%s\" won't be installed because no user "
+                  "installation is available",
+                  qPrintable(url.toLocalFile()));
         return false;
     }
 
@@ -480,7 +483,8 @@ bool FlatpakBackend::addLocalSource(const QString &name, const QUrl &url)
     const QByteArray gpgKeyBase64 = settings.value(QLatin1String("Flatpak Repo/GPGKey")).toString().toLocal8Bit();
 
     if (name.isEmpty() || title.isEmpty() || repoUrl.isEmpty() || gpgKeyBase64.isEmpty()) {
-        qCWarning(lcFlatpakBackend) << "Repository file" << url.toLocalFile() << "is incomplete";
+        qCWarning(lcFlatpakBackend, "Repository file \"%s\" is incomplete",
+                  qPrintable(url.toLocalFile()));
         Q_EMIT m_manager->sourceAddFailed(name, tr("Repository file is incomplete"));
         return false;
     }

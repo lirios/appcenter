@@ -35,6 +35,9 @@ find_package(Qt5 "${QT_MIN_VERSION}"
         LinguistTools
 )
 
+## Treat warnings as errors:
+add_compile_options(-Wall -Wextra -pedantic -Werror)
+
 ## Add subdirectories:
 add_subdirectory(src/framework)
 add_subdirectory(src/app)
