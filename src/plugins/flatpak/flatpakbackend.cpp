@@ -48,31 +48,18 @@ Q_LOGGING_CATEGORY(lcFlatpakBackend, "liri.appcenter.flatpak")
 
 using namespace Liri::AppCenter;
 
-static void flatpakUserChanged(GFileMonitor *monitor, GFile *child, GFile *other_file,
-                               GFileMonitorEvent event_type, gpointer userData)
+static void changedCb(GFileMonitor *monitor, GFile *child, GFile *other_file,
+                               GFileMonitorEvent event_type, gpointer data)
 {
     Q_UNUSED(monitor);
     Q_UNUSED(child);
     Q_UNUSED(other_file);
     Q_UNUSED(event_type);
 
-    FlatpakBackend *backend = static_cast<FlatpakBackend *>(userData);
+    auto *backend = static_cast<FlatpakBackend *>(data);
     if (!backend)
         return;
-    backend->checkForUpdates();
-}
 
-static void flatpakSystemChanged(GFileMonitor *monitor, GFile *child, GFile *other_file,
-                                 GFileMonitorEvent event_type, gpointer userData)
-{
-    Q_UNUSED(monitor);
-    Q_UNUSED(child);
-    Q_UNUSED(other_file);
-    Q_UNUSED(event_type);
-
-    FlatpakBackend *backend = static_cast<FlatpakBackend *>(userData);
-    if (!backend)
-        return;
     backend->checkForUpdates();
 }
 
@@ -120,7 +107,7 @@ void FlatpakBackend::initialize(Liri::AppCenter::SoftwareManager *manager)
 
         auto monitor = flatpak_installation_create_monitor(system, m_cancellable, &error);
         if (monitor) {
-            g_signal_connect(monitor, "changed", G_CALLBACK(flatpakSystemChanged), this);
+            g_signal_connect(monitor, "changed", G_CALLBACK(changedCb), this);
             m_installationMonitors.append(monitor);
         } else {
             qCWarning(lcFlatpakBackend,
@@ -136,7 +123,7 @@ void FlatpakBackend::initialize(Liri::AppCenter::SoftwareManager *manager)
 
         auto monitor = flatpak_installation_create_monitor(user, m_cancellable, &error);
         if (monitor) {
-            g_signal_connect(monitor, "changed", G_CALLBACK(flatpakUserChanged), this);
+            g_signal_connect(monitor, "changed", G_CALLBACK(changedCb), this);
             m_installationMonitors.append(monitor);
         } else {
             qCWarning(lcFlatpakBackend,
