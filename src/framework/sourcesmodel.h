@@ -46,8 +46,12 @@ public:
         SectionRole,
         NameRole,
         TitleRole,
+        CommentRole,
+        DescriptionRole,
         EnabledRole,
+        GpgVerifyRole,
         UrlRole,
+        IconUrlRole,
         PriorityRole
     };
 

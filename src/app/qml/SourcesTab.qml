@@ -83,8 +83,8 @@ FluidControls.Tab {
                         ToolTip.visible: hovered
                     }
                 }
-                text: qsTr("%1 (%2)").arg(model.title).arg(model.name)
-                subText: model.url
+                text: model.description ? model.description : model.title
+                subText: qsTr("%1 at %2").arg(model.name).arg(model.url)
             }
         }
     }

@@ -28,14 +28,11 @@ namespace Liri {
 
 namespace AppCenter {
 
-SoftwareSourcePrivate::SoftwareSourcePrivate()
-{
-}
-
-SoftwareSource::SoftwareSource(QObject *parent)
+SoftwareSource::SoftwareSource(Backend *backend, QObject *parent)
     : QObject(parent)
     , d_ptr(new SoftwareSourcePrivate())
 {
+    d_ptr->backend = backend;
 }
 
 SoftwareSource::~SoftwareSource()
@@ -43,123 +40,10 @@ SoftwareSource::~SoftwareSource()
     delete d_ptr;
 }
 
-QObject *SoftwareSource::backend() const
+Backend *SoftwareSource::backend() const
 {
     Q_D(const SoftwareSource);
     return d->backend;
-}
-
-void SoftwareSource::setBackend(QObject *backend)
-{
-    Q_D(SoftwareSource);
-
-    if (d->backend == backend)
-        return;
-
-    d->backend = backend;
-    Q_EMIT backendChanged();
-}
-
-QString SoftwareSource::name() const
-{
-    Q_D(const SoftwareSource);
-    return d->name;
-}
-
-void SoftwareSource::setName(const QString &name)
-{
-    Q_D(SoftwareSource);
-
-    if (d->name == name)
-        return;
-
-    d->name = name;
-    Q_EMIT nameChanged();
-}
-
-QString SoftwareSource::title() const
-{
-    Q_D(const SoftwareSource);
-    return d->title;
-}
-
-void SoftwareSource::setTitle(const QString &title)
-{
-    Q_D(SoftwareSource);
-
-    if (d->title == title)
-        return;
-
-    d->title = title;
-    Q_EMIT titleChanged();
-}
-
-QString SoftwareSource::section() const
-{
-    Q_D(const SoftwareSource);
-    return d->section;
-}
-
-void SoftwareSource::setSection(const QString &section)
-{
-    Q_D(SoftwareSource);
-
-    if (d->section == section)
-        return;
-
-    d->section = section;
-    Q_EMIT sectionChanged();
-}
-
-bool SoftwareSource::isEnabled() const
-{
-    Q_D(const SoftwareSource);
-    return d->enabled;
-}
-
-void SoftwareSource::setEnabled(bool flag)
-{
-    Q_D(SoftwareSource);
-
-    if (d->enabled == flag)
-        return;
-
-    d->enabled = flag;
-    Q_EMIT enabledChanged();
-}
-
-QUrl SoftwareSource::url() const
-{
-    Q_D(const SoftwareSource);
-    return d->url;
-}
-
-void SoftwareSource::setUrl(const QUrl &url)
-{
-    Q_D(SoftwareSource);
-
-    if (d->url == url)
-        return;
-
-    d->url = url;
-    Q_EMIT urlChanged();
-}
-
-int SoftwareSource::priority() const
-{
-    Q_D(const SoftwareSource);
-    return d->priority;
-}
-
-void SoftwareSource::setPriority(int prio)
-{
-    Q_D(SoftwareSource);
-
-    if (d->priority == prio)
-        return;
-
-    d->priority = prio;
-    Q_EMIT priorityChanged();
 }
 
 } // namespace AppCenter

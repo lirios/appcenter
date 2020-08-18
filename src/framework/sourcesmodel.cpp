@@ -50,8 +50,12 @@ SourcesModel::SourcesModel(QObject *parent)
     d->roles.insert(SectionRole, QByteArrayLiteral("section"));
     d->roles.insert(NameRole, QByteArrayLiteral("name"));
     d->roles.insert(TitleRole, QByteArrayLiteral("title"));
+    d->roles.insert(CommentRole, "comment");
+    d->roles.insert(DescriptionRole, "description");
     d->roles.insert(EnabledRole, QByteArrayLiteral("enabled"));
+    d->roles.insert(GpgVerifyRole, "gpgVerify");
     d->roles.insert(UrlRole, QByteArrayLiteral("url"));
+    d->roles.insert(IconUrlRole, "iconUrl");
     d->roles.insert(PriorityRole, QByteArrayLiteral("priority"));
 }
 
@@ -91,10 +95,18 @@ QVariant SourcesModel::data(const QModelIndex &index, int role) const
         return source->name();
     case TitleRole:
         return source->title();
+    case CommentRole:
+        return source->comment();
+    case DescriptionRole:
+        return source->description();
     case EnabledRole:
         return source->isEnabled();
+    case GpgVerifyRole:
+        return source->gpgVerify();
     case UrlRole:
         return source->url();
+    case IconUrlRole:
+        return source->iconUrl();
     case PriorityRole:
         return source->priority();
     default:

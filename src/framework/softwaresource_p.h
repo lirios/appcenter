@@ -24,6 +24,8 @@
 #ifndef LIRIAPPCENTERSOFTWARESOURCE_P_H
 #define LIRIAPPCENTERSOFTWARESOURCE_P_H
 
+#include <LiriAppCenter/Backend>
+
 //
 //  W A R N I N G
 //  -------------
@@ -42,15 +44,9 @@ namespace AppCenter {
 class SoftwareSourcePrivate
 {
 public:
-    SoftwareSourcePrivate();
+    SoftwareSourcePrivate() = default;
 
-    QObject *backend = nullptr;
-    QString name;
-    QString title;
-    QString section;
-    bool enabled = false;
-    QUrl url;
-    int priority = 0;
+    Backend *backend = nullptr;
 };
 
 } // namespace AppCenter

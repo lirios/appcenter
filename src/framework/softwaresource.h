@@ -33,52 +33,67 @@ namespace Liri {
 
 namespace AppCenter {
 
+class Backend;
 class SoftwareSourcePrivate;
 
 class LIRIAPPCENTER_EXPORT SoftwareSource : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QObject *backend READ backend WRITE setBackend NOTIFY backendChanged)
-    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
+    Q_PROPERTY(Backend *backend READ backend CONSTANT)
+    Q_PROPERTY(QString name READ name CONSTANT)
     Q_PROPERTY(QString title READ title WRITE setTitle NOTIFY titleChanged)
-    Q_PROPERTY(QString section READ section WRITE setSection NOTIFY sectionChanged)
+    Q_PROPERTY(QString comment READ comment WRITE setComment NOTIFY commentChanged)
+    Q_PROPERTY(QString description READ description WRITE setDescription NOTIFY descriptionChanged)
+    Q_PROPERTY(QString section READ section CONSTANT)
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
+    Q_PROPERTY(bool gpgVerify READ gpgVerify WRITE setGpgVerify NOTIFY gpgVerifyChanged)
     Q_PROPERTY(QUrl url READ url WRITE setUrl NOTIFY urlChanged)
+    Q_PROPERTY(QUrl iconUrl READ iconUrl WRITE setIconUrl NOTIFY iconUrlChanged)
     Q_PROPERTY(int priority READ priority WRITE setPriority NOTIFY priorityChanged)
     Q_DECLARE_PRIVATE(SoftwareSource)
     Q_DISABLE_COPY(SoftwareSource)
 public:
-    explicit SoftwareSource(QObject *parent = nullptr);
+    explicit SoftwareSource(Backend *backend, QObject *parent = nullptr);
     ~SoftwareSource();
 
-    QObject *backend() const;
-    void setBackend(QObject *backend);
+    Backend *backend() const;
 
-    QString name() const;
-    void setName(const QString &name);
+    virtual QString name() const = 0;
 
-    QString title() const;
-    void setTitle(const QString &title);
+    virtual QString title() const = 0;
+    virtual void setTitle(const QString &title) = 0;
 
-    QString section() const;
-    void setSection(const QString &section);
+    virtual QString comment() const = 0;
+    virtual void setComment(const QString &comment) = 0;
 
-    bool isEnabled() const;
-    void setEnabled(bool flag);
+    virtual QString description() const = 0;
+    virtual void setDescription(const QString &description) = 0;
 
-    QUrl url() const;
-    void setUrl(const QUrl &url);
+    virtual QString section() const = 0;
 
-    int priority() const;
-    void setPriority(int prio);
+    virtual bool isEnabled() const = 0;
+    virtual void setEnabled(bool flag) = 0;
+
+    virtual bool gpgVerify() const = 0;
+    virtual void setGpgVerify(bool flag) = 0;
+
+    virtual QUrl url() const = 0;
+    virtual void setUrl(const QUrl &url) = 0;
+
+    virtual QUrl iconUrl() const = 0;
+    virtual void setIconUrl(const QUrl &url) = 0;
+
+    virtual int priority() const = 0;
+    virtual void setPriority(int prio) = 0;
 
 Q_SIGNALS:
-    void backendChanged();
-    void nameChanged();
     void titleChanged();
-    void sectionChanged();
+    void commentChanged();
+    void descriptionChanged();
     void enabledChanged();
+    void gpgVerifyChanged();
     void urlChanged();
+    void iconUrlChanged();
     void priorityChanged();
 
 private:

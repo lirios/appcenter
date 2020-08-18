@@ -308,20 +308,7 @@ bool FlatpakBackend::extractRepositories(FlatpakInstallation *installation)
         if (flatpak_remote_get_noenumerate(remote))
             continue;
 
-        const QString remoteName = QString::fromUtf8(flatpak_remote_get_name(remote));
-        const QUrl url = QString::fromUtf8(flatpak_remote_get_url(remote));
-        const QString title = QString::fromUtf8(flatpak_remote_get_title(remote));
-        const int priority = flatpak_remote_get_prio(remote);
-        const bool disabled = flatpak_remote_get_disabled(remote);
-
-        FlatpakSource *source = new FlatpakSource(installation, remote);
-        source->setBackend(this);
-        source->setName(remoteName);
-        source->setTitle(title);
-        source->setEnabled(!disabled);
-        source->setSection(QLatin1String("Flatpak"));
-        source->setUrl(url);
-        source->setPriority(priority);
+        FlatpakSource *source = new FlatpakSource(this, installation, remote);
         m_manager->sourcesModel()->addSource(source);
         Q_EMIT m_manager->sourceAdded(source);
     }
@@ -524,14 +511,7 @@ bool FlatpakBackend::addLocalSource(const QString &name, const QUrl &url)
         // Add source to the model
         FlatpakSource *source = qobject_cast<FlatpakSource *>(m_manager->sourcesModel()->findSource(name));
         if (!source) {
-            source = new FlatpakSource(m_userInstallation, remote);
-            source->setBackend(this);
-            source->setName(name);
-            source->setTitle(title);
-            source->setEnabled(true);
-            source->setSection(QLatin1String("Flatpak"));
-            source->setUrl(repoUrl);
-            source->setPriority(flatpak_remote_get_prio(remote));
+            source = new FlatpakSource(this, m_userInstallation, remote);
             m_manager->sourcesModel()->addSource(source);
             Q_EMIT m_manager->sourceAdded(source);
         }

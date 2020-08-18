@@ -34,22 +34,49 @@ class FlatpakSource : public Liri::AppCenter::SoftwareSource
 {
     Q_OBJECT
 public:
-    explicit FlatpakSource(FlatpakInstallation *installation,
+    explicit FlatpakSource(Liri::AppCenter::Backend *backend,
+                           FlatpakInstallation *installation,
                            FlatpakRemote *remote,
                            QObject *parent = nullptr);
     ~FlatpakSource();
 
-    FlatpakInstallation *installation() const;
-    void setInstallation(FlatpakInstallation *installation);
+    QString name() const override;
 
+    QString title() const override;
+    void setTitle(const QString &value) override;
+
+    QString comment() const override;
+    void setComment(const QString &value) override;
+
+    QString description() const override;
+    void setDescription(const QString &value) override;
+
+    QString section() const override;
+
+    bool isEnabled() const override;
+    void setEnabled(bool value) override;
+
+    bool gpgVerify() const override;
+    void setGpgVerify(bool value) override;
+
+    QUrl url() const override;
+    void setUrl(const QUrl &value) override;
+
+    QUrl iconUrl() const override;
+    void setIconUrl(const QUrl &value) override;
+
+    int priority() const override;
+    void setPriority(int value) override;
+
+    FlatpakInstallation *installation() const;
     FlatpakRemote *remote() const;
-    void setRemote(FlatpakRemote *remote);
 
     QDir appStreamDir() const;
 
 private:
     FlatpakInstallation *m_installation = nullptr;
     FlatpakRemote *m_remote = nullptr;
+    GCancellable *m_cancellable = nullptr;
 };
 
 #endif // LIRI_FLATPAKSOURCE_H
