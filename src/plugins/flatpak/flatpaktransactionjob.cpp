@@ -24,6 +24,8 @@
 #include "flatpakplugin.h"
 #include "flatpaktransactionjob.h"
 
+#define UPDATE_FREQUENCY 150
+
 static void progressCb(FlatpakTransactionProgress *progress,
                        gpointer data)
 {
@@ -49,7 +51,7 @@ static void newOpCb(FlatpakTransaction *transaction,
 
     job->transaction()->setStatus(Liri::AppCenter::Transaction::Preparing);
 
-    //flatpak_transaction_progress_set_update_frequency(progress, 250);
+    flatpak_transaction_progress_set_update_frequency(progress, UPDATE_FREQUENCY);
     g_signal_connect(progress, "changed", G_CALLBACK(progressCb), job);
 }
 
