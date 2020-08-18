@@ -30,110 +30,110 @@
 <context>
     <name>AppPage</name>
     <message>
-        <location filename="../src/app/qml/AppPage.qml" line="130"/>
+        <location filename="../src/app/qml/AppPage.qml" line="132"/>
         <source>Install</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qml/AppPage.qml" line="144"/>
+        <location filename="../src/app/qml/AppPage.qml" line="151"/>
         <source>Remove</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qml/AppPage.qml" line="160"/>
+        <location filename="../src/app/qml/AppPage.qml" line="172"/>
         <source>Update</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qml/AppPage.qml" line="175"/>
+        <location filename="../src/app/qml/AppPage.qml" line="192"/>
         <source>Launch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qml/AppPage.qml" line="203"/>
+        <location filename="../src/app/qml/AppPage.qml" line="224"/>
         <source>Website</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qml/AppPage.qml" line="249"/>
+        <location filename="../src/app/qml/AppPage.qml" line="270"/>
         <source>Details</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qml/AppPage.qml" line="275"/>
+        <location filename="../src/app/qml/AppPage.qml" line="296"/>
         <source>Localized in your language</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qml/AppPage.qml" line="286"/>
+        <location filename="../src/app/qml/AppPage.qml" line="307"/>
         <source>Documentation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qml/AppPage.qml" line="297"/>
+        <location filename="../src/app/qml/AppPage.qml" line="318"/>
         <source>Release activity</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qml/AppPage.qml" line="308"/>
+        <location filename="../src/app/qml/AppPage.qml" line="329"/>
         <source>System integration</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qml/AppPage.qml" line="319"/>
+        <location filename="../src/app/qml/AppPage.qml" line="340"/>
         <source>Sandboxed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qml/AppPage.qml" line="338"/>
+        <location filename="../src/app/qml/AppPage.qml" line="359"/>
         <source>Version</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qml/AppPage.qml" line="348"/>
+        <location filename="../src/app/qml/AppPage.qml" line="369"/>
         <source>Updated</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qml/AppPage.qml" line="352"/>
-        <location filename="../src/app/qml/AppPage.qml" line="362"/>
-        <location filename="../src/app/qml/AppPage.qml" line="372"/>
+        <location filename="../src/app/qml/AppPage.qml" line="373"/>
         <location filename="../src/app/qml/AppPage.qml" line="383"/>
+        <location filename="../src/app/qml/AppPage.qml" line="393"/>
+        <location filename="../src/app/qml/AppPage.qml" line="404"/>
         <source>Unknown</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qml/AppPage.qml" line="358"/>
+        <location filename="../src/app/qml/AppPage.qml" line="379"/>
         <source>Category</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qml/AppPage.qml" line="368"/>
+        <location filename="../src/app/qml/AppPage.qml" line="389"/>
         <source>License</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qml/AppPage.qml" line="379"/>
+        <location filename="../src/app/qml/AppPage.qml" line="400"/>
         <source>Source</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qml/AppPage.qml" line="390"/>
+        <location filename="../src/app/qml/AppPage.qml" line="411"/>
         <source>Installed size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qml/AppPage.qml" line="390"/>
+        <location filename="../src/app/qml/AppPage.qml" line="411"/>
         <source>Download size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qml/AppPage.qml" line="402"/>
+        <location filename="../src/app/qml/AppPage.qml" line="423"/>
         <source>Reviews</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qml/AppPage.qml" line="409"/>
+        <location filename="../src/app/qml/AppPage.qml" line="430"/>
         <source>Sorry, but reviews are not implemented yet.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -171,6 +171,14 @@
     <message>
         <location filename="../src/app/qml/SourcesTab.qml" line="86"/>
         <source>%1 (%2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Transaction</name>
+    <message>
+        <location filename="../src/app/qml/Transaction.qml" line="105"/>
+        <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
