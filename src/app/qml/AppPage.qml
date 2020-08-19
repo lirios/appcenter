@@ -288,8 +288,9 @@ FluidControls.Page {
                     // Localization
 
                     FluidControls.Icon {
-                        name: "action/check_circle"
-                        color: app.localized ? Material.color(Material.Green) : Material.secondaryTextColor
+                        source: FluidControls.Utils.iconUrl("action/check_circle")
+                        color: app.hasKudo(AppCenter.SoftwareResource.MyLanguageKudo)
+                               ? Material.color(Material.Green) : Material.secondaryTextColor
                     }
 
                     Label {
@@ -299,8 +300,9 @@ FluidControls.Page {
                     // Documentation
 
                     FluidControls.Icon {
-                        name: "action/check_circle"
-                        color: false ? Material.color(Material.Green) : Material.secondaryTextColor
+                        source: FluidControls.Utils.iconUrl("action/check_circle")
+                        color: app.hasKudo(AppCenter.SoftwareResource.InstallsUserDocsKudo)
+                               ? Material.color(Material.Green) : Material.secondaryTextColor
                     }
 
                     Label {
@@ -310,8 +312,9 @@ FluidControls.Page {
                     // Releases
 
                     FluidControls.Icon {
-                        name: "action/check_circle"
-                        color: false ? Material.color(Material.Green) : Material.secondaryTextColor
+                        source: FluidControls.Utils.iconUrl("action/check_circle")
+                        color: app.hasKudo(AppCenter.SoftwareResource.RecentReleaseKudo)
+                               ? Material.color(Material.Green) : Material.secondaryTextColor
                     }
 
                     Label {
@@ -321,8 +324,11 @@ FluidControls.Page {
                     // System integration
 
                     FluidControls.Icon {
-                        name: "action/check_circle"
-                        color: false ? Material.color(Material.Green) : Material.secondaryTextColor
+                        source: FluidControls.Utils.iconUrl("action/check_circle")
+                        color: (app.hasKudo(AppCenter.SoftwareResource.SearchProviderKudo) ||
+                                app.hasKudo(AppCenter.SoftwareResource.UsesNotificationsKudo) ||
+                                app.hasKudo(AppCenter.SoftwareResource.HighContrastKudo))
+                               ? Material.color(Material.Green) : Material.secondaryTextColor
                     }
 
                     Label {
@@ -332,17 +338,14 @@ FluidControls.Page {
                     // Sandboxed
 
                     FluidControls.Icon {
-                        name: "action/check_circle"
-                        color: false ? Material.color(Material.Green) : Material.secondaryTextColor
+                        source: FluidControls.Utils.iconUrl("action/check_circle")
+                        color: app.hasKudo(AppCenter.SoftwareResource.SandboxedKudo)
+                               ? Material.color(Material.Green) : Material.secondaryTextColor
                     }
 
                     Label {
                         text: qsTr("Sandboxed")
                     }
-                }
-
-                Item {
-                    Layout.preferredWidth: appPage.width - ((FluidControls.Units.smallSpacing * 2) * 4) - kudosGrid.width - infoGrid.width
                 }
 
                 GridLayout {

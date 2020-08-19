@@ -66,6 +66,8 @@ class LIRIAPPCENTER_EXPORT SoftwareResource : public QObject
     Q_PROPERTY(quint64 installedSize READ installedSize CONSTANT)
     Q_PROPERTY(QString changeLog READ changeLog CONSTANT)
     Q_PROPERTY(bool localized READ isLocalized CONSTANT)
+    Q_PROPERTY(SoftwareResource::Kudos kudos READ kudos NOTIFY kudosChanged)
+    Q_PROPERTY(uint kudosPercentage READ kudosPercentage NOTIFY kudosChanged)
     Q_DECLARE_PRIVATE(SoftwareResource)
     Q_DISABLE_COPY(SoftwareResource)
 public:
@@ -91,6 +93,27 @@ public:
         BrokenState
     };
     Q_ENUM(State);
+
+    enum Kudo {
+        MyLanguageKudo = 1 << 0,
+        RecentReleaseKudo = 1 << 1,
+        FeaturedRecommendedKudo = 1 << 2,
+        ModernToolkitKudo = 1 << 3,
+        SearchProviderKudo = 1 << 4,
+        InstallsUserDocsKudo = 1 << 5,
+        AppMenuKudo = 1 << 6,
+        UsesNotificationsKudo = 1 << 7,
+        HasKeywordsKudo = 1 << 8,
+        HasScreenshotsKudo = 1 << 9,
+        PopularKudo = 1 << 10,
+        HighContrastKudo = 1 << 11,
+        HiDpiIconKudo = 1 << 12,
+        SandboxedKudo = 1 << 13,
+        SandboxedSecureKudo = 1 << 14,
+    };
+    Q_ENUM(Kudo)
+    Q_DECLARE_FLAGS(Kudos, Kudo)
+    Q_FLAG(Kudos)
 
     explicit SoftwareResource(QObject *parent = nullptr);
     ~SoftwareResource();
@@ -149,6 +172,15 @@ public:
     void addMetadata(const QString &key, const QVariant &value);
     QVariant getMetadata(const QString &key);
 
+    Kudos kudos() const;
+
+    Q_INVOKABLE bool hasKudo(Kudo kudo) const;
+
+    void addKudo(Kudo kudo);
+    void removeKudo(Kudo kudo);
+
+    uint kudosPercentage() const;
+
 Q_SIGNALS:
     void stateChanged();
     void versionChanged();
@@ -158,6 +190,9 @@ Q_SIGNALS:
     void installed();
     void updated();
     void uninstalled();
+    void kudoAdded(SoftwareResource::Kudo kudo);
+    void kudoRemoved(SoftwareResource::Kudo kudo);
+    void kudosChanged();
 
 private:
     SoftwareResourcePrivate *const d_ptr;
@@ -168,5 +203,8 @@ typedef QVector<SoftwareResource *> SoftwareResources;
 } // namespace AppCenter
 
 } // namespace Liri
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(Liri::AppCenter::SoftwareResource::Kudos)
+Q_DECLARE_METATYPE(Liri::AppCenter::SoftwareResource::Kudos)
 
 #endif // LIRIAPPCENTERSOFTWARERESOURCE_H

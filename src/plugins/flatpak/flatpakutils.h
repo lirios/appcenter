@@ -1,7 +1,7 @@
 /****************************************************************************
  * This file is part of App Center.
  *
- * Copyright (C) 2018 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
+ * Copyright (C) 2020 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
  *
  * $BEGIN_LICENSE:LGPLv3+$
  *
@@ -21,39 +21,11 @@
  * $END_LICENSE$
  ***************************************************************************/
 
-#ifndef LIRIAPPCENTERSOFTWARERESOURCE_P_H
-#define LIRIAPPCENTERSOFTWARERESOURCE_P_H
+#ifndef LIRI_FLATPAKUTILS_H
+#define LIRI_FLATPAKUTILS_H
 
-#include <QMap>
+#include "flatpakpluginbase.h"
 
-#include "softwareresource.h"
+QByteArray loadAppData(FlatpakInstalledRef *ref);
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Liri API.  It exists purely as an
-// implementation detail.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-namespace Liri {
-
-namespace AppCenter {
-
-class SoftwareResourcePrivate
-{
-public:
-    SoftwareResourcePrivate();
-
-    QMap<QString, QVariant> metadata;
-    SoftwareResource::Kudos kudos;
-};
-
-} // namespace AppCenter
-
-} // namespace Liri
-
-#endif // LIRIAPPCENTERSOFTWARERESOURCE_P_H
+#endif // LIRI_FLATPAKUTILS_H

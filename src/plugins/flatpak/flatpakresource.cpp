@@ -26,16 +26,18 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QVector>
-#include <QSettings>
 #include <QStandardPaths>
+#include <QXmlStreamReader>
 
 #include <AppStreamQt/icon.h>
 #include <AppStreamQt/image.h>
+#include <AppStreamQt/release.h>
 #include <AppStreamQt/screenshot.h>
 
 #include "flatpakplugin.h"
 #include "flatpakresource.h"
 #include "flatpaktransaction.h"
+#include "flatpakutils.h"
 
 static quint64 fetchRemoteSize(FlatpakResource *app, FlatpakRef *ref)
 {
@@ -65,6 +67,9 @@ FlatpakResource::FlatpakResource(const AppStream::Component &component,
 
     m_key.installation = installation;
     m_key.desktopId = component.id();
+
+    // We always get this
+    addKudo(SoftwareResource::SandboxedKudo);
 }
 
 FlatpakResource::Key FlatpakResource::keyFromInstalledRef(FlatpakInstallation *installation, FlatpakInstalledRef *ref)
@@ -394,9 +399,11 @@ void FlatpakResource::updateFromInstalledRef(FlatpakInstalledRef *ref)
         m_key.origin = QString::fromLocal8Bit(flatpak_installed_ref_get_origin(ref));
         m_latestCommit = QString::fromLocal8Bit(flatpak_installed_ref_get_latest_commit(ref));
         m_installedSize = flatpak_installed_ref_get_installed_size(ref);
+        updateFromMetadata(ref);
         setState(updatesAvailable() ? SoftwareResource::UpgradableState : SoftwareResource::InstalledState);
     } else {
         m_latestCommit = QString();
+        m_runtime = QString();
         m_installedSize = 0;
         setState(SoftwareResource::NotInstalledState);
     }
@@ -428,25 +435,6 @@ void FlatpakResource::updateDownloadSize(FlatpakResource *runtimeResource, Flatp
         });
         watcher->setFuture(future);
     }
-}
-
-bool FlatpakResource::updateFromMetadata()
-{
-    const QString filePath =
-            installationDir().absoluteFilePath(QStringLiteral("/app/%1/%2/%3/active/metadata")
-                                               .arg(packageName())
-                                               .arg(architecture())
-                                               .arg(branch()));
-    if (QFile::exists(filePath)) {
-        // Parse metadata in INI format
-        QSettings settings(filePath, QSettings::NativeFormat);
-        m_runtime = settings.value(QLatin1String("Application/runtime")).toString();
-        return true;
-    } else {
-
-    }
-
-    return false;
 }
 
 QDir FlatpakResource::installationDir(FlatpakInstallation *installation)
@@ -527,6 +515,9 @@ void FlatpakResource::updateComponent(const AppStream::Component &component)
 
     // Icons
     for (const auto &icon : m_appdata.icons()) {
+        if (icon.width() >= 128 && icon.height() >= 128)
+            addKudo(SoftwareResource::HiDpiIconKudo);
+
         if (icon.kind() == AppStream::Icon::KindStock) {
             m_stockIcons.append(icon.name());
         } else if (icon.kind() == AppStream::Icon::KindRemote) {
@@ -585,6 +576,8 @@ void FlatpakResource::updateComponent(const AppStream::Component &component)
             }
         }
     }
+    if (m_appdata.screenshots().size() > 0)
+        addKudo(SoftwareResource::HasScreenshotsKudo);
 
     // Package information
     for (const auto &bundle : m_appdata.bundles()) {
@@ -598,6 +591,139 @@ void FlatpakResource::updateComponent(const AppStream::Component &component)
         } else {
             qCWarning(lcFlatpakBackend, "Unable to parse Flatpak identifier \"%s\" from AppStream: %s",
                       bundle.id().toUtf8().constData(), error->message);
+        }
+    }
+
+    // Is last build less than a year ago?
+    for (const auto &release : m_appdata.releases()) {
+        if (release.timestamp().daysTo(QDateTime::currentDateTime()) < 365) {
+            addKudo(SoftwareResource::RecentReleaseKudo);
+            break;
+        }
+    }
+
+    // Featured
+    if (m_appdata.categories().contains(QStringLiteral("Featured")))
+        addKudo(SoftwareResource::FeaturedRecommendedKudo);
+
+    // FIXME: We should detect more kudos but the AppStream API is very limited
+    //        For installed refs we detect the missing kudos with updateFromMetadata()
+    //        We should write our XML parser, see #19
+}
+
+void FlatpakResource::updateFromMetadata(FlatpakInstalledRef *ref)
+{
+    g_autoptr(GCancellable) cancellable = g_cancellable_new();
+    g_autoptr(GError) error = nullptr;
+
+    g_autoptr(GBytes) bytes = flatpak_installed_ref_load_metadata(ref, cancellable, &error);
+    if (!bytes) {
+        qCWarning(lcFlatpakBackend, "Failed to load metadata for \"%s\": %s",
+                  qPrintable(name()), error->message);
+        return;
+    }
+
+    // Can't use QSettings because it needs a file name
+    g_autoptr(GKeyFile) kf = g_key_file_new();
+    if (!g_key_file_load_from_bytes(kf, bytes, G_KEY_FILE_NONE, &error)) {
+        qCWarning(lcFlatpakBackend, "Failed to read metadata for \"%s\": %s",
+                  qPrintable(name()), error->message);
+        return;
+    }
+
+    // Runtime name
+    g_autofree gchar *runtime =
+            g_key_file_get_string(kf, "Application", "runtime", &error);
+    if (!runtime) {
+        qCWarning(lcFlatpakBackend, "Failed to parse metadata for \"%s\": %s",
+                  qPrintable(name()), error->message);
+        return;
+    }
+    m_runtime = QString::fromUtf8(runtime);
+
+    /*
+     * Is it secure?
+     */
+
+    bool secure = true;
+
+    g_auto(GStrv) shared =
+            g_key_file_get_string_list(kf, "Context", "shared", nullptr, nullptr);
+    if (shared) {
+        // SHM is not secure enough
+        if (g_strv_contains((const gchar * const *) shared, "ipc"))
+            secure = false;
+    }
+
+    g_auto(GStrv) sockets =
+            g_key_file_get_string_list(kf, "Context", "sockets", nullptr, nullptr);
+    if (sockets) {
+        // X11 is not secure enough
+        if (g_strv_contains((const gchar * const *) sockets, "x11"))
+            secure = false;
+    }
+
+    g_auto(GStrv) filesystems =
+            g_key_file_get_string_list(kf, "Context", "filesystems", nullptr, nullptr);
+    if (filesystems) {
+        // Secure apps should be using portals
+        if (g_strv_contains((const gchar * const *) filesystems, "home"))
+            secure = false;
+    }
+
+    if (secure)
+        addKudo(SoftwareResource::SandboxedSecureKudo);
+
+    /*
+     * Kudos
+     */
+
+    // ISO 639 name of the current language
+    const auto curLang = QLocale::system().name();
+
+    QByteArray appdata = loadAppData(ref);
+    if (!appdata.isEmpty()) {
+        QXmlStreamReader xml(appdata);
+        while (!xml.atEnd()) {
+            xml.readNext();
+
+            if (xml.name().compare(QStringLiteral("lang")) == 0) {
+                auto lang = xml.readElementText();
+                if (lang != curLang)
+                    continue;
+                for (const auto &attr : xml.attributes()) {
+                    if (attr.name().compare(QStringLiteral("percentage")) == 0) {
+                        bool ok = false;
+                        int value = attr.value().toInt(&ok);
+
+                        if (ok && value >= 50) {
+                            addKudo(SoftwareResource::MyLanguageKudo);
+                            break;
+                        }
+                    }
+                }
+            } else if (xml.name().compare(QStringLiteral("keyword")) == 0) {
+                addKudo(SoftwareResource::HasKeywordsKudo);
+            } else if (xml.name().compare(QStringLiteral("kudo")) == 0) {
+                auto value = xml.readElementText();
+
+                if (value == QStringLiteral("SearchProvider"))
+                    addKudo(SoftwareResource::SearchProviderKudo);
+                else if (value == QStringLiteral("UserDocs"))
+                    addKudo(SoftwareResource::InstallsUserDocsKudo);
+                else if (value == QStringLiteral("AppMenu"))
+                    addKudo(SoftwareResource::AppMenuKudo);
+                else if (value == QStringLiteral("ModernToolkit"))
+                    addKudo(SoftwareResource::ModernToolkitKudo);
+                else if (value == QStringLiteral("Notifications"))
+                    addKudo(SoftwareResource::UsesNotificationsKudo);
+                else if (value == QStringLiteral("HighContrast"))
+                    addKudo(SoftwareResource::HighContrastKudo);
+                else if (value == QStringLiteral("HiDpiIcon"))
+                    addKudo(SoftwareResource::HiDpiIconKudo);
+                else if (value == QStringLiteral("GnomeSoftware::popular"))
+                    addKudo(SoftwareResource::FeaturedRecommendedKudo);
+            }
         }
     }
 }

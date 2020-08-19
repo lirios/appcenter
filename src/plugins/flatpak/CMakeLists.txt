@@ -20,6 +20,8 @@ liri_add_plugin(flatpak
         flatpaktransaction.h
         flatpaktransactionjob.cpp
         flatpaktransactionjob.h
+        flatpakutils.cpp
+        flatpakutils.h
     DEFINES
         QT_NO_KEYWORD
     PUBLIC_LIBRARIES

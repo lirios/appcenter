@@ -138,7 +138,6 @@ public:
     void updateFromRef(FlatpakRef *ref);
     void updateFromInstalledRef(FlatpakInstalledRef *ref);
     void updateDownloadSize(FlatpakResource *remoteResource, FlatpakRef *ref);
-    bool updateFromMetadata();
 
     static QDir installationDir(FlatpakInstallation *installation);
 
@@ -163,6 +162,7 @@ private:
     void setFlatpakType(FlatpakRefKind kind);
     void setState(State state);
     void updateComponent(const AppStream::Component &component);
+    void updateFromMetadata(FlatpakInstalledRef *ref);
 
     friend class FlatpakBackend;
 };
