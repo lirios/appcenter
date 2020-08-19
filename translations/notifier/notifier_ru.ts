@@ -29,7 +29,7 @@
     <message>
         <location filename="../updatenotifier.cpp" line="68"/>
         <source>%1, %2, and one other app are ready to update</source>
-        <translation type="unfinished"/>
+        <translation>%1, %2 и еще одно приложение готовы к обновлению</translation>
     </message>
     <message>
         <location filename="../updatenotifier.cpp" line="71"/>
