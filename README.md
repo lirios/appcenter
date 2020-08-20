@@ -48,8 +48,8 @@ to learn how to enable them.
 
 ### Available categories
 
-* **liri.appcenter:** Library
-* **liri.backends.flatpak:** Flatpak backend
+* **liri.appcenter:** Library and application
+* **liri.appcenter.flatpak:** Flatpak backend
 
 ## Licensing
 
