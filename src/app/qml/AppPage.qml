@@ -239,8 +239,8 @@ FluidControls.Page {
                 clip: true
                 orientation: ListView.Horizontal
                 spacing: FluidControls.Units.smallSpacing
+                visible: count > 0
                 model: AppCenter.ScreenshotsModel {
-                    id: screenshotsModel
                     app: appPage.app
                 }
                 delegate: Image {
