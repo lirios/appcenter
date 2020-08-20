@@ -363,6 +363,8 @@ void FlatpakResource::updateFromRemote(FlatpakRemote *remote)
     Q_ASSERT(remote);
 
     m_key.origin = QString::fromUtf8(flatpak_remote_get_name(remote));
+    if (m_key.branch.isEmpty())
+        m_key.branch = QString::fromUtf8(flatpak_remote_get_default_branch(remote));
 
     g_autoptr(GFile) appStreamDir = flatpak_remote_get_appstream_dir(remote, nullptr);
     if (appStreamDir)
@@ -376,8 +378,6 @@ void FlatpakResource::updateFromRef(FlatpakRef *ref)
         m_key.architecture = QString::fromLocal8Bit(flatpak_ref_get_arch(ref));
 
         m_key.branch = QString::fromLocal8Bit(flatpak_ref_get_branch(ref));
-        if (m_key.branch.isEmpty())
-            m_key.branch = QLatin1String("master");
         m_commit = QString::fromLocal8Bit(flatpak_ref_get_commit(ref));
         m_latestCommit = m_commit;
 
@@ -385,7 +385,7 @@ void FlatpakResource::updateFromRef(FlatpakRef *ref)
     } else {
         m_packageName = m_appdata.id().remove(QLatin1String(".desktop"));
         m_key.architecture = QString();
-        m_key.branch = QLatin1String("master");
+        m_key.branch = QString();
         m_commit = QString();
         m_latestCommit = QString();
 
