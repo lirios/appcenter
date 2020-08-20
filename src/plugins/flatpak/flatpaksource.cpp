@@ -32,6 +32,7 @@ FlatpakSource::FlatpakSource(Liri::AppCenter::Backend *backend,
     , m_installation(installation)
     , m_remote(remote)
     , m_cancellable(g_cancellable_new())
+    , m_name(QString::fromUtf8(flatpak_remote_get_name(m_remote)))
     , m_isUser(flatpak_installation_get_is_user(m_installation))
 {
 }
@@ -48,7 +49,7 @@ FlatpakSource::~FlatpakSource()
 
 QString FlatpakSource::name() const
 {
-    return QString::fromUtf8(flatpak_remote_get_name(m_remote));
+    return m_name;
 }
 
 QString FlatpakSource::title() const
@@ -70,7 +71,7 @@ void FlatpakSource::setTitle(const QString &value)
         Q_EMIT labelChanged();
     } else {
         qCWarning(lcFlatpakBackend, "Unable to set title on source \"%s\": %s",
-                  qPrintable(name()), error->message);
+                  qPrintable(m_name), error->message);
     }
 }
 
@@ -92,7 +93,7 @@ void FlatpakSource::setComment(const QString &value)
         Q_EMIT commentChanged();
     else
         qCWarning(lcFlatpakBackend, "Unable to set comment on source \"%s\": %s",
-                  qPrintable(name()), error->message);
+                  qPrintable(m_name), error->message);
 }
 
 QString FlatpakSource::description() const
@@ -113,7 +114,7 @@ void FlatpakSource::setDescription(const QString &value)
         Q_EMIT descriptionChanged();
     else
         qCWarning(lcFlatpakBackend, "Unable to set description on source \"%s\": %s",
-                  qPrintable(name()), error->message);
+                  qPrintable(m_name), error->message);
 }
 
 QString FlatpakSource::section() const
@@ -147,7 +148,7 @@ void FlatpakSource::setEnabled(bool value)
         Q_EMIT enabledChanged();
     else
         qCWarning(lcFlatpakBackend, "Unable to enable or disable source \"%s\": %s",
-                  qPrintable(name()), error->message);
+                  qPrintable(m_name), error->message);
 }
 
 bool FlatpakSource::gpgVerify() const
@@ -168,7 +169,7 @@ void FlatpakSource::setGpgVerify(bool value)
         Q_EMIT gpgVerifyChanged();
     else
         qCWarning(lcFlatpakBackend, "Unable to set GPG verification on source \"%s\": %s",
-                  qPrintable(name()), error->message);
+                  qPrintable(m_name), error->message);
 }
 
 QUrl FlatpakSource::url() const
@@ -189,7 +190,7 @@ void FlatpakSource::setUrl(const QUrl &value)
         Q_EMIT urlChanged();
     else
         qCWarning(lcFlatpakBackend, "Unable to set URL on source \"%s\": %s",
-                  qPrintable(name()), error->message);
+                  qPrintable(m_name), error->message);
 }
 
 QUrl FlatpakSource::iconUrl() const
@@ -210,7 +211,7 @@ void FlatpakSource::setIconUrl(const QUrl &value)
         Q_EMIT iconUrlChanged();
     else
         qCWarning(lcFlatpakBackend, "Unable to set icon URL on source \"%s\": %s",
-                  qPrintable(name()), error->message);
+                  qPrintable(m_name), error->message);
 }
 
 int FlatpakSource::priority() const
@@ -231,7 +232,7 @@ void FlatpakSource::setPriority(int value)
         Q_EMIT priorityChanged();
     else
         qCWarning(lcFlatpakBackend, "Unable to set priority to source \"%s\": %s",
-                  qPrintable(name()), error->message);
+                  qPrintable(m_name), error->message);
 }
 
 FlatpakInstallation *FlatpakSource::installation() const
@@ -249,7 +250,7 @@ QDir FlatpakSource::appStreamDir() const
     g_autoptr(GFile) dir = flatpak_remote_get_appstream_dir(m_remote, nullptr);
     if (!dir) {
         qCWarning(lcFlatpakBackend, "No AppStream directory for \"%s\"",
-                  qPrintable(name()));
+                  qPrintable(m_name));
         return QDir();
     }
 

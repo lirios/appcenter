@@ -79,6 +79,7 @@ private:
     FlatpakInstallation *m_installation = nullptr;
     FlatpakRemote *m_remote = nullptr;
     GCancellable *m_cancellable = nullptr;
+    QString m_name;
     bool m_isUser = false;
 };
 
