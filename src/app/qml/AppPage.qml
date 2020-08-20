@@ -37,6 +37,12 @@ FluidControls.Page {
 
     title: app.name
 
+    FluidControls.SnackBar {
+        id: snackBar
+
+        duration: 5000
+    }
+
     FluidControls.OverlayView {
         id: screenshotOverlay
 

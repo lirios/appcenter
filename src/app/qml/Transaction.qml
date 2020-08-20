@@ -48,6 +48,10 @@ RowLayout {
             transaction = null;
         }
 
+        function onFailed() {
+            snackBar.open(transaction.errorMessage);
+        }
+
         function onCancelled() {
             transaction = null;
         }
