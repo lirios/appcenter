@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2020 Liri Team
+#
+# SPDX-License-Identifier: CC0-1.0
+#
 # 
 # Translators:
 # Irina Fedulova <istartlin@gmail.com>, 2020

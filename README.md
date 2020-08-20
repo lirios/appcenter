@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2020 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
+
+SPDX-License-Identifier: CC0-1.0
+-->
+
 App Center
 ==========
 
@@ -5,6 +11,7 @@ App Center
 [![GitHub release](https://img.shields.io/github/release/lirios/appcenter.svg)](https://github.com/lirios/appcenter)
 [![GitHub issues](https://img.shields.io/github/issues/lirios/appcenter.svg)](https://github.com/lirios/appcenter/issues)
 [![CI](https://github.com/lirios/appcenter/workflows/CI/badge.svg?branch=develop&event=push)](https://github.com/lirios/appcenter/actions?query=workflow%3ACI)
+[![REUSE status](https://api.reuse.software/badge/github.com/lirios/appcenter)](https://api.reuse.software/info/github.com/lirios/appcenter)
 
 This is the App Center for Liri OS for installing, updating, and managing applications built using Flatpak.
 
