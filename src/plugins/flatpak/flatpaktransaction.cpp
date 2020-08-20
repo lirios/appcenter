@@ -45,8 +45,8 @@ void LiriFlatpakTransaction::run()
         setStatus(Transaction::Succeeded);
     });
     connect(m_job, &FlatpakTransactionJob::failed, this, [&](const QString &message) {
-        setStatus(Transaction::Failed);
         setErrorMessage(message);
+        setStatus(Transaction::Failed);
     });
     m_job->start();
 }
