@@ -45,9 +45,11 @@ class LIRIAPPCENTER_EXPORT SoftwareSource : public QObject
     Q_PROPERTY(QString comment READ comment WRITE setComment NOTIFY commentChanged)
     Q_PROPERTY(QString description READ description WRITE setDescription NOTIFY descriptionChanged)
     Q_PROPERTY(QString section READ section CONSTANT)
+    Q_PROPERTY(QString label READ label NOTIFY labelChanged)
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
     Q_PROPERTY(bool gpgVerify READ gpgVerify WRITE setGpgVerify NOTIFY gpgVerifyChanged)
     Q_PROPERTY(QUrl url READ url WRITE setUrl NOTIFY urlChanged)
+    Q_PROPERTY(QString hostname READ hostname NOTIFY urlChanged)
     Q_PROPERTY(QUrl iconUrl READ iconUrl WRITE setIconUrl NOTIFY iconUrlChanged)
     Q_PROPERTY(int priority READ priority WRITE setPriority NOTIFY priorityChanged)
     Q_DECLARE_PRIVATE(SoftwareSource)
@@ -71,6 +73,8 @@ public:
 
     virtual QString section() const = 0;
 
+    virtual QString label() const = 0;
+
     virtual bool isEnabled() const = 0;
     virtual void setEnabled(bool flag) = 0;
 
@@ -79,6 +83,8 @@ public:
 
     virtual QUrl url() const = 0;
     virtual void setUrl(const QUrl &url) = 0;
+
+    QString hostname() const;
 
     virtual QUrl iconUrl() const = 0;
     virtual void setIconUrl(const QUrl &url) = 0;
@@ -90,6 +96,7 @@ Q_SIGNALS:
     void titleChanged();
     void commentChanged();
     void descriptionChanged();
+    void labelChanged();
     void enabledChanged();
     void gpgVerifyChanged();
     void urlChanged();

@@ -48,9 +48,11 @@ public:
         TitleRole,
         CommentRole,
         DescriptionRole,
+        LabelRole,
         EnabledRole,
         GpgVerifyRole,
         UrlRole,
+        HostNameRole,
         IconUrlRole,
         PriorityRole
     };

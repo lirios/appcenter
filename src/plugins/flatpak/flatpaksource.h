@@ -53,6 +53,8 @@ public:
 
     QString section() const override;
 
+    QString label() const override;
+
     bool isEnabled() const override;
     void setEnabled(bool value) override;
 
@@ -77,6 +79,7 @@ private:
     FlatpakInstallation *m_installation = nullptr;
     FlatpakRemote *m_remote = nullptr;
     GCancellable *m_cancellable = nullptr;
+    bool m_isUser = false;
 };
 
 #endif // LIRI_FLATPAKSOURCE_H

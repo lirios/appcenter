@@ -46,6 +46,11 @@ Backend *SoftwareSource::backend() const
     return d->backend;
 }
 
+QString SoftwareSource::hostname() const
+{
+    return url().host();
+}
+
 } // namespace AppCenter
 
 } // namespace Liri

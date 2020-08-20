@@ -32,6 +32,7 @@ FlatpakSource::FlatpakSource(Liri::AppCenter::Backend *backend,
     , m_installation(installation)
     , m_remote(remote)
     , m_cancellable(g_cancellable_new())
+    , m_isUser(flatpak_installation_get_is_user(m_installation))
 {
 }
 
@@ -64,11 +65,13 @@ void FlatpakSource::setTitle(const QString &value)
     flatpak_remote_set_title(m_remote, value.toUtf8().constData());
 
     g_autoptr(GError) error = nullptr;
-    if (flatpak_installation_modify_remote(m_installation, m_remote, m_cancellable, &error))
+    if (flatpak_installation_modify_remote(m_installation, m_remote, m_cancellable, &error)) {
         Q_EMIT titleChanged();
-    else
+        Q_EMIT labelChanged();
+    } else {
         qCWarning(lcFlatpakBackend, "Unable to set title on source \"%s\": %s",
                   qPrintable(name()), error->message);
+    }
 }
 
 QString FlatpakSource::comment() const
@@ -116,6 +119,14 @@ void FlatpakSource::setDescription(const QString &value)
 QString FlatpakSource::section() const
 {
     return QStringLiteral("Flatpak");
+}
+
+QString FlatpakSource::label() const
+{
+    if (m_isUser)
+        return title();
+    else
+        return tr("%1 (System)").arg(title());
 }
 
 bool FlatpakSource::isEnabled() const
