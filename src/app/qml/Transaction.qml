@@ -50,19 +50,10 @@ RowLayout {
 
         function onFailed() {
             snackBar.open(transaction.errorMessage);
+            transaction = null;
         }
 
         function onCancelled() {
-            transaction = null;
-        }
-    }
-
-    // Hide after a while when the transaction has failed so
-    // that the user will see the error
-    Timer {
-        running: transaction && transaction.status === AppCenter.Transaction.Failed
-        interval: 5000
-        onTriggered: {
             transaction = null;
         }
     }
