@@ -18,10 +18,10 @@ class LIRIAPPCENTER_EXPORT Backend : public QObject
 {
     Q_OBJECT
 public:
-    explicit Backend(QObject *parent = nullptr);
+    explicit Backend(SoftwareManager *manager, QObject *parent = nullptr);
     virtual ~Backend();
 
-    virtual void initialize(SoftwareManager *manager) = 0;
+    virtual void initialize() = 0;
 
     virtual void listSources() = 0;
     virtual void listAvailableApps() = 0;

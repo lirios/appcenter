@@ -6,12 +6,9 @@
 #include <QDir>
 #include <QPluginLoader>
 
-#include "backend.h"
-#include "backendplugin.h"
-#include "resourcesmodel.h"
-#include "softwaremanager.h"
+#include "review.h"
 #include "softwaremanager_p.h"
-#include "sourcesmodel.h"
+#include "softwareresource_p.h"
 
 namespace Liri {
 
@@ -36,7 +33,10 @@ SoftwareManager::SoftwareManager(QObject *parent)
     qRegisterMetaType<SoftwareSource *>("SoftwareSource*");
     qRegisterMetaType<SoftwareResource *>("SoftwareResource*");
     qRegisterMetaType<SourcesModel *>("SourcesModel*");
+    qRegisterMetaType<Rating *>("Rating*");
+    qRegisterMetaType<Review *>("Review*");
     qRegisterMetaType<ResourcesModel *>("ResourcesModel*");
+    qRegisterMetaType<ReviewsModel *>("ReviewsModel*");
 }
 
 SoftwareManager::~SoftwareManager()
@@ -56,11 +56,29 @@ ResourcesModel *SoftwareManager::resourcesModel() const
     return d->resourcesModel;
 }
 
+void SoftwareManager::addResource(SoftwareResource *resource)
+{
+    Q_D(SoftwareManager);
+
+    if (!d->resources.contains(resource))
+        d->resources.append(resource);
+
+    d->resourcesModel->addResource(resource);
+}
+
+void SoftwareManager::removeResource(SoftwareResource *resource)
+{
+    Q_D(SoftwareManager);
+
+    d->resources.removeOne(resource);
+    d->resourcesModel->addResource(resource);
+}
+
 bool SoftwareManager::addSource(const QString &name)
 {
     Q_D(SoftwareManager);
 
-    for (auto backend : d->backends) {
+    for (auto backend : qAsConst(d->resourcesBackends)) {
         if (backend->addSource(name))
             return true;
     }
@@ -72,7 +90,7 @@ bool SoftwareManager::removeSource(SoftwareSource *source)
 {
     Q_D(SoftwareManager);
 
-    for (auto backend : d->backends) {
+    for (auto backend : qAsConst(d->resourcesBackends)) {
         if (backend->removeSource(source))
             return true;
     }
@@ -86,7 +104,7 @@ SoftwareResources SoftwareManager::updates() const
 
     SoftwareResources list;
 
-    for (auto backend : d->backends)
+    for (auto backend : qAsConst(d->resourcesBackends))
         list += backend->updates();
 
     return list;
@@ -108,33 +126,74 @@ void SoftwareManager::initialize()
 {
     Q_D(SoftwareManager);
 
-    // Find all backends
+    // Find all resource backends and add them to the list
     for (const QString &path : QCoreApplication::libraryPaths()) {
-        QDir pluginsPath(QDir(path).absoluteFilePath(QLatin1String("liri/appcenter")));
+        QDir pluginsPath(QDir(path).absoluteFilePath(QLatin1String("liri/appcenter/resources")));
 
         for (const QString &fileName : pluginsPath.entryList(QDir::Files)) {
             QPluginLoader loader(pluginsPath.absoluteFilePath(fileName));
-            BackendPlugin *plugin = qobject_cast<BackendPlugin *>(loader.instance());
-            if (!plugin)
-                continue;
-            Backend *backend = qobject_cast<Backend *>(plugin->create());
-            if (backend) {
-                d->backends.append(backend);
 
-                connect(backend, &Backend::updatesAvailable, this, [this, d](uint count) {
-                    d->updatesCount = count;
-                    Q_EMIT updatesAvailable(count);
-                });
+            auto *plugin = qobject_cast<BackendPlugin *>(loader.instance());
+            if (plugin) {
+                auto *backend = qobject_cast<Backend *>(plugin->create(this));
+                if (backend) {
+                    d->resourcesBackends.append(backend);
 
-                backend->initialize(this);
-                backend->listSources();
-                backend->listAvailableApps();
-                backend->listInstalledApps();
-                backend->checkForUpdates();
-            } else {
-                loader.unload();
+                    // Emit a signal with the total available updates count
+                    connect(backend, &Backend::updatesAvailable, this, [this, d](uint count) {
+                        d->updatesCount = count;
+                        Q_EMIT updatesAvailable(count);
+                    });
+                } else {
+                    loader.unload();
+                }
             }
         }
+    }
+
+    // Find all reviews backends and add them to the list
+    for (const QString &path : QCoreApplication::libraryPaths()) {
+        QDir pluginsPath(QDir(path).absoluteFilePath(QLatin1String("liri/appcenter/reviews")));
+
+        for (const QString &fileName : pluginsPath.entryList(QDir::Files)) {
+            QPluginLoader loader(pluginsPath.absoluteFilePath(fileName));
+
+            auto *plugin = qobject_cast<ReviewsBackendPlugin *>(loader.instance());
+            if (plugin) {
+                auto *backend = qobject_cast<ReviewsBackend *>(plugin->create(this));
+                if (backend) {
+                    d->reviewsBackends.append(backend);
+
+                    // Add ratings to software resources
+                    connect(backend, &ReviewsBackend::ratingsReady, this, [d, backend] {
+                        for (auto *resource : qAsConst(d->resources)) {
+                            auto *rating = backend->ratingForSofwareResource(resource);
+                            if (rating)
+                                SoftwareResourcePrivate::get(resource)->setRating(rating);
+                        }
+                    });
+
+                    // Relay review signals
+                    connect(backend, &ReviewsBackend::reviewAdded,
+                            this, &SoftwareManager::reviewAdded);
+                } else {
+                    loader.unload();
+                }
+            }
+        }
+    }
+
+    // Initialize them all
+    for (auto *backend : qAsConst(d->resourcesBackends)) {
+        backend->initialize();
+        backend->listSources();
+        backend->listAvailableApps();
+        backend->listInstalledApps();
+        backend->checkForUpdates();
+    }
+    for (auto *backend : qAsConst(d->reviewsBackends)) {
+        backend->initialize();
+        backend->fetchRatings();
     }
 }
 
@@ -142,7 +201,7 @@ void SoftwareManager::checkForUpdates()
 {
     Q_D(SoftwareManager);
 
-    for (auto backend : d->backends)
+    for (auto backend : qAsConst(d->resourcesBackends))
         backend->checkForUpdates();
 }
 

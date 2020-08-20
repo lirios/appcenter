@@ -7,7 +7,7 @@ find_package(Flatpak REQUIRED)
 
 liri_add_plugin(flatpak
     TYPE
-        "liri/appcenter"
+        "liri/appcenter/resources"
     SOURCES
         flatpakappstreamjob.cpp
         flatpakappstreamjob.h

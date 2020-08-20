@@ -37,10 +37,11 @@ static quint64 fetchRemoteSize(FlatpakResource *app, FlatpakRef *ref)
     return downloadSize;
 }
 
-FlatpakResource::FlatpakResource(const AppStream::Component &component,
+FlatpakResource::FlatpakResource(Liri::AppCenter::SoftwareManager *manager,
+                                 const AppStream::Component &component,
                                  FlatpakInstallation *installation,
                                  QObject *parent)
-    : Liri::AppCenter::SoftwareResource(parent)
+    : Liri::AppCenter::SoftwareResource(manager, parent)
     , m_appdata(component)
 {
     updateComponent(component);
@@ -97,6 +98,11 @@ Liri::AppCenter::SoftwareResource::State FlatpakResource::state() const
     return m_state;
 }
 
+QString FlatpakResource::appId() const
+{
+    return m_key.desktopId;
+}
+
 QString FlatpakResource::name() const
 {
     QString name = m_appdata.name();
@@ -115,11 +121,6 @@ QString FlatpakResource::summary() const
 QString FlatpakResource::description() const
 {
     return m_appdata.description();
-}
-
-QString FlatpakResource::desktopId() const
-{
-    return m_key.desktopId;
 }
 
 QString FlatpakResource::packageName() const

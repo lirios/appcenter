@@ -20,10 +20,11 @@ class FlatpakBackend : public Liri::AppCenter::Backend
 {
     Q_OBJECT
 public:
-    explicit FlatpakBackend(QObject *parent = nullptr);
+    explicit FlatpakBackend(Liri::AppCenter::SoftwareManager *manager,
+                            QObject *parent = nullptr);
     ~FlatpakBackend();
 
-    void initialize(Liri::AppCenter::SoftwareManager *manager) override;
+    void initialize() override;
 
     void listSources() override;
     void listAvailableApps() override;

@@ -17,7 +17,7 @@ class FlatpakPlugin : public Liri::AppCenter::BackendPlugin
 public:
     explicit FlatpakPlugin(QObject *parent = nullptr);
 
-    Liri::AppCenter::Backend *create() override;
+    Liri::AppCenter::Backend *create(Liri::AppCenter::SoftwareManager *manager) override;
 };
 
 #endif // LIRI_FLATPAKPLUGIN_H

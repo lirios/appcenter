@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: LGPL-3.0-or-later
 
+#include "softwaremanager_p.h"
 #include "softwareresource_p.h"
 #include "transaction.h"
 
@@ -9,20 +10,44 @@ namespace Liri {
 
 namespace AppCenter {
 
-SoftwareResourcePrivate::SoftwareResourcePrivate()
+SoftwareResourcePrivate::SoftwareResourcePrivate(SoftwareResource *self)
+    : q_ptr(self)
 {
 }
 
-SoftwareResource::SoftwareResource(QObject *parent)
+void SoftwareResourcePrivate::setRating(Rating *r)
+{
+    Q_Q(SoftwareResource);
+
+    if (rating != r) {
+        rating = r;
+        Q_EMIT q->ratingChanged();
+    }
+}
+
+SoftwareResource::SoftwareResource(SoftwareManager *manager, QObject *parent)
     : QObject(parent)
-    , d_ptr(new SoftwareResourcePrivate())
+    , d_ptr(new SoftwareResourcePrivate(this))
 {
     qRegisterMetaType<SoftwareResource::Kudos>("SoftwareResource::Kudos");
+
+    d_ptr->manager = manager;
+    connect(manager, &SoftwareManager::reviewAdded, this, [this](Review *review) {
+        Q_D(SoftwareResource);
+        if (review->resource() == this)
+            d->reviews.append(review);
+    });
 }
 
 SoftwareResource::~SoftwareResource()
 {
     delete d_ptr;
+}
+
+SoftwareManager *SoftwareResource::manager() const
+{
+    Q_D(const SoftwareResource);
+    return d->manager;
 }
 
 QString SoftwareResource::iconName() const
@@ -59,6 +84,11 @@ QString SoftwareResource::version() const
     else if (state() == InstalledState)
         return installedVersion();
     return availableVersion();
+}
+
+bool SoftwareResource::isInstalled() const
+{
+    return state() == InstalledState;
 }
 
 bool SoftwareResource::launch() const
@@ -192,6 +222,29 @@ uint SoftwareResource::kudosPercentage() const
         percentage = qMax<uint>(percentage, 50);
 
     return qMin<uint>(percentage, 100);
+}
+
+Rating *SoftwareResource::rating() const
+{
+    Q_D(const SoftwareResource);
+    return d->rating;
+}
+
+QList<Review *> SoftwareResource::reviews() const
+{
+    Q_D(const SoftwareResource);
+    return d->reviews;
+}
+
+void SoftwareResource::fetchReviews()
+{
+    Q_D(SoftwareResource);
+
+    d->reviews.clear();
+
+    const auto list = SoftwareManagerPrivate::get(d->manager)->reviewsBackends;
+    for (auto *backend : qAsConst(list))
+        backend->fetchReviews(this);
 }
 
 } // namespace AppCenter

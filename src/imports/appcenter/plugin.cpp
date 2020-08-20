@@ -5,7 +5,10 @@
 #include <QQmlComponent>
 #include <QQmlExtensionPlugin>
 
+#include <LiriAppCenter/Rating>
 #include <LiriAppCenter/ResourcesModel>
+#include <LiriAppCenter/Review>
+#include <LiriAppCenter/ReviewsModel>
 #include <LiriAppCenter/ScreenshotsModel>
 #include <LiriAppCenter/SoftwareManager>
 #include <LiriAppCenter/SoftwareResource>
@@ -14,6 +17,7 @@
 #include <LiriAppCenter/Transaction>
 
 #include "filteredresourcesmodel.h"
+#include "paginatemodel.h"
 
 using namespace Liri::AppCenter;
 
@@ -31,8 +35,13 @@ public:
         qmlRegisterType<ScreenshotsModel>(uri, 1, 0, "ScreenshotsModel");
         qmlRegisterType<SoftwareManager>(uri, 1, 0, "SoftwareManager");
         qmlRegisterType<SourcesModel>(uri, 1, 0, "SourcesModel");
-
+        qmlRegisterType<PaginateModel>(uri, 1, 0, "PaginateModel");
+        qmlRegisterUncreatableType<Rating>(uri, 1, 0, "Rating",
+                                           QLatin1String("Unable to instantiate Rating"));
         qmlRegisterUncreatableType<ResourcesModel>(uri, 1, 0, "ResourcesModel", QLatin1String("Unable to instantiate ResourcesModel"));
+        qmlRegisterUncreatableType<Review>(uri, 1, 0, "Review",
+                                           QLatin1String("Unable to instantiate Review"));
+        qmlRegisterType<ReviewsModel>(uri, 1, 0, "ReviewsModel");
         qmlRegisterUncreatableType<SoftwareResource>(uri, 1, 0, "SoftwareResource", QLatin1String("Unable to instantiate SoftwareResource"));
         qmlRegisterUncreatableType<SoftwareSource>(uri, 1, 0, "SoftwareSource", QLatin1String("Unable to instantiate SoftwareSource"));
         qmlRegisterUncreatableType<Transaction>(uri, 1, 0, "Transaction",

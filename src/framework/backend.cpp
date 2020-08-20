@@ -8,9 +8,10 @@ namespace Liri {
 
 namespace AppCenter {
 
-Backend::Backend(QObject *parent)
+Backend::Backend(SoftwareManager *manager, QObject *parent)
     : QObject(parent)
 {
+    Q_UNUSED(manager);
 }
 
 Backend::~Backend()

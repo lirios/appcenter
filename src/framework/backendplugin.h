@@ -7,7 +7,7 @@
 
 #include <QObject>
 
-#include <LiriAppCenter/liriappcenterglobal.h>
+#include <LiriAppCenter/SoftwareManager>
 
 namespace Liri {
 
@@ -21,7 +21,7 @@ class LIRIAPPCENTER_EXPORT BackendPlugin : public QObject
 public:
     explicit BackendPlugin(QObject *parent = nullptr);
 
-    virtual Backend *create() = 0;
+    virtual Backend *create(SoftwareManager *manager) = 0;
 };
 
 } // namespace AppCenter

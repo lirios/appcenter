@@ -27,6 +27,7 @@ The following modules and their dependencies are required:
 
  * [cmake](https://gitlab.kitware.com/cmake/cmake) >= 3.10.0
  * [cmake-shared](https://github.com/lirios/cmake-shared.git) >= 1.0.0
+ * [qtaccountsservice](https://github.com/lirios/qtaccountsservice.git) >= 1.2.0
  * [fluid](https://github.com/lirios/fluid) >= 1.0.0
  * [libliri](https://github.com/lirios/libliri)
  * [flatpak](https://github.com/flatpak/flatpak)
@@ -57,6 +58,7 @@ to learn how to enable them.
 
 * **liri.appcenter:** Library and application
 * **liri.appcenter.flatpak:** Flatpak backend
+* **liri.appcenter.odrs:** ODRS reviews backend
 
 ## Licensing
 

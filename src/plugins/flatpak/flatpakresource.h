@@ -20,7 +20,8 @@ class FlatpakResource : public Liri::AppCenter::SoftwareResource
 {
     Q_OBJECT
 public:
-    explicit FlatpakResource(const AppStream::Component &component,
+    explicit FlatpakResource(Liri::AppCenter::SoftwareManager *manager,
+                             const AppStream::Component &component,
                              FlatpakInstallation *installation,
                              QObject *parent = nullptr);
 
@@ -62,11 +63,12 @@ public:
     Liri::AppCenter::SoftwareResource::Type type() const override;
     Liri::AppCenter::SoftwareResource::State state() const override;
 
+    QString appId() const override;
+
     QString name() const override;
     QString summary() const override;
     QString description() const override;
 
-    QString desktopId() const;
     QString packageName() const override;
     QString architecture() const override;
 

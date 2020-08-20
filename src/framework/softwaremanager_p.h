@@ -16,13 +16,15 @@
 // We mean it.
 //
 
+#include <LiriAppCenter/Backend>
+#include <LiriAppCenter/BackendPlugin>
+#include <LiriAppCenter/ReviewsBackend>
+#include <LiriAppCenter/ReviewsBackendPlugin>
+#include <LiriAppCenter/SoftwareManager>
+
 namespace Liri {
 
 namespace AppCenter {
-
-class BackendPlugin;
-class ResourcesModel;
-class SourcesModel;
 
 class SoftwareManagerPrivate
 {
@@ -30,11 +32,16 @@ public:
     SoftwareManagerPrivate();
     ~SoftwareManagerPrivate();
 
-    QVector<Backend *> backends;
+    static SoftwareManagerPrivate *get(SoftwareManager *self) { return self->d_func(); }
+
+    QList<Backend *> resourcesBackends;
+    QList<ReviewsBackend *> reviewsBackends;
 
     SourcesModel *sourcesModel = nullptr;
     ResourcesModel *resourcesModel = nullptr;
     uint updatesCount = 0;
+
+    QList<SoftwareResource *> resources;
 };
 
 } // namespace AppCenter

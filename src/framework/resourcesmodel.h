@@ -14,6 +14,7 @@ namespace Liri {
 namespace AppCenter {
 
 class ResourcesModelPrivate;
+class SoftwareManager;
 class SoftwareResource;
 
 class LIRIAPPCENTER_EXPORT ResourcesModel : public QAbstractListModel
@@ -36,11 +37,13 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
+private:
+    ResourcesModelPrivate *const d_ptr;
+
     void addResource(SoftwareResource *resource);
     void removeResource(SoftwareResource *resource);
 
-private:
-    ResourcesModelPrivate *const d_ptr;
+    friend class SoftwareManager;
 };
 
 } // namespace AppCenter

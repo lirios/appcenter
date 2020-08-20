@@ -6,6 +6,9 @@
 #define LIRIAPPCENTERSOFTWAREMANAGER_H
 
 #include <LiriAppCenter/ResourcesModel>
+#include <LiriAppCenter/Rating>
+#include <LiriAppCenter/Review>
+#include <LiriAppCenter/ReviewsModel>
 #include <LiriAppCenter/SoftwareSource>
 #include <LiriAppCenter/SoftwareResource>
 #include <LiriAppCenter/SourcesModel>
@@ -32,6 +35,9 @@ public:
     SourcesModel *sourcesModel() const;
     ResourcesModel *resourcesModel() const;
 
+    void addResource(SoftwareResource *resource);
+    void removeResource(SoftwareResource *resource);
+
     Q_INVOKABLE bool addSource(const QString &name);
     Q_INVOKABLE bool removeSource(SoftwareSource *source);
 
@@ -48,6 +54,8 @@ Q_SIGNALS:
     void sourceAdded(SoftwareSource *source);
     void sourceAddFailed(const QString &name, const QString &errorMessage);
     void updatesAvailable(uint count);
+    void ratingAdded(Rating *rating);
+    void reviewAdded(Review *review);
 
 private:
     SoftwareManagerPrivate *const d_ptr;

@@ -15,14 +15,19 @@ namespace Liri {
 
 namespace AppCenter {
 
+class Rating;
+class Review;
+class SoftwareManager;
 class SoftwareResourcePrivate;
 class Transaction;
 
 class LIRIAPPCENTER_EXPORT SoftwareResource : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(SoftwareManager *manager READ manager CONSTANT)
     Q_PROPERTY(Type type READ type CONSTANT)
     Q_PROPERTY(State state READ state NOTIFY stateChanged)
+    Q_PROPERTY(QString appId READ appId CONSTANT)
     Q_PROPERTY(QString name READ name CONSTANT)
     Q_PROPERTY(QString summary READ summary CONSTANT)
     Q_PROPERTY(QString description READ description CONSTANT)
@@ -46,9 +51,11 @@ class LIRIAPPCENTER_EXPORT SoftwareResource : public QObject
     Q_PROPERTY(quint64 downloadSize READ downloadSize CONSTANT)
     Q_PROPERTY(quint64 installedSize READ installedSize CONSTANT)
     Q_PROPERTY(QString changeLog READ changeLog CONSTANT)
+    Q_PROPERTY(bool installed READ isInstalled NOTIFY stateChanged)
     Q_PROPERTY(bool localized READ isLocalized CONSTANT)
     Q_PROPERTY(SoftwareResource::Kudos kudos READ kudos NOTIFY kudosChanged)
     Q_PROPERTY(uint kudosPercentage READ kudosPercentage NOTIFY kudosChanged)
+    Q_PROPERTY(Rating *rating READ rating NOTIFY ratingChanged)
     Q_DECLARE_PRIVATE(SoftwareResource)
     Q_DISABLE_COPY(SoftwareResource)
 public:
@@ -65,7 +72,7 @@ public:
         Runtime,
         Theme
     };
-    Q_ENUM(Type);
+    Q_ENUM(Type)
 
     enum State {
         InstalledState,
@@ -73,7 +80,7 @@ public:
         UpgradableState,
         BrokenState
     };
-    Q_ENUM(State);
+    Q_ENUM(State)
 
     enum Kudo {
         MyLanguageKudo = 1 << 0,
@@ -96,11 +103,16 @@ public:
     Q_DECLARE_FLAGS(Kudos, Kudo)
     Q_FLAG(Kudos)
 
-    explicit SoftwareResource(QObject *parent = nullptr);
+    explicit SoftwareResource(SoftwareManager *manager,
+                              QObject *parent = nullptr);
     ~SoftwareResource();
+
+    SoftwareManager *manager() const;
 
     virtual Type type() const = 0;
     virtual State state() const = 0;
+
+    virtual QString appId() const = 0;
 
     virtual QString name() const = 0;
     virtual QString summary() const = 0;
@@ -143,6 +155,7 @@ public:
     virtual QVector<Image> thumbnails() const = 0;
     virtual QVector<Image> screenshots() const = 0;
 
+    bool isInstalled() const;
     virtual bool isLocalized() const = 0;
 
     Q_INVOKABLE virtual bool launch() const;
@@ -162,6 +175,11 @@ public:
 
     uint kudosPercentage() const;
 
+    Rating *rating() const;
+
+    QList<Review *> reviews() const;
+    void fetchReviews();
+
 Q_SIGNALS:
     void stateChanged();
     void versionChanged();
@@ -174,6 +192,8 @@ Q_SIGNALS:
     void kudoAdded(SoftwareResource::Kudo kudo);
     void kudoRemoved(SoftwareResource::Kudo kudo);
     void kudosChanged();
+    void ratingChanged();
+    void reviewsFetched();
 
 private:
     SoftwareResourcePrivate *const d_ptr;

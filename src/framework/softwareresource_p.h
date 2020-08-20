@@ -20,17 +20,31 @@
 // We mean it.
 //
 
+#include <LiriAppCenter/Rating>
+#include <LiriAppCenter/SoftwareManager>
+
 namespace Liri {
 
 namespace AppCenter {
 
 class SoftwareResourcePrivate
 {
+    Q_DECLARE_PUBLIC(SoftwareResource)
 public:
-    SoftwareResourcePrivate();
+    SoftwareResourcePrivate(SoftwareResource *self);
 
+    void setRating(Rating *r);
+
+    static SoftwareResourcePrivate *get(SoftwareResource *res) { return res->d_func(); }
+
+    SoftwareManager *manager = nullptr;
     QMap<QString, QVariant> metadata;
     SoftwareResource::Kudos kudos;
+    Rating *rating = nullptr;
+    QList<Review *> reviews;
+
+protected:
+    SoftwareResource *q_ptr;
 };
 
 } // namespace AppCenter

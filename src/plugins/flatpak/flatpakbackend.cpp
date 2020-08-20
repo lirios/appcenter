@@ -44,10 +44,13 @@ static void changedCb(GFileMonitor *monitor, GFile *child, GFile *other_file,
     backend->checkForUpdates();
 }
 
-FlatpakBackend::FlatpakBackend(QObject *parent)
-    : Liri::AppCenter::Backend(parent)
+FlatpakBackend::FlatpakBackend(Liri::AppCenter::SoftwareManager *manager,
+                               QObject *parent)
+    : Liri::AppCenter::Backend(manager, parent)
     , m_cancellable(g_cancellable_new())
 {
+    Q_ASSERT(manager);
+    m_manager = manager;
 }
 
 FlatpakBackend::~FlatpakBackend()
@@ -63,7 +66,7 @@ FlatpakBackend::~FlatpakBackend()
     g_object_unref(m_cancellable);
 }
 
-void FlatpakBackend::initialize(Liri::AppCenter::SoftwareManager *manager)
+void FlatpakBackend::initialize()
 {
     /* Override the umask to 022 to make it possible to share files between
      * the liri-appcenter process and flatpak system helper process.
@@ -73,9 +76,6 @@ void FlatpakBackend::initialize(Liri::AppCenter::SoftwareManager *manager)
      * See https://github.com/flatpak/flatpak/pull/2856/
      */
     umask(022);
-
-    Q_ASSERT(manager);
-    m_manager = manager;
 
     g_autoptr(GError) error = nullptr;
 
@@ -378,13 +378,13 @@ bool FlatpakBackend::listInstalledApps(FlatpakInstallation *installation)
             // Create resource
             auto *resource = findResourceFromInstalledRef(installation, ref);
             if (!resource || resource->component().id() != component.id())
-                resource = new FlatpakResource(component, installation);
+                resource = new FlatpakResource(m_manager, component, installation);
             resource->updateFromRef(FLATPAK_REF(ref));
             resource->updateFromInstalledRef(ref);
 
             // Add the resource
             if (!m_resources.contains(resource->key())) {
-                m_manager->resourcesModel()->addResource(resource);
+                m_manager->addResource(resource);
                 m_resources[resource->key()] = resource;
             }
         }
@@ -443,7 +443,7 @@ FlatpakResource *FlatpakBackend::installFromFlatpakRef(const QString &filePath)
         component.addIcon(icon);
     }
 
-    FlatpakResource *resource = new FlatpakResource(component, m_userInstallation);
+    FlatpakResource *resource = new FlatpakResource(m_manager, component, m_userInstallation);
     resource->updateFromRef(ref);
 
     if (runtimeUrl.isEmpty()) {
@@ -608,12 +608,12 @@ void FlatpakBackend::addAppsFromRemote(FlatpakInstallation *installation, Flatpa
 
     // Create a resource for each component
     for (const auto &component : metadata.components()) {
-        FlatpakResource *resource = new FlatpakResource(component, installation);
+        FlatpakResource *resource = new FlatpakResource(m_manager, component, installation);
         resource->updateFromRemote(remote);
 
         // Add resource
         if (!m_resources.contains(resource->key())) {
-            m_manager->resourcesModel()->addResource(resource);
+            m_manager->addResource(resource);
             m_resources[resource->key()] = resource;
         }
     }

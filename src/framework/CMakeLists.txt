@@ -12,10 +12,26 @@ liri_add_module(AppCenter
         backend.h
         backendplugin.cpp
         backendplugin.h
+        cachednetworkaccessmanager.cpp
+        cachednetworkaccessmanager_p.h
         image.cpp
         image.h
+        rating.cpp
+        rating.h
+        rating_p.h
         resourcesmodel.cpp
         resourcesmodel.h
+        resourcesmodel_p.h
+        review.cpp
+        review.h
+        review_p.h
+        reviewsbackend.cpp
+        reviewsbackend.h
+        reviewsbackendplugin.cpp
+        reviewsbackendplugin.h
+        reviewsmodel.cpp
+        reviewsmodel.h
+        reviewsmodel_p.h
         screenshotsmodel.cpp
         screenshotsmodel.h
         softwaremanager.cpp
@@ -34,7 +50,12 @@ liri_add_module(AppCenter
         Backend
         BackendPlugin
         Image
+        Rating
         ResourcesModel
+        Review
+        ReviewsBackend
+        ReviewsBackendPlugin
+        ReviewsModel
         ScreenshotsModel
         SoftwareManager
         SoftwareResource
@@ -43,8 +64,12 @@ liri_add_module(AppCenter
         Transaction
         TransactionsManager
     PRIVATE_HEADERS
+        cachednetworkaccessmanager_p.h
         image_p.h
+        rating_p.h
         resourcesmodel_p.h
+        review_p.h
+        reviewsmodel_p.h
         screenshotsmodel_p.h
         softwaremanager_p.h
         softwareresource_p.h
@@ -57,6 +82,7 @@ liri_add_module(AppCenter
         QT_NO_FOREACH
     PUBLIC_LIBRARIES
         Qt5::Core
+        Qt5::Network
         AppStreamQt
     NO_PKGCONFIG
 )

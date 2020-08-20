@@ -9,7 +9,7 @@ FlatpakPlugin::FlatpakPlugin(QObject *parent)
 {
 }
 
-Liri::AppCenter::Backend *FlatpakPlugin::create()
+Liri::AppCenter::Backend *FlatpakPlugin::create(Liri::AppCenter::SoftwareManager *manager)
 {
-    return new FlatpakBackend();
+    return new FlatpakBackend(manager);
 }

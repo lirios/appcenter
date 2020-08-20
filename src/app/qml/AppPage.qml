@@ -409,16 +409,60 @@ FluidControls.Page {
 
             FluidControls.TitleLabel {
                 Layout.leftMargin: FluidControls.Units.smallSpacing * 2
-
-                text: qsTr("Reviews")
-            }
-
-            Label {
-                Layout.leftMargin: FluidControls.Units.smallSpacing * 2
                 Layout.rightMargin: FluidControls.Units.smallSpacing * 2
 
-                text: qsTr("Sorry, but reviews are not implemented yet.")
-                color: Material.secondaryTextColor
+                text: qsTr("Ratings and reviews")
+            }
+
+            Row {
+                Layout.leftMargin: spacing
+                Layout.rightMargin: spacing
+
+                spacing: FluidControls.Units.smallSpacing * 2
+
+                visible: app.rating
+
+                Rating {}
+
+                StarRatings {}
+            }
+
+            Repeater {
+                model: AppCenter.PaginateModel {
+                    id: reviewsModel
+
+                    sourceModel: AppCenter.ReviewsModel {
+                        resource: app
+                    }
+                    pageSize: 5
+                }
+
+                FluidControls.Card {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 150
+
+                    Layout.leftMargin: FluidControls.Units.smallSpacing
+                    Layout.rightMargin: FluidControls.Units.smallSpacing
+
+                    padding: FluidControls.Units.smallSpacing
+
+                    ColumnLayout {
+                        anchors.fill: parent
+
+                        FluidControls.TitleLabel {
+                            text: model.summary
+                        }
+
+                        FluidControls.BodyLabel {
+                            text: model.description
+                            wrapMode: Text.Wrap
+                            elide: Text.ElideRight
+
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                        }
+                    }
+                }
             }
         }
     }

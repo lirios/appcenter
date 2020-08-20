@@ -16,6 +16,8 @@ liri_add_qml_plugin(liriappcenter
         filteredresourcesmodel.h
         logging.cpp
         logging.h
+        paginatemodel.cpp
+        paginatemodel.h
         plugin.cpp
     QML_FILES
         qmldir
