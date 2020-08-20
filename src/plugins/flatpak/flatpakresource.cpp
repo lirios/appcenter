@@ -374,11 +374,11 @@ void FlatpakResource::updateFromRemote(FlatpakRemote *remote)
 void FlatpakResource::updateFromRef(FlatpakRef *ref)
 {
     if (ref) {
-        m_packageName = QString::fromLocal8Bit(flatpak_ref_get_name(ref));
-        m_key.architecture = QString::fromLocal8Bit(flatpak_ref_get_arch(ref));
+        m_packageName = QString::fromUtf8(flatpak_ref_get_name(ref));
+        m_key.architecture = QString::fromUtf8(flatpak_ref_get_arch(ref));
 
-        m_key.branch = QString::fromLocal8Bit(flatpak_ref_get_branch(ref));
-        m_commit = QString::fromLocal8Bit(flatpak_ref_get_commit(ref));
+        m_key.branch = QString::fromUtf8(flatpak_ref_get_branch(ref));
+        m_commit = QString::fromUtf8(flatpak_ref_get_commit(ref));
         m_latestCommit = m_commit;
 
         setFlatpakType(flatpak_ref_get_kind(ref));
@@ -396,8 +396,8 @@ void FlatpakResource::updateFromRef(FlatpakRef *ref)
 void FlatpakResource::updateFromInstalledRef(FlatpakInstalledRef *ref)
 {
     if (ref) {
-        m_key.origin = QString::fromLocal8Bit(flatpak_installed_ref_get_origin(ref));
-        m_latestCommit = QString::fromLocal8Bit(flatpak_installed_ref_get_latest_commit(ref));
+        m_key.origin = QString::fromUtf8(flatpak_installed_ref_get_origin(ref));
+        m_latestCommit = QString::fromUtf8(flatpak_installed_ref_get_latest_commit(ref));
         m_installedSize = flatpak_installed_ref_get_installed_size(ref);
         updateFromMetadata(ref);
         setState(updatesAvailable() ? SoftwareResource::UpgradableState : SoftwareResource::InstalledState);
