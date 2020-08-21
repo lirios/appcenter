@@ -1,8 +1,3 @@
-<!--
-SPDX-FileCopyrightText: 2020 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
-
-SPDX-License-Identifier: CC0-1.0
--->
 <?xml version="1.0" ?><!DOCTYPE TS><TS language="ru" version="2.1">
 <context>
     <name>AddSourceDialog</name>
