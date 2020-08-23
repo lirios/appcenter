@@ -15,16 +15,16 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #. (itstool) path: component/name
-#: src/app/io.liri.AppCenter.appdata.xml.in:6
+#: src/app/io.liri.AppCenter.appdata.xml.in:11
 msgid "App Center"
 msgstr "Uygulama Merkezi"
 
 #. (itstool) path: component/summary
-#: src/app/io.liri.AppCenter.appdata.xml.in:7
+#: src/app/io.liri.AppCenter.appdata.xml.in:12
 msgid "Application manager for Liri OS"
 msgstr "Liri OS için uygulama yönetici"
 
 #. (itstool) path: description/p
-#: src/app/io.liri.AppCenter.appdata.xml.in:9
+#: src/app/io.liri.AppCenter.appdata.xml.in:14
 msgid "App Center allows you to find and install new applications."
 msgstr "Uygulama Merkezi yeni uygulamalar bulmanızı ve kurmanızı sağlar."

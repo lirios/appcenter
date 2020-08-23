@@ -9,17 +9,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. (itstool) path: component/name
-#: src/app/io.liri.AppCenter.appdata.xml.in:6
+#: src/app/io.liri.AppCenter.appdata.xml.in:11
 msgid "App Center"
 msgstr ""
 
 #. (itstool) path: component/summary
-#: src/app/io.liri.AppCenter.appdata.xml.in:7
+#: src/app/io.liri.AppCenter.appdata.xml.in:12
 msgid "Application manager for Liri OS"
 msgstr ""
 
 #. (itstool) path: description/p
-#: src/app/io.liri.AppCenter.appdata.xml.in:9
+#: src/app/io.liri.AppCenter.appdata.xml.in:14
 msgid "App Center allows you to find and install new applications."
 msgstr ""
 

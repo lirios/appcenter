@@ -21,13 +21,13 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
 
 #. (desktop-to-pot) "Name" entry
-#: io.liri.AppCenter.desktop.in:2
+#: io.liri.AppCenter.desktop.in:6
 msgctxt "Name entry"
 msgid "App Center"
 msgstr "Центр приложений"
 
 #. (desktop-to-pot) "Comment" entry
-#: io.liri.AppCenter.desktop.in:3
+#: io.liri.AppCenter.desktop.in:7
 msgctxt "Comment entry"
 msgid "App Center for Liri"
 msgstr "Центр приложений для Liri"

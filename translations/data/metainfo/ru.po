@@ -15,16 +15,16 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
 
 #. (itstool) path: component/name
-#: src/app/io.liri.AppCenter.appdata.xml.in:6
+#: src/app/io.liri.AppCenter.appdata.xml.in:11
 msgid "App Center"
 msgstr "Центр приложений"
 
 #. (itstool) path: component/summary
-#: src/app/io.liri.AppCenter.appdata.xml.in:7
+#: src/app/io.liri.AppCenter.appdata.xml.in:12
 msgid "Application manager for Liri OS"
 msgstr "Менеджер приложений для Liri ОС"
 
 #. (itstool) path: description/p
-#: src/app/io.liri.AppCenter.appdata.xml.in:9
+#: src/app/io.liri.AppCenter.appdata.xml.in:14
 msgid "App Center allows you to find and install new applications."
 msgstr "Центр приложений позволяет вам найти и установить новые приложения."

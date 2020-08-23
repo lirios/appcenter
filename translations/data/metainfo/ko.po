@@ -15,16 +15,16 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. (itstool) path: component/name
-#: src/app/io.liri.AppCenter.appdata.xml.in:6
+#: src/app/io.liri.AppCenter.appdata.xml.in:11
 msgid "App Center"
 msgstr "앱 센터"
 
 #. (itstool) path: component/summary
-#: src/app/io.liri.AppCenter.appdata.xml.in:7
+#: src/app/io.liri.AppCenter.appdata.xml.in:12
 msgid "Application manager for Liri OS"
 msgstr "Liri OS 어플리케이션 관리자"
 
 #. (itstool) path: description/p
-#: src/app/io.liri.AppCenter.appdata.xml.in:9
+#: src/app/io.liri.AppCenter.appdata.xml.in:14
 msgid "App Center allows you to find and install new applications."
 msgstr "앱 센터는 사용자가 새로운 어플리케이션을 찾고 설치할 수 있도록 해줍니다."

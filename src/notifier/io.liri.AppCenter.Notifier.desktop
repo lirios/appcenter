@@ -4,6 +4,11 @@
 
 [Desktop Entry]
 Name=App Center
+Name[da]=Programcenter
+Name[lt]=Programų centras
+Name[pt_BR]=Central de aplicativos
+Name[ru]=App Center
+Name[tr]=Uygulama Merkezi
 Exec=@LIBEXECDIR@/liri-appcenter-notifier
 Icon=system-software-update
 Terminal=false
