@@ -128,13 +128,8 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qml/AppPage.qml" line="413"/>
-        <source>Reviews</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app/qml/AppPage.qml" line="420"/>
-        <source>Sorry, but reviews are not implemented yet.</source>
+        <location filename="../src/app/qml/AppPage.qml" line="414"/>
+        <source>Ratings and reviews</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
