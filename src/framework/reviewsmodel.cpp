@@ -129,13 +129,13 @@ void ReviewsModel::setResource(SoftwareResource *resource)
         disconnect(resource, SIGNAL(reviewsFetched()),
                    this, SLOT(handleReviewsFetched()));
 
-    beginResetModel();
+    beginRemoveRows(QModelIndex(), 0, d->reviews.size() - 1);
     d->resource = resource;
     d->reviews.clear();
     connect(resource, SIGNAL(reviewsFetched()),
             this, SLOT(handleReviewsFetched()));
     resource->fetchReviews();
-    endResetModel();
+    endRemoveRows();
 
     Q_EMIT resourceChanged();
 }

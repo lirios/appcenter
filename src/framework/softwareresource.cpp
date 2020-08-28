@@ -32,11 +32,6 @@ SoftwareResource::SoftwareResource(SoftwareManager *manager, QObject *parent)
     qRegisterMetaType<SoftwareResource::Kudos>("SoftwareResource::Kudos");
 
     d_ptr->manager = manager;
-    connect(manager, &SoftwareManager::reviewAdded, this, [this](Review *review) {
-        Q_D(SoftwareResource);
-        if (review->resource() == this)
-            d->reviews.append(review);
-    });
 }
 
 SoftwareResource::~SoftwareResource()
@@ -239,8 +234,6 @@ QList<Review *> SoftwareResource::reviews() const
 void SoftwareResource::fetchReviews()
 {
     Q_D(SoftwareResource);
-
-    d->reviews.clear();
 
     const auto list = SoftwareManagerPrivate::get(d->manager)->reviewsBackends;
     for (auto *backend : qAsConst(list))

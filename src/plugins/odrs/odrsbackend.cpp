@@ -342,11 +342,27 @@ void OdrsBackend::parseReviews(const QJsonDocument &json, SoftwareResource *reso
         for (auto it = data.begin(); it != data.end(); it++) {
             const QJsonObject object = it->toObject();
             if (!object.isEmpty()) {
-                auto *review = new Review();
+                int reviewId = object.value(QLatin1String("review_id")).toInt();
+
+                bool alreadyExisting = false;
+                Review *review = nullptr;
+
+                if (reviewId > 0) {
+                    for (auto *curReview : qAsConst(m_reviews)) {
+                        if (curReview->id() == reviewId) {
+                            alreadyExisting = true;
+                            review = curReview;
+                            break;
+                        }
+                    }
+                }
+
+                if (!review)
+                    review = new Review();
                 auto *dReview = ReviewPrivate::get(review);
 
                 dReview->setResource(resource);
-                dReview->setId(object.value(QLatin1String("review_id")).toInt());
+                dReview->setId(reviewId);
 
                 QDateTime dateTime;
                 dateTime.setSecsSinceEpoch(object.value(QLatin1String("date_created")).toInt());
@@ -384,16 +400,16 @@ void OdrsBackend::parseReviews(const QJsonDocument &json, SoftwareResource *reso
                                     object.value(QLatin1String("user_skey")));
                 review->addMetadata(QStringLiteral("ODRS::app_id"),
                                     object.value(QLatin1String("app_id")));
-                review->addMetadata(QStringLiteral("ODRS::review_id"),
-                                    object.value(QLatin1String("review_id")));
+                review->addMetadata(QStringLiteral("ODRS::review_id"), reviewId);
 
                 resource->addMetadata(QStringLiteral("ODRS::user_skey"),
                                       object.value(QLatin1String("user_skey")));
 
-                m_reviews.append(review);
-                SoftwareResourcePrivate::get(resource)->reviews.append(review);
-
-                Q_EMIT reviewAdded(review);
+                if (!alreadyExisting) {
+                    m_reviews.append(review);
+                    SoftwareResourcePrivate::get(resource)->reviews.append(review);
+                    Q_EMIT reviewAdded(review);
+                }
             }
         }
 
