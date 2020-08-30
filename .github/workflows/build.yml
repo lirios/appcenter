@@ -55,6 +55,7 @@ jobs:
           curl -L -o - "https://dl.bintray.com/liri/artifacts-${{ steps.extract_branch.outputs.branch }}/cmake-shared.tar.gz" | sudo tar -xz -f - -C /
           curl -L -o - "https://dl.bintray.com/liri/artifacts-${{ steps.extract_branch.outputs.branch }}/fluid-${{ matrix.compiler }}-${{ steps.qt_version.outputs.id }}.tar.gz" | sudo tar -xz -f - -C /
           curl -L -o - "https://dl.bintray.com/liri/artifacts-${{ steps.extract_branch.outputs.branch }}/libliri-${{ matrix.compiler }}-${{ steps.qt_version.outputs.id }}.tar.gz" | sudo tar -xz -f - -C /
+          curl -L -o - "https://dl.bintray.com/liri/artifacts-${{ steps.extract_branch.outputs.branch }}/qtaccountsservice-${{ matrix.compiler }}-${{ steps.qt_version.outputs.id }}.tar.gz" | sudo tar -xz -f - -C /
       - uses: actions/checkout@v2
       - name: Build
         run: |
