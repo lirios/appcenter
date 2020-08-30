@@ -51,9 +51,13 @@ jobs:
           echo "##[set-output name=id;]${qtverid}"
       - name: Fetch and uncompress artifacts
         run: |
-          curl -o - "https://dl.bintray.com/liri/artifacts-${{ steps.extract_branch.outputs.branch }}/cmake-shared.tar.gz" | sudo tar -xz -f - -C /
-          curl -o - "https://dl.bintray.com/liri/artifacts-${{ steps.extract_branch.outputs.branch }}/fluid-${{ matrix.compiler }}-${{ steps.qt_version.outputs.id }}.tar.gz" | sudo tar -xz -f - -C /
-          curl -o - "https://dl.bintray.com/liri/artifacts-${{ steps.extract_branch.outputs.branch }}/libliri-${{ matrix.compiler }}-${{ steps.qt_version.outputs.id }}.tar.gz" | sudo tar -xz -f - -C /
+          curl -O "https://dl.bintray.com/liri/artifacts-${{ steps.extract_branch.outputs.branch }}/cmake-shared.tar.gz"
+          curl -O "https://dl.bintray.com/liri/artifacts-${{ steps.extract_branch.outputs.branch }}/fluid-${{ matrix.compiler }}-${{ steps.qt_version.outputs.id }}.tar.gz"
+          curl -O "https://dl.bintray.com/liri/artifacts-${{ steps.extract_branch.outputs.branch }}/libliri-${{ matrix.compiler }}-${{ steps.qt_version.outputs.id }}.tar.gz"
+          for what in cmake-shared fluid libliri; do
+              sudo tar xf ${what}.tar.gz -C /
+              rm -f ${what}.tar.gz
+          done
       - uses: actions/checkout@v2
       - name: Build
         run: |
