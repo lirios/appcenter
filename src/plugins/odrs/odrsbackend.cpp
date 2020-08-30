@@ -259,7 +259,7 @@ void OdrsBackend::postReview(const QUrl &url, Review *review)
     const QJsonObject object = {
         { QStringLiteral("user_hash"), review->reviewerId() },
         { QStringLiteral("user_display"), review->reviewerName() },
-        { QStringLiteral("user_skey"), review->resource()->getMetadata(QStringLiteral("user_skey")).toString() },
+        { QStringLiteral("user_skey"), review->getMetadataValue(QStringLiteral("ODRS::user_skey")).toString() },
         { QStringLiteral("app_id"), review->resource()->appId() },
         { QStringLiteral("locale"), QLocale::system().name() },
         { QStringLiteral("distro"), osRelease->name() },
@@ -267,14 +267,14 @@ void OdrsBackend::postReview(const QUrl &url, Review *review)
         { QStringLiteral("description"), review->description() },
         { QStringLiteral("version"), review->version() },
         { QStringLiteral("rating"), review->rating() },
-        { QStringLiteral("review_id"), 0 },
+        { QStringLiteral("review_id"), review->id() },
     };
     const QJsonDocument document(object);
     const auto data = document.toJson(QJsonDocument::Compact);
 
     osRelease->deleteLater();
 
-    review->addMetadata(QStringLiteral("ODRS::json"), document);
+    review->addMetadata(QStringLiteral("ODRS::json"), document.toVariant());
 
     QNetworkRequest request;
     request.setUrl(url);
@@ -397,13 +397,13 @@ void OdrsBackend::parseReviews(const QJsonDocument &json, SoftwareResource *reso
                 dReview->setAlreadyVoted(object.contains(QLatin1String("vote_id")));
 
                 review->addMetadata(QStringLiteral("ODRS::user_skey"),
-                                    object.value(QLatin1String("user_skey")));
+                                    object.value(QLatin1String("user_skey")).toVariant());
                 review->addMetadata(QStringLiteral("ODRS::app_id"),
-                                    object.value(QLatin1String("app_id")));
+                                    object.value(QLatin1String("app_id")).toVariant());
                 review->addMetadata(QStringLiteral("ODRS::review_id"), reviewId);
 
                 resource->addMetadata(QStringLiteral("ODRS::user_skey"),
-                                      object.value(QLatin1String("user_skey")));
+                                      object.value(QLatin1String("user_skey")).toVariant());
 
                 if (!alreadyExisting) {
                     m_reviews.append(review);
