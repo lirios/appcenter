@@ -39,7 +39,7 @@ public:
     void removeResource(SoftwareResource *resource);
 
     Q_INVOKABLE bool addSource(const QString &name);
-    Q_INVOKABLE bool removeSource(SoftwareSource *source);
+    Q_INVOKABLE bool removeSource(Liri::AppCenter::SoftwareSource *source);
 
     SoftwareResources updates() const;
     bool hasUpdates() const;
@@ -51,11 +51,11 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     void initializationCompleted();
-    void sourceAdded(SoftwareSource *source);
+    void sourceAdded(Liri::AppCenter::SoftwareSource *source);
     void sourceAddFailed(const QString &name, const QString &errorMessage);
     void updatesAvailable(uint count);
-    void ratingAdded(Rating *rating);
-    void reviewAdded(Review *review);
+    void ratingAdded(Liri::AppCenter::Rating *rating);
+    void reviewAdded(Liri::AppCenter::Review *review);
 
 private:
     SoftwareManagerPrivate *const d_ptr;

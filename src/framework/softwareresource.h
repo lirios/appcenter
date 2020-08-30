@@ -161,9 +161,9 @@ public:
     virtual bool isLocalized() const = 0;
 
     Q_INVOKABLE virtual bool launch() const;
-    Q_INVOKABLE virtual Transaction *install();
-    Q_INVOKABLE virtual Transaction *uninstall();
-    Q_INVOKABLE virtual Transaction *update();
+    Q_INVOKABLE virtual Liri::AppCenter::Transaction *install();
+    Q_INVOKABLE virtual Liri::AppCenter::Transaction *uninstall();
+    Q_INVOKABLE virtual Liri::AppCenter::Transaction *update();
 
     void addMetadata(const QString &key, const QVariant &value);
     QVariant getMetadata(const QString &key);
@@ -200,18 +200,18 @@ Q_SIGNALS:
     void kudosChanged();
     void ratingChanged();
     void reviewsFetched();
-    void reviewSubmitFinished(Review *review);
-    void reviewSubmitFailed(Review *review, const QString &errorMessage);
-    void reviewReportFinished(Review *review);
-    void reviewReportFailed(Review *review, const QString &errorMessage);
-    void reviewUpVoteFinished(Review *review);
-    void reviewUpVoteFailed(Review *review, const QString &errorMessage);
-    void reviewDownVoteFinished(Review *review);
-    void reviewDownVoteFailed(Review *review, const QString &errorMessage);
-    void reviewDismissFinished(Review *review);
-    void reviewDismissFailed(Review *review, const QString &errorMessage);
-    void reviewRemoveFinished(Review *review);
-    void reviewRemoveFailed(Review *review, const QString &errorMessage);
+    void reviewSubmitFinished(Liri::AppCenter::Review *review);
+    void reviewSubmitFailed(Liri::AppCenter::Review *review, const QString &errorMessage);
+    void reviewReportFinished(Liri::AppCenter::Review *review);
+    void reviewReportFailed(Liri::AppCenter::Review *review, const QString &errorMessage);
+    void reviewUpVoteFinished(Liri::AppCenter::Review *review);
+    void reviewUpVoteFailed(Liri::AppCenter::Review *review, const QString &errorMessage);
+    void reviewDownVoteFinished(Liri::AppCenter::Review *review);
+    void reviewDownVoteFailed(Liri::AppCenter::Review *review, const QString &errorMessage);
+    void reviewDismissFinished(Liri::AppCenter::Review *review);
+    void reviewDismissFailed(Liri::AppCenter::Review *review, const QString &errorMessage);
+    void reviewRemoveFinished(Liri::AppCenter::Review *review);
+    void reviewRemoveFailed(Liri::AppCenter::Review *review, const QString &errorMessage);
 
 private:
     SoftwareResourcePrivate *const d_ptr;
