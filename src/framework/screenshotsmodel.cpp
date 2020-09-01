@@ -5,6 +5,8 @@
 #include "screenshotsmodel.h"
 #include "screenshotsmodel_p.h"
 
+#include <QDebug>
+
 namespace Liri {
 
 namespace AppCenter {
@@ -88,6 +90,24 @@ void ScreenshotsModel::setApp(SoftwareResource *app)
     d->screenshots = d->app->screenshots();
     Q_EMIT appChanged();
     endResetModel();
+}
+
+QSize ScreenshotsModel::maximumThumbnailSize() const
+{
+    Q_D(const ScreenshotsModel);
+
+    QSize lastSize, maxSize;
+
+    for (const auto &thumbnail : qAsConst(d->thumbnails)) {
+        if (!lastSize.isValid() && thumbnail.size().width() > lastSize.width() && thumbnail.size().height() > lastSize.height()) {
+            maxSize = thumbnail.size();
+            break;
+        }
+
+        lastSize = thumbnail.size();
+    }
+
+    return maxSize;
 }
 
 QUrl ScreenshotsModel::thumbnailUrlAt(int index) const
