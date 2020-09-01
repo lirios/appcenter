@@ -20,6 +20,7 @@ class LIRIAPPCENTER_EXPORT ScreenshotsModel : public QAbstractListModel
 {
     Q_OBJECT
     Q_PROPERTY(SoftwareResource *app READ app WRITE setApp NOTIFY appChanged)
+    Q_PROPERTY(QSize maximumThumbnailSize READ maximumThumbnailSize NOTIFY appChanged)
     Q_PROPERTY(int count READ rowCount NOTIFY countChanged)
     Q_DECLARE_PRIVATE(ScreenshotsModel)
     Q_DISABLE_COPY(ScreenshotsModel)
@@ -40,6 +41,8 @@ public:
 
     SoftwareResource *app() const;
     void setApp(SoftwareResource *app);
+
+    QSize maximumThumbnailSize() const;
 
     Q_INVOKABLE QUrl thumbnailUrlAt(int index) const;
     Q_INVOKABLE QUrl screenshotUrlAt(int index) const;

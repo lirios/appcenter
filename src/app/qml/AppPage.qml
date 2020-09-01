@@ -55,12 +55,18 @@ FluidControls.Page {
 
         property alias source: screenshot.source
 
-        width: Math.min(appPage.width * 0.9, screenshot.sourceSize.width)
-        height: Math.min(appPage.height * 0.9, screenshot.sourceSize.height)
+        anchors.centerIn: parent
+
+        width: parent.width * 0.9
+        height: parent.height * 0.9
 
         Image {
             id: screenshot
+
             anchors.fill: parent
+            sourceSize.width: screenshot.sourceSize.width
+            sourceSize.height: screenshot.sourceSize.height
+            fillMode: Image.PreserveAspectFit
 
             MouseArea {
                 anchors.fill: parent
