@@ -429,47 +429,56 @@ void FlatpakResource::setFlatpakType(FlatpakRefKind kind)
 {
     m_kind = kind;
 
-    if (kind == FLATPAK_REF_KIND_APP) {
-        switch (m_appdata.kind()) {
-        case AppStream::Component::KindAddon:
-            m_key.type = Liri::AppCenter::SoftwareResource::Addon;
+    if (m_packageName.endsWith(QLatin1String(".Locale")))
+        m_key.type = Liri::AppCenter::SoftwareResource::Localization;
+    else if (m_packageName.endsWith(QLatin1String(".Debug")) ||
+             m_packageName.endsWith(QLatin1String(".Sources")))
+        m_key.type = Liri::AppCenter::SoftwareResource::Generic;
+    else if (m_packageName.startsWith(QLatin1String("org.freedesktop.Platform.Icontheme.")) ||
+             m_packageName.startsWith(QLatin1String("org.gtk.Gtk3theme.")) ||
+             m_packageName.startsWith(QLatin1String("org.kde.KStyle.")) ||
+             m_packageName.startsWith(QLatin1String("org.kde.WaylandDecoration.")))
+        m_key.type = Liri::AppCenter::SoftwareResource::Theme;
+    else if (m_packageName.contains(QLatin1String(".Extension.")))
+        m_key.type = Liri::AppCenter::SoftwareResource::Addon;
+    else {
+        switch (kind) {
+        case FLATPAK_REF_KIND_APP: {
+            switch (m_appdata.kind()) {
+            case AppStream::Component::KindAddon:
+                m_key.type = Liri::AppCenter::SoftwareResource::Addon;
+                break;
+            case AppStream::Component::KindCodec:
+                m_key.type = Liri::AppCenter::SoftwareResource::Codec;
+                break;
+            case AppStream::Component::KindDriver:
+                m_key.type = Liri::AppCenter::SoftwareResource::Driver;
+                break;
+            case AppStream::Component::KindFirmware:
+                m_key.type = Liri::AppCenter::SoftwareResource::Firmware;
+                break;
+            case AppStream::Component::KindFont:
+                m_key.type = Liri::AppCenter::SoftwareResource::Font;
+                break;
+            case AppStream::Component::KindGeneric:
+                m_key.type = Liri::AppCenter::SoftwareResource::Generic;
+                break;
+            case AppStream::Component::KindInputmethod:
+                m_key.type = Liri::AppCenter::SoftwareResource::InputMethod;
+                break;
+            case AppStream::Component::KindLocalization:
+                m_key.type = Liri::AppCenter::SoftwareResource::Localization;
+                break;
+            default:
+                m_key.type = Liri::AppCenter::SoftwareResource::App;
+                break;
+            }
             break;
-        case AppStream::Component::KindCodec:
-            m_key.type = Liri::AppCenter::SoftwareResource::Codec;
-            break;
-        case AppStream::Component::KindDriver:
-            m_key.type = Liri::AppCenter::SoftwareResource::Driver;
-            break;
-        case AppStream::Component::KindFirmware:
-            m_key.type = Liri::AppCenter::SoftwareResource::Firmware;
-            break;
-        case AppStream::Component::KindFont:
-            m_key.type = Liri::AppCenter::SoftwareResource::Font;
-            break;
-        case AppStream::Component::KindGeneric:
-            m_key.type = Liri::AppCenter::SoftwareResource::Generic;
-            break;
-        case AppStream::Component::KindInputmethod:
-            m_key.type = Liri::AppCenter::SoftwareResource::InputMethod;
-            break;
-        case AppStream::Component::KindLocalization:
-            m_key.type = Liri::AppCenter::SoftwareResource::Localization;
-            break;
-        default:
-            m_key.type = Liri::AppCenter::SoftwareResource::App;
-            break;
+        case FLATPAK_REF_KIND_RUNTIME:
+                m_key.type = Liri::AppCenter::SoftwareResource::Runtime;
+                break;
+            }
         }
-    } else {
-        if (m_packageName.endsWith(QLatin1String(".Locale")))
-            m_key.type = Liri::AppCenter::SoftwareResource::Localization;
-        else if (m_packageName.endsWith(QLatin1String(".Debug")) ||
-                 m_packageName.endsWith(QLatin1String(".Sources")))
-            m_key.type = Liri::AppCenter::SoftwareResource::Generic;
-        else if (m_packageName.startsWith(QLatin1String("org.freedesktop.Platform.Icontheme.")) ||
-                 m_packageName.startsWith(QLatin1String("org.gtk.Gtk3theme.")))
-            m_key.type = Liri::AppCenter::SoftwareResource::Theme;
-        else
-            m_key.type = Liri::AppCenter::SoftwareResource::Runtime;
     }
 }
 
