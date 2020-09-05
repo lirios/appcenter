@@ -43,6 +43,7 @@ find_package(Qt5 "${QT_MIN_VERSION}"
 add_compile_options(-Wall -Wextra -pedantic -Werror)
 
 ## Add subdirectories:
+add_subdirectory(src/appstream)
 add_subdirectory(src/framework)
 add_subdirectory(src/app)
 add_subdirectory(src/notifier)

@@ -1,0 +1,74 @@
+classname=$1
+basename=$(echo $classname | tr [A-Z] [a-z])
+headername=$(echo $classname | tr [a-z] [A-Z])
+
+cat > ${basename}.cpp <<EOF
+// SPDX-FileCopyrightText: 2020 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
+//
+// SPDX-License-Identifier: LGPL-3.0-or-later
+
+#include <QSharedData>
+
+#include "${basename}.h"
+
+namespace Liri {
+
+namespace AppStream {
+
+/*
+ * ${classname}Data
+ */
+
+class ${classname}Data : public QSharedData
+{
+public:
+    ${classname}Data()
+    {
+    }
+};
+
+/*
+ * ${classname}
+ */
+
+${classname}::${classname}()
+    : d(new ${classname}Data())
+{
+}
+
+} // namespace AppStream
+
+} // namespace Liri
+EOF
+
+cat > ${basename}.h <<EOF
+// SPDX-FileCopyrightText: 2020 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
+//
+// SPDX-License-Identifier: LGPL-3.0-or-later
+
+#ifndef LIRI_APPSTREAM_${headername}_H
+#define LIRI_APPSTREAM_${headername}_H
+
+#include <QSharedDataPointer>
+
+namespace Liri {
+
+namespace AppStream {
+
+class ${classname}Data;
+
+class ${classname}
+{
+public:
+    ${classname}();
+
+private:
+    QSharedDataPointer<${classname}Data> d;
+};
+
+} // namespace AppStream
+
+} // namespace Liri
+
+#endif // LIRI_APPSTREAM_${headername}_H
+EOF

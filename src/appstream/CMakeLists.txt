@@ -1,0 +1,64 @@
+# SPDX-FileCopyrightText: 2020 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
+#
+# SPDX-License-Identifier: MIT
+
+liri_add_module(AppStream
+    DESCRIPTION
+        "Qt-style API for AppStream"
+    SOURCES
+        bundle.cpp
+        bundle.h
+        category.cpp
+        category.h
+        component.cpp
+        component.h
+        contentrating.cpp
+        contentrating.h
+        icon.cpp
+        icon.h
+        image.cpp
+        image.h
+        launchable.cpp
+        launchable.h
+        metadata.cpp
+        metadata.h
+        pool.cpp
+        pool.h
+        provided.cpp
+        provided.h
+        release.cpp
+        release.h
+        screenshot.cpp
+        screenshot.h
+        suggested.cpp
+        suggested.h
+        translation.cpp
+        translation.h
+        video.cpp
+        video.h
+    FORWARDING_HEADERS
+        Bundle
+        Category
+        Component
+        ContentRating
+        Icon
+        Image
+        Launchable
+        Metadata
+        Pool
+        Provided
+        Release
+        Screenshot
+        Suggested
+        Translation
+        Video
+    DEFINES
+        QT_NO_CAST_FROM_ASCII
+        QT_NO_FOREACH
+    PUBLIC_LIBRARIES
+        Qt5::Core
+        Qt5::Network
+    NO_PKGCONFIG
+    NO_CMAKE
+    STATIC
+)
