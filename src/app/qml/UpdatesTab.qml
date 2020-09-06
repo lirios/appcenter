@@ -15,7 +15,7 @@ FluidControls.Tab {
     AppCenter.FilteredResourcesModel {
         id: updatesModel
 
-        sourceModel: softwareManager.resourcesModel
+        manager: softwareManager
         filter: AppCenter.FilteredResourcesModel.Updates
     }
 
@@ -46,14 +46,14 @@ FluidControls.Tab {
                     flat: true
                     text: qsTr("Update")
                     onClicked: {
-                        if (!model.resource.update()) {
+                        if (!model.proxy.update()) {
                             console.error("Update of", model.name, "has failed")
                             return;
                         }
                     }
                 }
                 onClicked: {
-                    pageStack.push(Qt.resolvedUrl("AppPage.qml"), {app: model.resource});
+                    pageStack.push(Qt.resolvedUrl("AppPage.qml"), {app: model.proxy});
                 }
             }
         }

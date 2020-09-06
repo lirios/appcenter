@@ -170,7 +170,7 @@ ColumnLayout {
             }
 
             Label {
-                text: app.origin ? app.origin : qsTr("Unknown")
+                text: app.defaultSource ? app.defaultSource.name : qsTr("Unknown")
                 color: Material.secondaryTextColor
             }
 

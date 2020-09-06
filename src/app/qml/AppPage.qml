@@ -14,7 +14,7 @@ import "app" as App
 FluidControls.Page {
     id: appPage
 
-    property var app
+    property AppCenter.ResourceProxy app: null
 
     title: app.name
 

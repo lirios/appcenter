@@ -16,48 +16,19 @@
 
 #include "flatpakpluginbase.h"
 
+class FlatpakSource;
+
 class FlatpakResource : public Liri::AppCenter::SoftwareResource
 {
     Q_OBJECT
 public:
     explicit FlatpakResource(Liri::AppCenter::SoftwareManager *manager,
+                             FlatpakSource *source,
                              const AppStream::Component &component,
-                             FlatpakInstallation *installation,
                              QObject *parent = nullptr);
 
-    // Everything that makes this resource unique is here
-    struct Key {
-        Liri::AppCenter::SoftwareResource::Type type = Liri::AppCenter::SoftwareResource::App;
-        FlatpakInstallation *installation = nullptr;
-        QString desktopId;
-        QString origin;
-        QString branch;
-        QString architecture;
-
-        bool operator!=(const Key &other) const
-        {
-            return !operator==(other);
-        }
-
-        bool operator==(const Key &other) const
-        {
-            return &other == this || (
-                        other.type == type &&
-                        other.installation == installation &&
-                        other.desktopId == desktopId &&
-                        other.origin == origin &&
-                        other.branch == branch &&
-                        other.architecture == architecture
-                        );
-        }
-    };
-
-    static FlatpakResource::Key keyFromInstalledRef(FlatpakInstallation *installation, FlatpakInstalledRef *ref);
-
-    Key key() const;
-
+    FlatpakSource *flatpakSource() const;
     AppStream::Component component() const;
-    FlatpakInstallation *installation() const;
     FlatpakRefKind kind() const;
 
     Liri::AppCenter::SoftwareResource::Type type() const override;
@@ -73,8 +44,6 @@ public:
     QString architecture() const override;
 
     QString license() const override;
-
-    QString origin() const override;
 
     QStringList categories() const override;
 
@@ -117,7 +86,6 @@ public:
     QString ref() const;
 
     void updateFromResource(FlatpakResource *resource);
-    void updateFromRemote(FlatpakRemote *remote);
     void updateFromRef(FlatpakRef *ref);
     void updateFromInstalledRef(FlatpakInstalledRef *ref);
     void updateDownloadSize(FlatpakResource *remoteResource, FlatpakRef *ref);
@@ -125,11 +93,16 @@ public:
     static QDir installationDir(FlatpakInstallation *installation);
 
 private:
-    FlatpakResource::Key m_key;
+    Liri::AppCenter::SoftwareResource::Type m_type = Liri::AppCenter::SoftwareResource::App;
     Liri::AppCenter::SoftwareResource::State m_state = Liri::AppCenter::SoftwareResource::NotInstalledState;
     AppStream::Component m_appdata;
+    FlatpakSource *m_source = nullptr;
     FlatpakRefKind m_kind = FLATPAK_REF_KIND_APP;
     QString m_packageName;
+    QString m_architecture;
+    QString m_branch;
+    QString m_installedVersion;
+    QString m_availableVersion;
     QString m_runtime;
     QString m_commit;
     QString m_latestCommit;
@@ -144,20 +117,10 @@ private:
 
     void setFlatpakType(FlatpakRefKind kind);
     void setState(State state);
-    void updateComponent(const AppStream::Component &component);
+    void updateComponent();
     void updateFromMetadata(FlatpakInstalledRef *ref);
 
     friend class FlatpakBackend;
 };
-
-inline uint qHash(const FlatpakResource::Key &key)
-{
-    return qHash(key.type)
-            ^ qHash(key.installation)
-            ^ qHash(key.desktopId)
-            ^ qHash(key.origin)
-            ^ qHash(key.branch)
-            ^ qHash(key.architecture);
-}
 
 #endif // LIRI_FLATPAKRESOURCE_H

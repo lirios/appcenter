@@ -16,21 +16,29 @@
 // We mean it.
 //
 
+#include <QLoggingCategory>
+
 #include <LiriAppCenter/Backend>
 #include <LiriAppCenter/BackendPlugin>
+#include <LiriAppCenter/ResourceProxy>
 #include <LiriAppCenter/ReviewsBackend>
 #include <LiriAppCenter/ReviewsBackendPlugin>
 #include <LiriAppCenter/SoftwareManager>
+
+Q_DECLARE_LOGGING_CATEGORY(lcAppCenter)
 
 namespace Liri {
 
 namespace AppCenter {
 
-class SoftwareManagerPrivate
+class LIRIAPPCENTER_EXPORT SoftwareManagerPrivate
 {
+    Q_DECLARE_PUBLIC(SoftwareManager)
 public:
-    SoftwareManagerPrivate();
+    SoftwareManagerPrivate(SoftwareManager *self);
     ~SoftwareManagerPrivate();
+
+    void populate();
 
     static SoftwareManagerPrivate *get(SoftwareManager *self) { return self->d_func(); }
 
@@ -38,10 +46,14 @@ public:
     QList<ReviewsBackend *> reviewsBackends;
 
     SourcesModel *sourcesModel = nullptr;
-    ResourcesModel *resourcesModel = nullptr;
     uint updatesCount = 0;
 
+    QList<ResourceProxy *> proxies;
+    QHash<QString, ResourceProxy *> proxiesMap;
     QList<SoftwareResource *> resources;
+
+protected:
+    SoftwareManager *q_ptr;
 };
 
 } // namespace AppCenter

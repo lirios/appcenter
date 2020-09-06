@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later
 
 #include "flatpakplugin.h"
+#include "flatpaksource.h"
 #include "flatpaktransactionjob.h"
 
 #define UPDATE_FREQUENCY 150
@@ -118,7 +119,7 @@ void FlatpakTransactionJob::run()
 
     // Create the transaction
     g_autoptr(FlatpakTransaction) transaction =
-            flatpak_transaction_new_for_installation(m_app->installation(),
+            flatpak_transaction_new_for_installation(m_app->flatpakSource()->installation(),
                                                      m_cancellable,
                                                      &error);
     if (!transaction) {
@@ -139,7 +140,7 @@ void FlatpakTransactionJob::run()
     // Add the operation
     if (m_transaction->type() == Liri::AppCenter::Transaction::Install) {
         if (!flatpak_transaction_add_install(transaction,
-                                             m_app->origin().toUtf8().constData(),
+                                             m_app->flatpakSource()->name().toUtf8().constData(),
                                              m_app->ref().toUtf8().constData(),
                                              nullptr,
                                              &error)) {
@@ -189,7 +190,7 @@ void FlatpakTransactionJob::run()
             m_transaction->type() == Liri::AppCenter::Transaction::Update) {
         auto *installedRef =
                 flatpak_installation_get_installed_ref(
-                    m_app->installation(),
+                    m_app->flatpakSource()->installation(),
                     m_app->kind(),
                     m_app->packageName().toUtf8().constData(),
                     m_app->architecture().toUtf8().constData(),

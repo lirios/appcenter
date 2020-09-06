@@ -7,6 +7,7 @@ import QtQuick.Controls 2.2
 import QtQuick.Controls.Material 2.2
 import QtQuick.Layouts 1.2
 import Fluid.Controls 1.0 as FluidControls
+import Liri.AppCenter 1.0 as AppCenter
 
 ColumnLayout {
     property alias iconSize: icon.iconSize
@@ -51,6 +52,20 @@ ColumnLayout {
                     color: Material.secondaryTextColor
                     wrapMode: Label.WordWrap
                     elide: Text.ElideRight
+                }
+
+                ComboBox {
+                    model: AppCenter.FilteredSourcesModel {
+                        sourcesModel: app ? app.sourcesModel : null
+                        showDisabled: false
+                    }
+                    textRole: "title"
+                    currentIndex: app ? app.defaultSourceIndex : 0
+                    visible: count > 1
+                    onCurrentIndexChanged: {
+                        if (app)
+                            app.defaultSource = app.sourcesModel.at(currentIndex);
+                    }
                 }
 
                 // FIXME: Finish this once we have the information to show

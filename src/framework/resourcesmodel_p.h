@@ -16,19 +16,34 @@
 // We mean it.
 //
 
+#include <QHash>
+
+#include <LiriAppCenter/ResourcesModel>
+#include <LiriAppCenter/ResourceProxy>
+#include <LiriAppCenter/SoftwareManager>
+
 namespace Liri {
 
 namespace AppCenter {
 
-class SoftwareResource;
-
 class ResourcesModelPrivate
 {
+    Q_DECLARE_PUBLIC(ResourcesModel)
 public:
-    ResourcesModelPrivate();
+    explicit ResourcesModelPrivate(ResourcesModel *self);
 
-    QVector<SoftwareResource *> resources;
-    QVector<QMetaObject::Connection> stateChangedConnections;
+    void addProxies(QList<ResourceProxy *> list);
+
+    void handlePopulated(QList<ResourceProxy *> list);
+    void handleProxyAdded(ResourceProxy *proxy);
+    void handleProxyRemoved(ResourceProxy *proxy);
+
+    bool initialized = false;
+    SoftwareManager *manager = nullptr;
+    QHash<ResourceProxy *, QMetaObject::Connection> connections;
+
+protected:
+    ResourcesModel *q_ptr;
 };
 
 } // namespace AppCenter

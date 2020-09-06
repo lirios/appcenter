@@ -51,6 +51,8 @@ public:
     int priority() const override;
     void setPriority(int value) override;
 
+    QVariantMap metadata() const override;
+
     FlatpakInstallation *installation() const;
     FlatpakRemote *remote() const;
 
@@ -62,6 +64,7 @@ private:
     GCancellable *m_cancellable = nullptr;
     QString m_name;
     bool m_isUser = false;
+    QVariantMap m_metadata;
 };
 
 #endif // LIRI_FLATPAKSOURCE_H

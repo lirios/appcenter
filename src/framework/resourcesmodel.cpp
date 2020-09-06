@@ -4,20 +4,76 @@
 
 #include "softwareresource.h"
 #include "rating.h"
-#include "resourcesmodel.h"
 #include "resourcesmodel_p.h"
+#include "softwaremanager_p.h"
+#include "softwaresource.h"
 
 namespace Liri {
 
 namespace AppCenter {
 
-ResourcesModelPrivate::ResourcesModelPrivate()
+/*
+ * ResourcesModelPrivate
+ */
+
+ResourcesModelPrivate::ResourcesModelPrivate(ResourcesModel *self)
+    : q_ptr(self)
 {
 }
 
+void ResourcesModelPrivate::addProxies(QList<ResourceProxy *> list)
+{
+    Q_Q(ResourcesModel);
+
+    q->beginResetModel();
+
+    for (auto *proxy : qAsConst(list)) {
+        auto connection = QObject::connect(
+                    proxy, &ResourceProxy::dataChanged, q, [this, proxy, q] {
+            auto row = manager->resourceProxies().indexOf(proxy);
+            if (row < 0 || row >= manager->resourceProxies().size())
+                return;
+            auto modelIndex = q->index(row);
+            if (modelIndex.isValid())
+                Q_EMIT q->dataChanged(modelIndex, modelIndex);
+        });
+        connections[proxy] = connection;
+    }
+
+    q->endResetModel();
+}
+
+void ResourcesModelPrivate::handlePopulated(QList<ResourceProxy *> list)
+{
+    Q_Q(ResourcesModel);
+
+    // Clear everything
+    q->beginRemoveRows(QModelIndex(), 0, manager->resourceProxies().size() - 1);
+    for (const auto &connection : qAsConst(connections))
+        QObject::disconnect(connection);
+    q->endRemoveRows();
+
+    // Populate
+    addProxies(list);
+}
+
+void ResourcesModelPrivate::handleProxyRemoved(ResourceProxy *proxy)
+{
+    Q_Q(ResourcesModel);
+
+    q->beginResetModel();
+    if (connections.contains(proxy))
+        QObject::disconnect(connections[proxy]);
+    q->endResetModel();
+}
+
+/*
+ * ResourcesModel
+ */
+
 ResourcesModel::ResourcesModel(QObject *parent)
     : QAbstractListModel(parent)
-    , d_ptr(new ResourcesModelPrivate())
+    , d_ptr(new ResourcesModelPrivate(this))
 {
 }
 
@@ -26,10 +82,47 @@ ResourcesModel::~ResourcesModel()
     delete d_ptr;
 }
 
+SoftwareManager *ResourcesModel::manager() const
+{
+    Q_D(const ResourcesModel);
+    return d->manager;
+}
+
+void ResourcesModel::setManager(SoftwareManager *manager)
+{
+    Q_D(ResourcesModel);
+
+    if (d->manager == manager)
+        return;
+
+    if (d->initialized) {
+        qCWarning(lcAppCenter, "Cannot set ResourcesModel::manager after initialization!");
+        return;
+    }
+
+    d->initialized = true;
+
+    if (d->manager) {
+        disconnect(manager, SIGNAL(resourceProxiesAdded(QList<Liri::AppCenter::ResourceProxy*>)),
+                   this, SLOT(handlePopulated(QList<Liri::AppCenter::ResourceProxy*>)));
+        disconnect(manager, SIGNAL(resourceProxyRemoved(Liri::AppCenter::ResourceProxy*)),
+                   this, SLOT(handleProxyRemoved(Liri::AppCenter::ResourceProxy*)));
+    }
+
+    beginResetModel();
+    d->manager = manager;
+    connect(manager, SIGNAL(resourceProxiesAdded(QList<Liri::AppCenter::ResourceProxy*>)),
+            this, SLOT(handlePopulated(QList<Liri::AppCenter::ResourceProxy*>)));
+    connect(manager, SIGNAL(resourceProxyRemoved(Liri::AppCenter::ResourceProxy*)),
+            this, SLOT(handleProxyRemoved(Liri::AppCenter::ResourceProxy*)));
+    Q_EMIT managerChanged();
+    endResetModel();
+}
+
 QHash<int, QByteArray> ResourcesModel::roleNames() const
 {
     QHash<int, QByteArray> roles;
-    roles.insert(ResourceRole, QByteArrayLiteral("resource"));
+    roles.insert(ProxyRole, "proxy");
     roles.insert(TypeRole, QByteArrayLiteral("type"));
     roles.insert(StateRole, QByteArrayLiteral("state"));
     roles.insert(AppIdRole, "appId");
@@ -41,7 +134,6 @@ QHash<int, QByteArray> ResourcesModel::roleNames() const
     roles.insert(PackageNameRole, "packageName");
     roles.insert(ArchitectureRole, "architecture");
     roles.insert(LicenseRole, "license");
-    roles.insert(OriginRole, "origin");
     roles.insert(CategoryRole, "category");
     roles.insert(HomePageUrlRole, "homepageUrl");
     roles.insert(BugTrackerUrlRole, "bugtrackerUrl");
@@ -68,23 +160,41 @@ int ResourcesModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
     Q_D(const ResourcesModel);
-    return d->resources.size();
+
+    if (d->manager)
+        return d->manager->resourceProxies().size();
+    return 0;
 }
 
 QVariant ResourcesModel::data(const QModelIndex &index, int role) const
 {
     Q_D(const ResourcesModel);
 
-    if (!index.isValid() || index.row() < 0 || index.row() >= d->resources.size())
+    if (!index.isValid() || index.row() < 0 || index.row() >= rowCount())
+        return QVariant();
+    if (!d->manager)
         return QVariant();
 
-    SoftwareResource *resource = d->resources.at(index.row());
+    auto proxy = d->manager->resourceProxies().at(index.row());
+    if (!proxy)
+        return QVariant();
+    auto *source = proxy->defaultSource();
+    if (!source) {
+        qCWarning(lcAppCenter, "No source found for index %d", index.row());
+        return QVariant();
+    }
+    auto *resource = proxy->selectedResource();
+    if (!resource) {
+        qCWarning(lcAppCenter, "No resource found for source \"%s\"",
+                  qPrintable(proxy->defaultSource()->name()));
+        return QVariant();
+    }
 
     switch (role) {
     case Qt::DisplayRole:
         return resource->name();
-    case ResourceRole:
-        return QVariant::fromValue<SoftwareResource *>(resource);
+    case ProxyRole:
+        return QVariant::fromValue<ResourceProxy *>(proxy);
     case TypeRole:
         return resource->type();
     case StateRole:
@@ -107,8 +217,6 @@ QVariant ResourcesModel::data(const QModelIndex &index, int role) const
         return resource->architecture();
     case LicenseRole:
         return resource->license();
-    case OriginRole:
-        return resource->origin();
     case CategoryRole:
         return resource->category();
     case HomePageUrlRole:
@@ -156,40 +264,8 @@ QVariant ResourcesModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-void ResourcesModel::addResource(SoftwareResource *resource)
-{
-    Q_D(ResourcesModel);
-
-    beginInsertRows(QModelIndex(), d->resources.size(), d->resources.size() + 1);
-    d->resources.append(resource);
-    endInsertRows();
-
-    QMetaObject::Connection connection =
-            connect(resource, &SoftwareResource::stateChanged, this, [this, d, resource] {
-        int row = d->resources.indexOf(resource);
-        if (row < 0 || row > d->resources.size())
-            return;
-        QModelIndex modelIndex = index(row);
-        Q_EMIT dataChanged(modelIndex, modelIndex);
-    });
-    d->stateChangedConnections.append(connection);
-}
-
-void ResourcesModel::removeResource(SoftwareResource *resource)
-{
-    Q_D(ResourcesModel);
-
-    int index = d->resources.indexOf(resource);
-
-    QMetaObject::Connection connection = d->stateChangedConnections.at(index);
-    disconnect(connection);
-    d->stateChangedConnections.remove(index);
-
-    beginRemoveRows(QModelIndex(), index, index);
-    d->resources.remove(index);
-    endRemoveRows();
-}
-
 } // namespace AppCenter
 
 } // namespace Liri
+
+#include "moc_resourcesmodel.cpp"

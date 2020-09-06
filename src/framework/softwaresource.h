@@ -73,6 +73,10 @@ public:
     virtual int priority() const = 0;
     virtual void setPriority(int prio) = 0;
 
+    virtual QVariantMap metadata() const;
+
+    bool operator==(const SoftwareSource &other) const;
+
 Q_SIGNALS:
     void titleChanged();
     void commentChanged();

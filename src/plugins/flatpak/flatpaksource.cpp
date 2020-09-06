@@ -16,6 +16,8 @@ FlatpakSource::FlatpakSource(Liri::AppCenter::Backend *backend,
     , m_name(QString::fromUtf8(flatpak_remote_get_name(m_remote)))
     , m_isUser(flatpak_installation_get_is_user(m_installation))
 {
+    m_metadata[tr("Installation")] = m_isUser ? tr("user") : tr("system");
+    m_metadata[tr("Branch")] = QString::fromUtf8(flatpak_remote_get_default_branch(remote));
 }
 
 FlatpakSource::~FlatpakSource()
@@ -214,6 +216,11 @@ void FlatpakSource::setPriority(int value)
     else
         qCWarning(lcFlatpakBackend, "Unable to set priority to source \"%s\": %s",
                   qPrintable(m_name), error->message);
+}
+
+QVariantMap FlatpakSource::metadata() const
+{
+    return m_metadata;
 }
 
 FlatpakInstallation *FlatpakSource::installation() const

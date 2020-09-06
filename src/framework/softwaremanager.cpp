@@ -6,36 +6,57 @@
 #include <QDir>
 #include <QPluginLoader>
 
+#include "resourcesmodel.h"
 #include "review.h"
 #include "softwaremanager_p.h"
 #include "softwareresource_p.h"
+
+Q_LOGGING_CATEGORY(lcAppCenter, "liri.appcenter")
 
 namespace Liri {
 
 namespace AppCenter {
 
-SoftwareManagerPrivate::SoftwareManagerPrivate()
+/*
+ * SoftwareManagerPrivate
+ */
+
+SoftwareManagerPrivate::SoftwareManagerPrivate(SoftwareManager *self)
     : sourcesModel(new SourcesModel())
-    , resourcesModel(new ResourcesModel())
+    , q_ptr(self)
 {
 }
 
 SoftwareManagerPrivate::~SoftwareManagerPrivate()
 {
     delete sourcesModel;
-    delete resourcesModel;
 }
+
+void SoftwareManagerPrivate::populate()
+{
+    Q_Q(SoftwareManager);
+    Q_EMIT q->resourceProxiesAdded(proxies);
+}
+
+/*
+ * SoftwareManager
+ */
 
 SoftwareManager::SoftwareManager(QObject *parent)
     : QObject(parent)
-    , d_ptr(new SoftwareManagerPrivate())
+    , d_ptr(new SoftwareManagerPrivate(this))
 {
     qRegisterMetaType<SoftwareSource *>("SoftwareSource*");
     qRegisterMetaType<SoftwareResource *>("SoftwareResource*");
+    qRegisterMetaType<SoftwareResource::State>("SoftwareResource::State");
+    qRegisterMetaType<SoftwareResource::Kudo>("SoftwareResource::Kudo");
+    qRegisterMetaType<SoftwareResource::Kudos>("SoftwareResource::Kudos");
     qRegisterMetaType<SourcesModel *>("SourcesModel*");
     qRegisterMetaType<Rating *>("Rating*");
     qRegisterMetaType<Review *>("Review*");
     qRegisterMetaType<ResourcesModel *>("ResourcesModel*");
+    qRegisterMetaType<ResourceProxy *>("ResourceProxy*");
+    qRegisterMetaType<QList<ResourceProxy *>>("QList<ResourceProxy*>");
     qRegisterMetaType<ReviewsModel *>("ReviewsModel*");
 }
 
@@ -50,28 +71,46 @@ SourcesModel *SoftwareManager::sourcesModel() const
     return d->sourcesModel;
 }
 
-ResourcesModel *SoftwareManager::resourcesModel() const
-{
-    Q_D(const SoftwareManager);
-    return d->resourcesModel;
-}
-
-void SoftwareManager::addResource(SoftwareResource *resource)
+void SoftwareManager::addResource(const QString &id, SoftwareResource *resource)
 {
     Q_D(SoftwareManager);
+
+    auto *proxy = d->proxiesMap.value(id);
+    if (!proxy) {
+        proxy = new ResourceProxy(this);
+        d->proxiesMap[id] = proxy;
+        d->proxies.append(proxy);
+    }
+
+    if (!proxy->hasResource(resource))
+        proxy->addResource(resource);
 
     if (!d->resources.contains(resource))
         d->resources.append(resource);
-
-    d->resourcesModel->addResource(resource);
 }
 
-void SoftwareManager::removeResource(SoftwareResource *resource)
+void SoftwareManager::removeResource(const QString &id, SoftwareResource *resource)
 {
     Q_D(SoftwareManager);
 
+    if (d->proxiesMap.contains(id)) {
+        auto *proxy = d->proxiesMap[id];
+
+        proxy->removeResource(resource);
+        if (proxy->resources().size() == 0) {
+            Q_EMIT resourceProxyRemoved(proxy);
+            d->proxies.removeOne(proxy);
+            d->proxiesMap.take(id)->deleteLater();
+        }
+    }
+
     d->resources.removeOne(resource);
-    d->resourcesModel->addResource(resource);
+}
+
+QList<ResourceProxy *> SoftwareManager::resourceProxies() const
+{
+    Q_D(const SoftwareManager);
+    return d->proxies;
 }
 
 bool SoftwareManager::addSource(const QString &name)

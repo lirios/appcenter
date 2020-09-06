@@ -7,9 +7,12 @@
 
 #include <QSortFilterProxyModel>
 
+#include <LiriAppCenter/SoftwareManager>
+
 class FilteredResourcesModel : public QSortFilterProxyModel
 {
     Q_OBJECT
+    Q_PROPERTY(Liri::AppCenter::SoftwareManager *manager READ manager WRITE setManager NOTIFY managerChanged)
     Q_PROPERTY(Filter filter READ filter WRITE setFilter NOTIFY modelFilterChanged)
     Q_PROPERTY(int count READ rowCount NOTIFY countChanged)
 public:
@@ -23,10 +26,14 @@ public:
 
     explicit FilteredResourcesModel(QObject *parent = nullptr);
 
+    Liri::AppCenter::SoftwareManager *manager() const;
+    void setManager(Liri::AppCenter::SoftwareManager *manager);
+
     Filter filter() const;
     void setFilter(Filter filter);
 
 Q_SIGNALS:
+    void managerChanged();
     void modelFilterChanged();
     void countChanged();
 

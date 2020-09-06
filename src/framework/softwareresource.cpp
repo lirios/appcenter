@@ -25,13 +25,22 @@ void SoftwareResourcePrivate::setRating(Rating *r)
     }
 }
 
-SoftwareResource::SoftwareResource(SoftwareManager *manager, QObject *parent)
+SoftwareResource::SoftwareResource(SoftwareManager *manager,
+                                   SoftwareSource *source,
+                                   QObject *parent)
     : QObject(parent)
     , d_ptr(new SoftwareResourcePrivate(this))
 {
     qRegisterMetaType<SoftwareResource::Kudos>("SoftwareResource::Kudos");
 
     d_ptr->manager = manager;
+    d_ptr->source = source;
+
+    connect(this, &SoftwareResource::stateChanged, this, &SoftwareResource::dataChanged);
+    connect(this, &SoftwareResource::versionChanged, this, &SoftwareResource::dataChanged);
+    connect(this, &SoftwareResource::updatesAvailableChanged, this, &SoftwareResource::dataChanged);
+    connect(this, &SoftwareResource::kudosChanged, this, &SoftwareResource::dataChanged);
+    connect(this, &SoftwareResource::ratingChanged, this, &SoftwareResource::dataChanged);
 }
 
 SoftwareResource::~SoftwareResource()
@@ -43,6 +52,12 @@ SoftwareManager *SoftwareResource::manager() const
 {
     Q_D(const SoftwareResource);
     return d->manager;
+}
+
+SoftwareSource *SoftwareResource::source() const
+{
+    Q_D(const SoftwareResource);
+    return d->source;
 }
 
 QString SoftwareResource::iconName() const
@@ -262,6 +277,13 @@ void SoftwareResource::submitReview(const QString &summary,
         if (backend->submitReview(this, summary, description, rating))
             break;
     }
+}
+
+bool SoftwareResource::operator==(const SoftwareResource &other) const
+{
+    Q_D(const SoftwareResource);
+    return other.packageName() == packageName() &&
+            other.source() == d->source;
 }
 
 } // namespace AppCenter

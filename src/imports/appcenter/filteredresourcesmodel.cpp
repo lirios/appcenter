@@ -18,11 +18,28 @@ FilteredResourcesModel::FilteredResourcesModel(QObject *parent)
             this, &FilteredResourcesModel::countChanged);
     connect(this, &QAbstractListModel::rowsRemoved,
             this, &FilteredResourcesModel::countChanged);
+    connect(this, &QAbstractListModel::dataChanged,
+            this, &FilteredResourcesModel::countChanged);
+
+    auto *model = new ResourcesModel(this);
+    connect(model, &ResourcesModel::managerChanged,
+            this, &FilteredResourcesModel::managerChanged);
 
     setDynamicSortFilter(true);
     setSortRole(Liri::AppCenter::ResourcesModel::NameRole);
     setSortLocaleAware(true);
+    setSourceModel(model);
     sort(0);
+}
+
+SoftwareManager *FilteredResourcesModel::manager() const
+{
+    return qobject_cast<ResourcesModel *>(sourceModel())->manager();
+}
+
+void FilteredResourcesModel::setManager(SoftwareManager *manager)
+{
+    qobject_cast<ResourcesModel *>(sourceModel())->setManager(manager);
 }
 
 FilteredResourcesModel::Filter FilteredResourcesModel::filter() const
@@ -36,6 +53,7 @@ void FilteredResourcesModel::setFilter(FilteredResourcesModel::Filter filter)
         return;
 
     m_filter = filter;
+    invalidateFilter();
     Q_EMIT modelFilterChanged();
 }
 

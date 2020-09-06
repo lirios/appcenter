@@ -35,6 +35,7 @@ liri_add_plugin(flatpak
         AppStreamQt
         PkgConfig::Flatpak
         Liri::AppCenter
+        Liri::AppCenterPrivate
 )
 
 install(FILES "io.liri.AppCenter.Flatpak.desktop"
