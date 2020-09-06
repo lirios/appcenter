@@ -113,7 +113,7 @@ ColumnLayout {
             }
 
             Label {
-                text: app.version
+                text: app.installedVersion
                 color: Material.secondaryTextColor
             }
 
