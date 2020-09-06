@@ -17,6 +17,7 @@
 
 #include "flatpakplugin.h"
 #include "flatpakresource.h"
+#include "flatpaksource.h"
 #include "flatpaktransaction.h"
 #include "flatpakutils.h"
 
@@ -27,7 +28,8 @@ static quint64 fetchRemoteSize(FlatpakResource *app, FlatpakRef *ref)
 
     guint64 downloadSize = 0, installedSize = 0;
     if (!flatpak_installation_fetch_remote_size_sync(
-                app->installation(), qPrintable(app->origin()),
+                app->flatpakSource()->installation(),
+                qPrintable(app->flatpakSource()->name()),
                 ref, &downloadSize, &installedSize, cancellable, &error)) {
         qCWarning(lcFlatpakBackend, "Failed to fetch remote size for %s: %s",
                   qPrintable(app->name()), error->message);
@@ -38,49 +40,38 @@ static quint64 fetchRemoteSize(FlatpakResource *app, FlatpakRef *ref)
 }
 
 FlatpakResource::FlatpakResource(Liri::AppCenter::SoftwareManager *manager,
+                                 FlatpakSource *source,
                                  const AppStream::Component &component,
-                                 FlatpakInstallation *installation,
                                  QObject *parent)
-    : Liri::AppCenter::SoftwareResource(manager, parent)
+    : Liri::AppCenter::SoftwareResource(manager, source, parent)
     , m_appdata(component)
+    , m_source(source)
 {
-    updateComponent(component);
-    setFlatpakType(FLATPAK_REF_KIND_APP);
+    // Default branch from remote
+    if (m_branch.isEmpty())
+        m_branch = QString::fromUtf8(flatpak_remote_get_default_branch(m_source->remote()));
 
-    m_key.installation = installation;
-    m_key.desktopId = component.id();
+    // Icons path from remote
+    g_autoptr(GFile) appStreamDir = flatpak_remote_get_appstream_dir(m_source->remote(), nullptr);
+    if (appStreamDir)
+        m_iconsPath = QDir(QString::fromUtf8(g_file_get_path(appStreamDir))).absoluteFilePath(QLatin1String("icons"));
+
+    // Update information
+    updateComponent();
+    setFlatpakType(FLATPAK_REF_KIND_APP);
 
     // We always get this
     addKudo(SoftwareResource::SandboxedKudo);
 }
 
-FlatpakResource::Key FlatpakResource::keyFromInstalledRef(FlatpakInstallation *installation, FlatpakInstalledRef *ref)
+FlatpakSource *FlatpakResource::flatpakSource() const
 {
-    Liri::AppCenter::SoftwareResource::Type type = Liri::AppCenter::SoftwareResource::App;
-    if (flatpak_ref_get_kind(FLATPAK_REF(ref)) == FLATPAK_REF_KIND_RUNTIME)
-        type = Liri::AppCenter::SoftwareResource::Runtime;
-
-    const auto desktopId = QLatin1String(flatpak_ref_get_name(FLATPAK_REF(ref)));
-    const auto origin = QString::fromUtf8(flatpak_installed_ref_get_origin(FLATPAK_INSTALLED_REF(ref)));
-    const auto branch = QString::fromUtf8(flatpak_ref_get_branch(FLATPAK_REF(ref)));
-    const auto architecture = QString::fromUtf8(flatpak_ref_get_arch(FLATPAK_REF(ref)));
-
-    return { type, installation, desktopId, origin, branch, architecture };
-}
-
-FlatpakResource::Key FlatpakResource::key() const
-{
-    return m_key;
+    return m_source;
 }
 
 AppStream::Component FlatpakResource::component() const
 {
     return m_appdata;
-}
-
-FlatpakInstallation *FlatpakResource::installation() const
-{
-    return m_key.installation;
 }
 
 FlatpakRefKind FlatpakResource::kind() const
@@ -90,7 +81,7 @@ FlatpakRefKind FlatpakResource::kind() const
 
 Liri::AppCenter::SoftwareResource::Type FlatpakResource::type() const
 {
-    return m_key.type;
+    return m_type;
 }
 
 Liri::AppCenter::SoftwareResource::State FlatpakResource::state() const
@@ -100,7 +91,7 @@ Liri::AppCenter::SoftwareResource::State FlatpakResource::state() const
 
 QString FlatpakResource::appId() const
 {
-    return m_key.desktopId;
+    return m_appdata.id();
 }
 
 QString FlatpakResource::name() const
@@ -130,7 +121,7 @@ QString FlatpakResource::packageName() const
 
 QString FlatpakResource::architecture() const
 {
-    return m_key.architecture;
+    return m_architecture;
 }
 
 QString FlatpakResource::license() const
@@ -141,11 +132,6 @@ QString FlatpakResource::license() const
         return QStringLiteral("<a href=\"%1\">Proprietary</a>").arg(license);
     }
     return license;
-}
-
-QString FlatpakResource::origin() const
-{
-    return m_key.origin;
 }
 
 QStringList FlatpakResource::categories() const
@@ -243,7 +229,7 @@ bool FlatpakResource::launch() const
     g_autoptr(GCancellable) cancellable = g_cancellable_new();
     g_autoptr(GError) error = nullptr;
 
-    if (!flatpak_installation_launch(m_key.installation,
+    if (!flatpak_installation_launch(m_source->installation(),
                                      packageName().toUtf8().constData(),
                                      architecture().toUtf8().constData(),
                                      branch().toUtf8().constData(),
@@ -262,7 +248,7 @@ Liri::AppCenter::Transaction *FlatpakResource::install()
     LiriFlatpakTransaction *transaction = new LiriFlatpakTransaction(
                 Liri::AppCenter::Transaction::Install,
                 tr("Install %1").arg(packageName()),
-                tr("Installing \"%1\" from %2...").arg(name(), origin()),
+                tr("Installing \"%1\" from %2...").arg(name(), m_source->name()),
                 this, true, this);
     connect(transaction, &LiriFlatpakTransaction::succeeded,
             this, &FlatpakResource::installed);
@@ -295,7 +281,7 @@ Liri::AppCenter::Transaction *FlatpakResource::update()
 
 QDir FlatpakResource::installationDir() const
 {
-    return FlatpakResource::installationDir(m_key.installation);
+    return FlatpakResource::installationDir(m_source->installation());
 }
 
 QDir FlatpakResource::exportsDir() const
@@ -310,7 +296,7 @@ QString FlatpakResource::runtime() const
 
 QString FlatpakResource::branch() const
 {
-    return m_key.branch;
+    return m_branch;
 }
 
 QString FlatpakResource::commit() const
@@ -340,34 +326,20 @@ void FlatpakResource::updateFromResource(FlatpakResource *resource)
     setState(resource->state());
 }
 
-void FlatpakResource::updateFromRemote(FlatpakRemote *remote)
-{
-    Q_ASSERT(remote);
-
-    m_key.origin = QString::fromUtf8(flatpak_remote_get_name(remote));
-    if (m_key.branch.isEmpty())
-        m_key.branch = QString::fromUtf8(flatpak_remote_get_default_branch(remote));
-
-    g_autoptr(GFile) appStreamDir = flatpak_remote_get_appstream_dir(remote, nullptr);
-    if (appStreamDir)
-        m_iconsPath = QDir(QString::fromUtf8(g_file_get_path(appStreamDir))).absoluteFilePath(QLatin1String("icons"));
-}
-
 void FlatpakResource::updateFromRef(FlatpakRef *ref)
 {
     if (ref) {
         m_packageName = QString::fromUtf8(flatpak_ref_get_name(ref));
-        m_key.architecture = QString::fromUtf8(flatpak_ref_get_arch(ref));
-
-        m_key.branch = QString::fromUtf8(flatpak_ref_get_branch(ref));
+        m_architecture = QString::fromUtf8(flatpak_ref_get_arch(ref));
+        m_branch = QString::fromUtf8(flatpak_ref_get_branch(ref));
         m_commit = QString::fromUtf8(flatpak_ref_get_commit(ref));
         m_latestCommit = m_commit;
 
         setFlatpakType(flatpak_ref_get_kind(ref));
     } else {
         m_packageName = m_appdata.id().remove(QLatin1String(".desktop"));
-        m_key.architecture = QString();
-        m_key.branch = QString();
+        m_architecture = QString();
+        m_branch = QString();
         m_commit = QString();
         m_latestCommit = QString();
 
@@ -378,7 +350,6 @@ void FlatpakResource::updateFromRef(FlatpakRef *ref)
 void FlatpakResource::updateFromInstalledRef(FlatpakInstalledRef *ref)
 {
     if (ref) {
-        m_key.origin = QString::fromUtf8(flatpak_installed_ref_get_origin(ref));
         m_latestCommit = QString::fromUtf8(flatpak_installed_ref_get_latest_commit(ref));
         m_installedSize = flatpak_installed_ref_get_installed_size(ref);
         updateFromMetadata(ref);
@@ -398,7 +369,7 @@ void FlatpakResource::updateFromInstalledRef(FlatpakInstalledRef *ref)
 
 void FlatpakResource::updateDownloadSize(FlatpakResource *runtimeResource, FlatpakRef *ref)
 {
-    if (m_key.type != SoftwareResource::App)
+    if (m_type != SoftwareResource::App)
         return;
 
     quint64 size = 0;
@@ -430,52 +401,52 @@ void FlatpakResource::setFlatpakType(FlatpakRefKind kind)
     m_kind = kind;
 
     if (m_packageName.endsWith(QLatin1String(".Locale")))
-        m_key.type = Liri::AppCenter::SoftwareResource::Localization;
+        m_type = Liri::AppCenter::SoftwareResource::Localization;
     else if (m_packageName.endsWith(QLatin1String(".Debug")) ||
              m_packageName.endsWith(QLatin1String(".Sources")))
-        m_key.type = Liri::AppCenter::SoftwareResource::Generic;
+        m_type = Liri::AppCenter::SoftwareResource::Generic;
     else if (m_packageName.startsWith(QLatin1String("org.freedesktop.Platform.Icontheme.")) ||
              m_packageName.startsWith(QLatin1String("org.gtk.Gtk3theme.")) ||
              m_packageName.startsWith(QLatin1String("org.kde.KStyle.")) ||
              m_packageName.startsWith(QLatin1String("org.kde.WaylandDecoration.")))
-        m_key.type = Liri::AppCenter::SoftwareResource::Theme;
+        m_type = Liri::AppCenter::SoftwareResource::Theme;
     else if (m_packageName.contains(QLatin1String(".Extension.")))
-        m_key.type = Liri::AppCenter::SoftwareResource::Addon;
+        m_type = Liri::AppCenter::SoftwareResource::Addon;
     else {
         switch (kind) {
         case FLATPAK_REF_KIND_APP: {
             switch (m_appdata.kind()) {
             case AppStream::Component::KindAddon:
-                m_key.type = Liri::AppCenter::SoftwareResource::Addon;
+                m_type = Liri::AppCenter::SoftwareResource::Addon;
                 break;
             case AppStream::Component::KindCodec:
-                m_key.type = Liri::AppCenter::SoftwareResource::Codec;
+                m_type = Liri::AppCenter::SoftwareResource::Codec;
                 break;
             case AppStream::Component::KindDriver:
-                m_key.type = Liri::AppCenter::SoftwareResource::Driver;
+                m_type = Liri::AppCenter::SoftwareResource::Driver;
                 break;
             case AppStream::Component::KindFirmware:
-                m_key.type = Liri::AppCenter::SoftwareResource::Firmware;
+                m_type = Liri::AppCenter::SoftwareResource::Firmware;
                 break;
             case AppStream::Component::KindFont:
-                m_key.type = Liri::AppCenter::SoftwareResource::Font;
+                m_type = Liri::AppCenter::SoftwareResource::Font;
                 break;
             case AppStream::Component::KindGeneric:
-                m_key.type = Liri::AppCenter::SoftwareResource::Generic;
+                m_type = Liri::AppCenter::SoftwareResource::Generic;
                 break;
             case AppStream::Component::KindInputmethod:
-                m_key.type = Liri::AppCenter::SoftwareResource::InputMethod;
+                m_type = Liri::AppCenter::SoftwareResource::InputMethod;
                 break;
             case AppStream::Component::KindLocalization:
-                m_key.type = Liri::AppCenter::SoftwareResource::Localization;
+                m_type = Liri::AppCenter::SoftwareResource::Localization;
                 break;
             default:
-                m_key.type = Liri::AppCenter::SoftwareResource::App;
+                m_type = Liri::AppCenter::SoftwareResource::App;
                 break;
             }
             break;
         case FLATPAK_REF_KIND_RUNTIME:
-                m_key.type = Liri::AppCenter::SoftwareResource::Runtime;
+                m_type = Liri::AppCenter::SoftwareResource::Runtime;
                 break;
             }
         }
@@ -488,18 +459,8 @@ void FlatpakResource::setState(Liri::AppCenter::SoftwareResource::State state)
     Q_EMIT stateChanged();
 }
 
-void FlatpakResource::updateComponent(const AppStream::Component &component)
+void FlatpakResource::updateComponent()
 {
-    m_appdata = component;
-
-    // Desktop id
-    m_key.desktopId = m_appdata.id();
-    if (!m_key.desktopId.endsWith(QLatin1String(".desktop")))
-        m_key.desktopId += QLatin1String(".desktop");
-
-    // Origin
-    m_key.origin = m_appdata.origin();
-
     // Change log
     m_changeLog = m_appdata.description();
     m_changeLog.replace(QLatin1Char('\n'), QLatin1String("<br>"));

@@ -46,9 +46,13 @@ private:
     QVector<FlatpakInstallation *> m_installations;
     QVector<GFileMonitor *> m_installationMonitors;
     FlatpakInstallation *m_userInstallation = nullptr;
-    QHash<FlatpakResource::Key, FlatpakResource *> m_resources;
+    QList<FlatpakInstallation *> m_installationsListed;
+    QList<FlatpakSource *> m_sources;
+    QMultiHash<QString, FlatpakResource *> m_resources;
 
-    FlatpakResource *findResourceFromInstalledRef(FlatpakInstallation *installation, FlatpakInstalledRef *ref) const;
+    QList<AppStream::Component> componentsFromInstalledRef(FlatpakInstallation *installation,
+                                                           FlatpakInstalledRef *ref);
+
     FlatpakResource *findRuntimeResource(const QString &runtime);
 
     bool extractRepositories(FlatpakInstallation *installation);

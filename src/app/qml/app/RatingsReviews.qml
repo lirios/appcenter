@@ -79,7 +79,7 @@ ColumnLayout {
 
                     property bool fetched: false
 
-                    resource: app
+                    resource: app.selectedResource
                     onReviewsFetched: {
                         fetched = true;
                     }

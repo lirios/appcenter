@@ -4,6 +4,7 @@
 
 #include <LiriAppCenter/SoftwareSource>
 
+#include "softwaremanager_p.h"
 #include "sourcesmodel.h"
 #include "sourcesmodel_p.h"
 
@@ -11,14 +12,9 @@ namespace Liri {
 
 namespace AppCenter {
 
-SourcesModelPrivate::SourcesModelPrivate()
-{
-}
-
-SourcesModelPrivate::~SourcesModelPrivate()
-{
-    qDeleteAll(sources);
-}
+/*
+ * SourcesModel
+ */
 
 SourcesModel::SourcesModel(QObject *parent)
     : QAbstractListModel(parent)
@@ -68,12 +64,15 @@ QVariant SourcesModel::data(const QModelIndex &index, int role) const
         return QVariant();
 
     SoftwareSource *source = d->sources.at(index.row());
+    if (!source)
+        return QVariant();
 
     switch (role) {
     case SourceRole:
         return QVariant::fromValue<SoftwareSource *>(source);
     case SectionRole:
         return source->section();
+    case Qt::DisplayRole:
     case NameRole:
         return source->name();
     case TitleRole:
@@ -129,7 +128,7 @@ void SourcesModel::removeSource(SoftwareSource *source)
     int row = d->sources.indexOf(source);
     if (row >= 0) {
         beginRemoveRows(QModelIndex(), row, row);
-        d->sources.remove(row);
+        d->sources.removeAt(row);
         endRemoveRows();
     }
 }
@@ -144,6 +143,15 @@ SoftwareSource *SourcesModel::findSource(const QString &name) const
     }
 
     return nullptr;
+}
+
+SoftwareSource *SourcesModel::at(int index) const
+{
+    Q_D(const SourcesModel);
+    auto *source = d->sources.at(index);
+    if (!source)
+        qCWarning(lcAppCenter, "SourcesModel doesn't have a source at index %d", index);
+    return source;
 }
 
 } // namespace AppCenter

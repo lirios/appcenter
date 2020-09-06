@@ -22,6 +22,9 @@ liri_add_module(AppCenter
         resourcesmodel.cpp
         resourcesmodel.h
         resourcesmodel_p.h
+        resourceproxy.cpp
+        resourceproxy.h
+        resourceproxy_p.h
         review.cpp
         review.h
         review_p.h
@@ -36,6 +39,7 @@ liri_add_module(AppCenter
         screenshotsmodel.h
         softwaremanager.cpp
         softwaremanager.h
+        softwaremanager_p.h
         softwareresource.cpp
         softwareresource.h
         softwaresource.cpp
@@ -52,6 +56,7 @@ liri_add_module(AppCenter
         Image
         Rating
         ResourcesModel
+        ResourceProxy
         Review
         ReviewsBackend
         ReviewsBackendPlugin
@@ -70,6 +75,7 @@ liri_add_module(AppCenter
         resourcesmodel_p.h
         review_p.h
         reviewsmodel_p.h
+        resourceproxy_p.h
         screenshotsmodel_p.h
         softwaremanager_p.h
         softwareresource_p.h

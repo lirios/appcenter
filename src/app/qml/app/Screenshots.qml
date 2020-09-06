@@ -21,7 +21,7 @@ ScrollView {
         model: AppCenter.ScreenshotsModel {
             id: screenshotsModel
 
-            app: appPage.app
+            app: appPage.app.selectedResource
         }
         delegate: Image {
             id: thumbnail

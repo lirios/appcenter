@@ -19,12 +19,14 @@ class Rating;
 class Review;
 class SoftwareManager;
 class SoftwareResourcePrivate;
+class SoftwareSource;
 class Transaction;
 
 class LIRIAPPCENTER_EXPORT SoftwareResource : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(SoftwareManager *manager READ manager CONSTANT)
+    Q_PROPERTY(SoftwareSource *source READ source CONSTANT)
     Q_PROPERTY(Type type READ type CONSTANT)
     Q_PROPERTY(State state READ state NOTIFY stateChanged)
     Q_PROPERTY(QString appId READ appId CONSTANT)
@@ -36,7 +38,6 @@ class LIRIAPPCENTER_EXPORT SoftwareResource : public QObject
     Q_PROPERTY(QString packageName READ packageName CONSTANT)
     Q_PROPERTY(QString architecture READ architecture CONSTANT)
     Q_PROPERTY(QString license READ license CONSTANT)
-    Q_PROPERTY(QString origin READ origin CONSTANT)
     Q_PROPERTY(QString category READ category CONSTANT)
     Q_PROPERTY(QUrl homepageUrl READ homepageUrl CONSTANT)
     Q_PROPERTY(QUrl bugtrackerUrl READ bugtrackerUrl CONSTANT)
@@ -105,10 +106,12 @@ public:
     Q_FLAG(Kudos)
 
     explicit SoftwareResource(SoftwareManager *manager,
+                              SoftwareSource *source,
                               QObject *parent = nullptr);
     ~SoftwareResource();
 
     SoftwareManager *manager() const;
+    SoftwareSource *source() const;
 
     virtual Type type() const = 0;
     virtual State state() const = 0;
@@ -126,8 +129,6 @@ public:
     virtual QString architecture() const = 0;
 
     virtual QString license() const = 0;
-
-    virtual QString origin() const = 0;
 
     QString category() const;
     virtual QStringList categories() const = 0;
@@ -186,7 +187,10 @@ public:
                                   const QString &description,
                                   int rating);
 
+    bool operator==(const SoftwareResource &other) const;
+
 Q_SIGNALS:
+    void dataChanged();
     void stateChanged();
     void versionChanged();
     void installedVersionChanged();

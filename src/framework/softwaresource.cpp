@@ -32,6 +32,16 @@ QString SoftwareSource::hostname() const
     return url().host();
 }
 
+QVariantMap SoftwareSource::metadata() const
+{
+    return QVariantMap();
+}
+
+bool SoftwareSource::operator==(const SoftwareSource &other) const
+{
+    return other.name() == name();
+}
+
 } // namespace AppCenter
 
 } // namespace Liri

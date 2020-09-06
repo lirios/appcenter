@@ -27,6 +27,8 @@ namespace Liri {
 
 namespace AppCenter {
 
+class SoftwareSource;
+
 class SoftwareResourcePrivate
 {
     Q_DECLARE_PUBLIC(SoftwareResource)
@@ -38,6 +40,7 @@ public:
     static SoftwareResourcePrivate *get(SoftwareResource *res) { return res->d_func(); }
 
     SoftwareManager *manager = nullptr;
+    SoftwareSource *source = nullptr;
     QMap<QString, QVariant> metadata;
     SoftwareResource::Kudos kudos;
     Rating *rating = nullptr;

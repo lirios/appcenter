@@ -14,7 +14,7 @@ FluidControls.Tab {
     AppCenter.FilteredResourcesModel {
         id: allAppsModel
 
-        sourceModel: softwareManager.resourcesModel
+        manager: softwareManager
         filter: AppCenter.FilteredResourcesModel.AllApps
     }
 
@@ -47,14 +47,14 @@ FluidControls.Tab {
                     flat: true
                     text: qsTr("Get")
                     onClicked: {
-                        if (!model.resource.install()) {
+                        if (!model.proxy.install()) {
                             console.error("Installation of", model.name, "has failed")
                             return;
                         }
                     }
                 }
                 onClicked: {
-                    pageStack.push(Qt.resolvedUrl("AppPage.qml"), {app: model.resource});
+                    pageStack.push(Qt.resolvedUrl("AppPage.qml"), {app: model.proxy});
                 }
             }
         }

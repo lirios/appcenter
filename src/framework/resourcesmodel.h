@@ -22,9 +22,10 @@ class LIRIAPPCENTER_EXPORT ResourcesModel : public QAbstractListModel
     Q_OBJECT
     Q_DECLARE_PRIVATE(ResourcesModel)
     Q_DISABLE_COPY(ResourcesModel)
+    Q_PROPERTY(SoftwareManager *manager READ manager WRITE setManager NOTIFY managerChanged)
 public:
     enum Roles {
-        ResourceRole = Qt::UserRole + 1,
+        ProxyRole = Qt::UserRole + 1,
         TypeRole,
         StateRole,
         AppIdRole,
@@ -36,7 +37,6 @@ public:
         PackageNameRole,
         ArchitectureRole,
         LicenseRole,
-        OriginRole,
         CategoryRole,
         HomePageUrlRole,
         BugTrackerUrlRole,
@@ -62,17 +62,21 @@ public:
     explicit ResourcesModel(QObject *parent = nullptr);
     ~ResourcesModel();
 
+    SoftwareManager *manager() const;
+    void setManager(SoftwareManager *manager);
+
     QHash<int,QByteArray> roleNames() const override;
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
+Q_SIGNALS:
+    void managerChanged();
+
 private:
     ResourcesModelPrivate *const d_ptr;
 
-    void addResource(SoftwareResource *resource);
-    void removeResource(SoftwareResource *resource);
-
-    friend class SoftwareManager;
+    Q_PRIVATE_SLOT(d_func(), void handlePopulated(QList<ResourceProxy*>))
+    Q_PRIVATE_SLOT(d_func(), void handleProxyRemoved(ResourceProxy*))
 };
 
 } // namespace AppCenter

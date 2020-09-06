@@ -7,6 +7,7 @@
 
 #include <LiriAppCenter/Rating>
 #include <LiriAppCenter/ResourcesModel>
+#include <LiriAppCenter/ResourceProxy>
 #include <LiriAppCenter/Review>
 #include <LiriAppCenter/ReviewsModel>
 #include <LiriAppCenter/ScreenshotsModel>
@@ -17,6 +18,7 @@
 #include <LiriAppCenter/Transaction>
 
 #include "filteredresourcesmodel.h"
+#include "filteredsourcesmodel.h"
 #include "filteredreviewsmodel.h"
 #include "paginatemodel.h"
 
@@ -33,6 +35,7 @@ public:
         Q_ASSERT(QLatin1String(uri) == QLatin1String("Liri.AppCenter"));
 
         qmlRegisterType<FilteredResourcesModel>(uri, 1, 0, "FilteredResourcesModel");
+        qmlRegisterType<FilteredSourcesModel>(uri, 1, 0, "FilteredSourcesModel");
         qmlRegisterType<FilteredReviewsModel>(uri, 1, 0, "FilteredReviewsModel");
         qmlRegisterType<ScreenshotsModel>(uri, 1, 0, "ScreenshotsModel");
         qmlRegisterType<SoftwareManager>(uri, 1, 0, "SoftwareManager");
@@ -40,7 +43,9 @@ public:
         qmlRegisterType<PaginateModel>(uri, 1, 0, "PaginateModel");
         qmlRegisterUncreatableType<Rating>(uri, 1, 0, "Rating",
                                            QLatin1String("Unable to instantiate Rating"));
-        qmlRegisterUncreatableType<ResourcesModel>(uri, 1, 0, "ResourcesModel", QLatin1String("Unable to instantiate ResourcesModel"));
+        qmlRegisterType<ResourcesModel>(uri, 1, 0, "ResourcesModel");
+        qmlRegisterUncreatableType<ResourceProxy>(uri, 1, 0, "ResourceProxy",
+                                                  QLatin1String("Unable to instantiate ResourceProxy"));
         qmlRegisterUncreatableType<Review>(uri, 1, 0, "Review",
                                            QLatin1String("Unable to instantiate Review"));
         qmlRegisterType<ReviewsModel>(uri, 1, 0, "ReviewsModel");

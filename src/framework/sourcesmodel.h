@@ -52,6 +52,8 @@ public:
 
     SoftwareSource *findSource(const QString &name) const;
 
+    Q_INVOKABLE Liri::AppCenter::SoftwareSource *at(int index) const;
+
 private:
     SourcesModelPrivate *const d_ptr;
 };

@@ -16,18 +16,28 @@
 // We mean it.
 //
 
+#include <QHash>
+
+#include <LiriAppCenter/SoftwareSource>
+#include <LiriAppCenter/SourcesModel>
+
 namespace Liri {
 
 namespace AppCenter {
 
-class SourcesModelPrivate
+class LIRIAPPCENTER_EXPORT SourcesModelPrivate
 {
+    Q_DECLARE_PUBLIC(SourcesModel)
 public:
-    SourcesModelPrivate();
-    ~SourcesModelPrivate();
+    SourcesModelPrivate() = default;
+
+    static SourcesModelPrivate *get(SourcesModel *q) { return q->d_func(); }
 
     QHash<int, QByteArray> roles;
-    QVector<SoftwareSource *> sources;
+    QList<SoftwareSource *> sources;
+
+protected:
+    SourcesModel *q_ptr;
 };
 
 } // namespace AppCenter

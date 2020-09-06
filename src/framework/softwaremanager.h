@@ -5,7 +5,6 @@
 #ifndef LIRIAPPCENTERSOFTWAREMANAGER_H
 #define LIRIAPPCENTERSOFTWAREMANAGER_H
 
-#include <LiriAppCenter/ResourcesModel>
 #include <LiriAppCenter/Rating>
 #include <LiriAppCenter/Review>
 #include <LiriAppCenter/ReviewsModel>
@@ -17,13 +16,13 @@ namespace Liri {
 
 namespace AppCenter {
 
+class ResourceProxy;
 class SoftwareManagerPrivate;
 
 class LIRIAPPCENTER_EXPORT SoftwareManager : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(SourcesModel *sourcesModel READ sourcesModel CONSTANT)
-    Q_PROPERTY(ResourcesModel *resourcesModel READ resourcesModel CONSTANT)
     Q_PROPERTY(bool hasUpdates READ hasUpdates NOTIFY updatesAvailable)
     Q_PROPERTY(uint updatesCount READ updatesCount NOTIFY updatesAvailable)
     Q_DECLARE_PRIVATE(SoftwareManager)
@@ -33,10 +32,11 @@ public:
     ~SoftwareManager();
 
     SourcesModel *sourcesModel() const;
-    ResourcesModel *resourcesModel() const;
 
-    void addResource(SoftwareResource *resource);
-    void removeResource(SoftwareResource *resource);
+    void addResource(const QString &id, SoftwareResource *resource);
+    void removeResource(const QString &id, SoftwareResource *resource);
+
+    QList<ResourceProxy *> resourceProxies() const;
 
     Q_INVOKABLE bool addSource(const QString &name);
     Q_INVOKABLE bool removeSource(Liri::AppCenter::SoftwareSource *source);
@@ -54,6 +54,8 @@ Q_SIGNALS:
     void sourceAdded(Liri::AppCenter::SoftwareSource *source);
     void sourceAddFailed(const QString &name, const QString &errorMessage);
     void updatesAvailable(uint count);
+    void resourceProxiesAdded(QList<Liri::AppCenter::ResourceProxy *> proxies);
+    void resourceProxyRemoved(Liri::AppCenter::ResourceProxy *proxy);
     void ratingAdded(Liri::AppCenter::Rating *rating);
     void reviewAdded(Liri::AppCenter::Review *review);
 
