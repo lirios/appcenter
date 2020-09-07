@@ -6,6 +6,7 @@
 Name=App Center
 Name[ar]=مركز التطبيقات
 Name[da]=Programcenter
+Name[es_MX]=Centro de aplicaciones
 Name[fr]=Centre d'applications
 Name[id]=Pusat Aplikasi
 Name[it_IT]=Centro App
@@ -22,6 +23,7 @@ Name[zh_TW]=應用程式中心
 Comment=App Center for Liri
 Comment[ar]=مركز تطبيقات ليري
 Comment[da]=Programcenter til Liri
+Comment[es_MX]=Centro de aplicaciones para Liri
 Comment[fr]=Centre d'applications pour Liri
 Comment[id]=Pusat Aplikasi untuk Liri
 Comment[it_IT]=Centro applicazioni per Liri
