@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: LGPL-3.0-or-later
 
+#include <QDateTime>
+
 #include <LiriAppCenter/ResourcesModel>
 #include <LiriAppCenter/SoftwareResource>
 
@@ -65,8 +67,34 @@ bool FilteredResourcesModel::lessThan(const QModelIndex &source_left, const QMod
 {
     QVariant left = sourceModel()->data(source_left, sortRole());
     QVariant right = sourceModel()->data(source_right, sortRole());
+    int type = left.userType();
 
-    if (left.userType() == QMetaType::QString)
+    switch (type) {
+    case QMetaType::QString:
         return QString::localeAwareCompare(left.toString(), right.toString()) < 0;
-    return left < right;
+    case QMetaType::Int:
+    case QMetaType::Short:
+        return left.toInt() < right.toInt();
+    case QMetaType::UInt:
+    case QMetaType::UShort:
+        return left.toUInt() < right.toUInt();
+    case QMetaType::Long:
+    case QMetaType::LongLong:
+        return left.toLongLong() < right.toLongLong();
+    case QMetaType::ULong:
+    case QMetaType::ULongLong:
+        return left.toULongLong() < right.toULongLong();
+    case QMetaType::Float:
+        return left.toFloat() < right.toFloat();
+    case QMetaType::Double:
+        return left.toDouble() < right.toDouble();
+    case QMetaType::QDate:
+        return left.toDate() < right.toDate();
+    case QMetaType::QDateTime:
+        return left.toDateTime() < right.toDateTime();
+    default:
+        break;
+    }
+
+    return false;
 }
