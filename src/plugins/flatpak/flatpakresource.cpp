@@ -262,7 +262,7 @@ Liri::AppCenter::Transaction *FlatpakResource::install()
     LiriFlatpakTransaction *transaction = new LiriFlatpakTransaction(
                 Liri::AppCenter::Transaction::Install,
                 tr("Install %1").arg(packageName()),
-                tr("Installing \"%1\" from %2...").arg(name()).arg(origin()),
+                tr("Installing \"%1\" from %2...").arg(name(), origin()),
                 this, true, this);
     connect(transaction, &LiriFlatpakTransaction::succeeded,
             this, &FlatpakResource::installed);
@@ -273,8 +273,8 @@ Liri::AppCenter::Transaction *FlatpakResource::uninstall()
 {
     LiriFlatpakTransaction *transaction = new LiriFlatpakTransaction(
                 Liri::AppCenter::Transaction::Uninstall,
-                tr("Uninstall %1 %2").arg(packageName()).arg(installedVersion()),
-                tr("Uninstalling \"%1\" %2...").arg(name()).arg(installedVersion()),
+                tr("Uninstall %1 %2").arg(packageName(), installedVersion()),
+                tr("Uninstalling \"%1\" %2...").arg(name(), installedVersion()),
                 this, true, this);
     connect(transaction, &LiriFlatpakTransaction::succeeded,
             this, &FlatpakResource::uninstalled);
@@ -285,8 +285,8 @@ Liri::AppCenter::Transaction *FlatpakResource::update()
 {
     LiriFlatpakTransaction *transaction = new LiriFlatpakTransaction(
                 Liri::AppCenter::Transaction::Update,
-                tr("Update %1 %2").arg(packageName()).arg(installedVersion()),
-                tr("Updating \"%1\" %2...").arg(name()).arg(installedVersion()),
+                tr("Update %1 %2").arg(packageName(), installedVersion()),
+                tr("Updating \"%1\" %2...").arg(name(), installedVersion()),
                 this, true, this);
     connect(transaction, &LiriFlatpakTransaction::succeeded,
             this, &FlatpakResource::updated);
@@ -496,7 +496,8 @@ void FlatpakResource::updateComponent(const AppStream::Component &component)
     m_changeLog.replace(QLatin1Char('\n'), QLatin1String("<br>"));
 
     // Icons
-    for (const auto &icon : m_appdata.icons()) {
+    const auto icons = m_appdata.icons();
+    for (const auto &icon : icons) {
         if (icon.width() >= 128 && icon.height() >= 128)
             addKudo(SoftwareResource::HiDpiIconKudo);
 
@@ -542,11 +543,13 @@ void FlatpakResource::updateComponent(const AppStream::Component &component)
     }
 
     // Screenshots and thumbnails
-    for (const auto &screenshot : m_appdata.screenshots()) {
+    const auto screenshots = m_appdata.screenshots();
+    for (const auto &screenshot : screenshots) {
         bool thumbnailDone = false;
         bool screenshotDone = false;
 
-        for (const auto &image : screenshot.images()) {
+        const auto images = screenshot.images();
+        for (const auto &image : images) {
             if (image.kind() == AppStream::Image::KindThumbnail && !thumbnailDone) {
                 Liri::AppCenter::Image thumbnailImage(image.url(), image.size());
                 m_thumbnails.append(thumbnailImage);
@@ -562,7 +565,8 @@ void FlatpakResource::updateComponent(const AppStream::Component &component)
         addKudo(SoftwareResource::HasScreenshotsKudo);
 
     // Package information
-    for (const auto &bundle : m_appdata.bundles()) {
+    const auto bundles = m_appdata.bundles();
+    for (const auto &bundle : bundles) {
         if (bundle.kind() != AppStream::Bundle::KindFlatpak)
             continue;
 
@@ -577,7 +581,8 @@ void FlatpakResource::updateComponent(const AppStream::Component &component)
     }
 
     // Is last build less than a year ago?
-    for (const auto &release : m_appdata.releases()) {
+    const auto releases = m_appdata.releases();
+    for (const auto &release : releases) {
         if (release.timestamp().daysTo(QDateTime::currentDateTime()) < 365) {
             addKudo(SoftwareResource::RecentReleaseKudo);
             break;
@@ -673,7 +678,8 @@ void FlatpakResource::updateFromMetadata(FlatpakInstalledRef *ref)
                 auto lang = xml.readElementText();
                 if (lang != curLang)
                     continue;
-                for (const auto &attr : xml.attributes()) {
+                const auto attrs = xml.attributes();
+                for (const auto &attr : attrs) {
                     if (attr.name().compare(QStringLiteral("percentage")) == 0) {
                         bool ok = false;
                         int value = attr.value().toInt(&ok);

@@ -47,8 +47,9 @@ SoftwareManager *SoftwareResource::manager() const
 
 QString SoftwareResource::iconName() const
 {
-    if (iconNames().size() > 0) {
-        for (const auto &name : iconNames()) {
+    const auto names = iconNames();
+    if (names.size() > 0) {
+        for (const auto &name : names) {
             if (!name.isEmpty())
                 return name;
         }
@@ -58,8 +59,9 @@ QString SoftwareResource::iconName() const
 
 QUrl SoftwareResource::iconUrl() const
 {
-    if (iconUrls().size() > 0) {
-        for (const auto &url : iconUrls()) {
+    const auto urls = iconUrls();
+    if (urls.size() > 0) {
+        for (const auto &url : urls) {
             if (url.isValid())
                 return url;
         }

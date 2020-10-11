@@ -10,7 +10,7 @@
 class FilteredResourcesModel : public QSortFilterProxyModel
 {
     Q_OBJECT
-    Q_PROPERTY(Filter filter READ filter WRITE setFilter NOTIFY filterChanged)
+    Q_PROPERTY(Filter filter READ filter WRITE setFilter NOTIFY modelFilterChanged)
     Q_PROPERTY(int count READ rowCount NOTIFY countChanged)
 public:
     enum Filter {
@@ -27,7 +27,7 @@ public:
     void setFilter(Filter filter);
 
 Q_SIGNALS:
-    void filterChanged();
+    void modelFilterChanged();
     void countChanged();
 
 protected:

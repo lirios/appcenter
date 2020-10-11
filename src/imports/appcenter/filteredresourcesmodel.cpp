@@ -36,7 +36,7 @@ void FilteredResourcesModel::setFilter(FilteredResourcesModel::Filter filter)
         return;
 
     m_filter = filter;
-    Q_EMIT filterChanged();
+    Q_EMIT modelFilterChanged();
 }
 
 bool FilteredResourcesModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const

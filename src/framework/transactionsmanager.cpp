@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: LGPL-3.0-or-later
 
-#include "transactionsmanager.h"
 #include "transactionsmanager_p.h"
 
 namespace Liri {

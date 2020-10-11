@@ -16,6 +16,10 @@
 // We mean it.
 //
 
+#include <QVector>
+
+#include <LiriAppCenter/TransactionsManager>
+
 namespace Liri {
 
 namespace AppCenter {

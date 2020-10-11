@@ -46,13 +46,13 @@ public:
 Q_SIGNALS:
     void ratingsFetched();
     void ratingsReady();
-    void reviewAdded(Review *review);
-    void reviewSubmitted(Review *review);
-    void reviewReported(Review *review);
-    void reviewUpVoted(Review *review);
-    void reviewDownVoted(Review *review);
-    void reviewDismissed(Review *review);
-    void reviewRemoved(Review *review);
+    void reviewAdded(Liri::AppCenter::Review *review);
+    void reviewSubmitted(Liri::AppCenter::Review *review);
+    void reviewReported(Liri::AppCenter::Review *review);
+    void reviewUpVoted(Liri::AppCenter::Review *review);
+    void reviewDownVoted(Liri::AppCenter::Review *review);
+    void reviewDismissed(Liri::AppCenter::Review *review);
+    void reviewRemoved(Liri::AppCenter::Review *review);
 };
 
 } // namespace AppCenter
