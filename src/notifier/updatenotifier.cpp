@@ -37,17 +37,18 @@ void UpdateNotifier::updatesAvailable(uint count)
     if (count == 0)
         return;
 
-    AppCenter::SoftwareResources updates = m_softwareManager->updates();
-    for (const auto &app : m_softwareManager->updates()) {
+    const AppCenter::SoftwareResources updates = m_softwareManager->updates();
+
+    for (const auto &app : updates) {
         connect(app, &AppCenter::SoftwareResource::updated,
                 this, &UpdateNotifier::appUpdated);
     }
 
     Notification *notification = new Notification(this);
     connect(notification, &Notification::actionInvoked, this,
-            [this, notification](const QString &actionId) {
+            [updates, notification](const QString &actionId) {
         if (actionId == QLatin1String("default") || actionId == QLatin1String("2")) {
-            for (const auto &app : m_softwareManager->updates()) {
+            for (const auto &app : updates) {
                 if (!app->update())
                     qCWarning(lcUpdateNotifier, "Failed to update \"%s\"",
                               qPrintable(app->name()));
@@ -83,11 +84,11 @@ QString UpdateNotifier::updatesSummary()
     } else if (updatesCount == 1) {
         return tr("%1 is ready to update").arg(updates.at(0)->name());
     } else if (updatesCount == 2) {
-        return tr("%1 and %2 are ready to update").arg(updates.at(0)->name()).arg(updates.at(1)->name());
+        return tr("%1 and %2 are ready to update").arg(updates.at(0)->name(), updates.at(1)->name());
     } else if (updatesCount == 3) {
-        return tr("%1, %2, and one other app are ready to update").arg(updates.at(0)->name()).arg(updates.at(1)->name());
+        return tr("%1, %2, and one other app are ready to update").arg(updates.at(0)->name(), updates.at(1)->name());
     } else {
         int otherCount = updatesCount - 2;
-        return tr("%1, %2, and %3 other apps are ready to update").arg(updates.at(0)->name()).arg(updates.at(1)->name()).arg(otherCount);
+        return tr("%1, %2, and %3 other apps are ready to update").arg(updates.at(0)->name(), updates.at(1)->name()).arg(otherCount);
     }
 }

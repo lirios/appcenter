@@ -126,11 +126,14 @@ void SoftwareManager::initialize()
 {
     Q_D(SoftwareManager);
 
+    const auto paths = QCoreApplication::libraryPaths();
+
     // Find all resource backends and add them to the list
-    for (const QString &path : QCoreApplication::libraryPaths()) {
+    for (const QString &path : paths) {
         QDir pluginsPath(QDir(path).absoluteFilePath(QLatin1String("liri/appcenter/resources")));
 
-        for (const QString &fileName : pluginsPath.entryList(QDir::Files)) {
+        const auto files = pluginsPath.entryList(QDir::Files);
+        for (const QString &fileName : files) {
             QPluginLoader loader(pluginsPath.absoluteFilePath(fileName));
 
             auto *plugin = qobject_cast<BackendPlugin *>(loader.instance());
@@ -152,10 +155,11 @@ void SoftwareManager::initialize()
     }
 
     // Find all reviews backends and add them to the list
-    for (const QString &path : QCoreApplication::libraryPaths()) {
+    for (const QString &path : paths) {
         QDir pluginsPath(QDir(path).absoluteFilePath(QLatin1String("liri/appcenter/reviews")));
 
-        for (const QString &fileName : pluginsPath.entryList(QDir::Files)) {
+        const auto files = pluginsPath.entryList(QDir::Files);
+        for (const QString &fileName : files) {
             QPluginLoader loader(pluginsPath.absoluteFilePath(fileName));
 
             auto *plugin = qobject_cast<ReviewsBackendPlugin *>(loader.instance());

@@ -390,7 +390,7 @@ void OdrsBackend::postReview(ReviewAction action, Review *review)
         auto *review = qobject_cast<Review *>(reply->request().originatingObject());
 
         QJsonParseError parseError;
-        const auto json = QJsonDocument::fromJson(reply->readAll(), &parseError);
+        QJsonDocument::fromJson(reply->readAll(), &parseError);
         if (parseError.error != QJsonParseError::NoError) {
             qCWarning(lcOdrsBackend, "Failed to post review for \"%s\": %s",
                       qPrintable(review->resource()->appId()),
@@ -451,8 +451,6 @@ void OdrsBackend::parseReviews(const QJsonDocument &json, SoftwareResource *reso
 
     QJsonArray data = json.array();
     if (!data.isEmpty()) {
-        QList<Review *> reviews;
-
         for (auto it = data.begin(); it != data.end(); it++) {
             const QJsonObject object = it->toObject();
             if (!object.isEmpty()) {

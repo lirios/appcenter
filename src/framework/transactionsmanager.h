@@ -28,8 +28,8 @@ public:
     void removeTransaction(Transaction *transaction);
 
 Q_SIGNALS:
-    void transactionAdded(Transaction *transaction);
-    void transactionRemoved(Transaction *transaction);
+    void transactionAdded(Liri::AppCenter::Transaction *transaction);
+    void transactionRemoved(Liri::AppCenter::Transaction *transaction);
 
 private:
     TransactionsManagerPrivate *const d_ptr;

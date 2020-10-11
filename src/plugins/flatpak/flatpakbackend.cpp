@@ -141,7 +141,7 @@ void FlatpakBackend::listInstalledApps()
 
 void FlatpakBackend::checkForUpdates()
 {
-    for (auto installation : m_installations) {
+    for (auto installation : qAsConst(m_installations)) {
         checkLocalUpdatesForInstallation(installation);
         checkUpdatesForInstallation(installation);
     }
@@ -374,7 +374,8 @@ bool FlatpakBackend::listInstalledApps(FlatpakInstallation *installation)
             continue;
         }
 
-        for (auto component : metadata.components()) {
+        const auto components = metadata.components();
+        for (const auto &component : components) {
             // Create resource
             auto *resource = findResourceFromInstalledRef(installation, ref);
             if (!resource || resource->component().id() != component.id())
@@ -398,7 +399,6 @@ FlatpakResource *FlatpakBackend::installFromFlatpakRef(const QString &filePath)
     QSettings settings(filePath, QSettings::NativeFormat);
     settings.beginGroup(QLatin1String("Flatpak Ref"));
 
-    const QString refUrl(settings.value(QLatin1String("Url")).toString());
     const QString iconUrl(settings.value(QLatin1String("Icon")).toString());
     const QString homepage(settings.value(QLatin1String("Homepage")).toString());
     const QUrl runtimeUrl(settings.value(QLatin1String("RuntimeRepo")).toString());
@@ -607,7 +607,8 @@ void FlatpakBackend::addAppsFromRemote(FlatpakInstallation *installation, Flatpa
     }
 
     // Create a resource for each component
-    for (const auto &component : metadata.components()) {
+    const auto components = metadata.components();
+    for (const auto &component : components) {
         FlatpakResource *resource = new FlatpakResource(m_manager, component, installation);
         resource->updateFromRemote(remote);
 

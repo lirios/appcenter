@@ -170,7 +170,7 @@ public:
 
     Kudos kudos() const;
 
-    Q_INVOKABLE bool hasKudo(Kudo kudo) const;
+    Q_INVOKABLE bool hasKudo(Liri::AppCenter::SoftwareResource::Kudo kudo) const;
 
     void addKudo(Kudo kudo);
     void removeKudo(Kudo kudo);
@@ -195,8 +195,8 @@ Q_SIGNALS:
     void installed();
     void updated();
     void uninstalled();
-    void kudoAdded(SoftwareResource::Kudo kudo);
-    void kudoRemoved(SoftwareResource::Kudo kudo);
+    void kudoAdded(Liri::AppCenter::SoftwareResource::Kudo kudo);
+    void kudoRemoved(Liri::AppCenter::SoftwareResource::Kudo kudo);
     void kudosChanged();
     void ratingChanged();
     void reviewsFetched();
