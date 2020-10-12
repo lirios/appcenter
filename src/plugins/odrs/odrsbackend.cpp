@@ -40,7 +40,9 @@ OdrsBackend::OdrsBackend(SoftwareManager *manager, QObject *parent)
     : ReviewsBackend(manager, parent)
     , m_manager(new CachedNetworkAccessManager(QStringLiteral("odrs"), this))
 {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
     m_manager->setAutoDeleteReplies(true);
+#endif
 }
 
 void OdrsBackend::fetchRatings()
