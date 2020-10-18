@@ -24,13 +24,10 @@ void FlatpakAppStreamJob::run()
 
     const char *name = flatpak_remote_get_name(m_remote);
 
-    if (!flatpak_installation_update_appstream_sync(m_installation, name, nullptr, nullptr, m_cancellable, &error)) {
-        qCWarning(lcFlatpakBackend, "Failed to update AppStream metadata for \"%s\": %s",
-                  name, error->message);
+    if (!flatpak_installation_update_appstream_sync(m_installation, name, nullptr, nullptr, m_cancellable, &error))
         Q_EMIT failed(QString::fromUtf8(error->message));
-    } else {
+    else
         Q_EMIT succeeded(m_installation, m_remote);
-    }
 }
 
 void FlatpakAppStreamJob::cancel()
