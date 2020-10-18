@@ -23,6 +23,7 @@
 #include "flatpakappstreamjob.h"
 #include "flatpakplugin.h"
 #include "flatpaksource.h"
+#include "internetcheck.h"
 
 #include <sys/stat.h>
 
@@ -348,17 +349,27 @@ bool FlatpakBackend::listAvailableApps(FlatpakInstallation *installation)
         return false;
     }
 
+    // Internet check
+    auto *check = new InternetCheck(this);
+    bool hasInternet = check->hasInternet();
+    check->deleteLater();
+
     // Process remotes
     for (uint i = 0; i < remotes->len; i++) {
         FlatpakRemote *remote = FLATPAK_REMOTE(g_ptr_array_index(remotes, i));
 
-        // Download AppStream metadata if it has never been fetched before or the cache is older than 6 hours
-        g_autoptr(GFile) timestampFile = flatpak_remote_get_appstream_timestamp(remote, nullptr);
-        QFileInfo timestampFileInfo(QString::fromUtf8(g_file_get_path(timestampFile)));
-        if (!timestampFileInfo.exists() || timestampFileInfo.lastModified().toUTC().secsTo(QDateTime::currentDateTimeUtc()) > 21600)
-            fetchAppStreamMetadata(installation, remote);
-        else
+        if (hasInternet) {
+            // Download AppStream metadata if it has never been fetched before or the cache is older than 6 hours
+            g_autoptr(GFile) timestampFile = flatpak_remote_get_appstream_timestamp(remote, nullptr);
+            QFileInfo timestampFileInfo(QString::fromUtf8(g_file_get_path(timestampFile)));
+            if (!timestampFileInfo.exists() || timestampFileInfo.lastModified().toUTC().secsTo(QDateTime::currentDateTimeUtc()) > 21600)
+                fetchAppStreamMetadata(installation, remote);
+            else
+                addAppsFromRemote(installation, remote);
+        } else {
+            // Always use existing metadata if Internet doesn't work
             addAppsFromRemote(installation, remote);
+        }
     }
 
     return true;
