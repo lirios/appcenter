@@ -24,7 +24,12 @@ void FlatpakAppStreamJob::run()
 
     const char *name = flatpak_remote_get_name(m_remote);
 
-    if (!flatpak_installation_update_appstream_sync(m_installation, name, nullptr, nullptr, m_cancellable, &error))
+    if (!flatpak_installation_update_remote_sync(m_installation, name, m_cancellable, &error)) {
+        Q_EMIT failed(QString::fromUtf8(error->message));
+        return;
+    }
+
+    if (!flatpak_installation_update_appstream_full_sync(m_installation, name, nullptr, nullptr, nullptr, nullptr, m_cancellable, &error))
         Q_EMIT failed(QString::fromUtf8(error->message));
     else
         Q_EMIT succeeded(m_installation, m_remote);
