@@ -535,6 +535,13 @@ void FlatpakBackend::fetchAppStreamMetadata(FlatpakInstallation *installation, F
 {
     FlatpakAppStreamJob *job = new FlatpakAppStreamJob(installation, remote);
     connect(job, &FlatpakAppStreamJob::succeeded, this, &FlatpakBackend::addAppsFromRemote);
+    connect(job, &FlatpakAppStreamJob::failed, this, [this, installation, remote](const QString &errorMessage) {
+        // Reuse a previously downloaded copy, if any
+        qCWarning(lcFlatpakBackend, "Failed to update AppStream metadata for \"%s\": %s",
+                  flatpak_remote_get_name(remote),
+                  qPrintable(errorMessage));
+        addAppsFromRemote(installation, remote);
+    });
     connect(job, &FlatpakAppStreamJob::finished, job, &QObject::deleteLater);
     job->start();
 }
