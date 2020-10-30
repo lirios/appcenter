@@ -14,11 +14,11 @@ using namespace Liri::AppCenter;
 FilteredResourcesModel::FilteredResourcesModel(QObject *parent)
     : QSortFilterProxyModel(parent)
 {
-    connect(this, &QAbstractListModel::rowsInserted,
+    connect(this, &QSortFilterProxyModel::rowsInserted,
             this, &FilteredResourcesModel::countChanged);
-    connect(this, &QAbstractListModel::rowsRemoved,
+    connect(this, &QSortFilterProxyModel::rowsRemoved,
             this, &FilteredResourcesModel::countChanged);
-    connect(this, &QAbstractListModel::dataChanged,
+    connect(this, &QSortFilterProxyModel::dataChanged,
             this, &FilteredResourcesModel::countChanged);
 
     auto *model = new ResourcesModel(this);

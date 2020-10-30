@@ -238,6 +238,9 @@ void SoftwareManager::initialize()
         backend->initialize();
         backend->fetchRatings();
     }
+
+    // Populate the resources model
+    d->populate();
 }
 
 void SoftwareManager::checkForUpdates()

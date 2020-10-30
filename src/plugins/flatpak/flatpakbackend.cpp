@@ -15,7 +15,6 @@
 
 #include <LiriAppCenter/ResourcesModel>
 #include <LiriAppCenter/SoftwareManager>
-#include <LiriAppCenter/private/softwaremanager_p.h>
 
 #include <AppStreamQt/icon.h>
 #include <AppStreamQt/metadata.h>
@@ -692,8 +691,5 @@ void FlatpakBackend::addAppsFromRemote(FlatpakInstallation *installation, Flatpa
         }
     }
 
-    // Feed the manager as soon as we listed the resources from all the installations
     m_installationsListed.append(installation);
-    if (m_installationsListed.size() == m_installations.size())
-        SoftwareManagerPrivate::get(m_manager)->populate();
 }

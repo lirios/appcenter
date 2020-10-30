@@ -35,12 +35,13 @@ public:
     void addProxies(QList<ResourceProxy *> list);
 
     void handlePopulated(QList<ResourceProxy *> list);
-    void handleProxyAdded(ResourceProxy *proxy);
     void handleProxyRemoved(ResourceProxy *proxy);
+    void handleProxyChanged(ResourceProxy *proxy);
 
     bool initialized = false;
     SoftwareManager *manager = nullptr;
     QHash<ResourceProxy *, QMetaObject::Connection> connections;
+    QList<ResourceProxy *> proxies;
 
 protected:
     ResourcesModel *q_ptr;

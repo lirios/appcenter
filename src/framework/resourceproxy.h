@@ -27,7 +27,7 @@ class LIRIAPPCENTER_EXPORT ResourceProxy : public QObject
     Q_PROPERTY(SoftwareResource *selectedResource READ selectedResource NOTIFY selectedResourceChanged)
     Q_PROPERTY(SourcesModel *sourcesModel READ sourcesModel CONSTANT)
     Q_PROPERTY(SoftwareResource::Type type READ type NOTIFY dataChanged)
-    Q_PROPERTY(SoftwareResource::State state READ state NOTIFY stateChanged)
+    Q_PROPERTY(SoftwareResource::State state READ state NOTIFY dataChanged)
     Q_PROPERTY(QString name READ name NOTIFY dataChanged)
     Q_PROPERTY(QString summary READ summary NOTIFY dataChanged)
     Q_PROPERTY(QString description READ description NOTIFY dataChanged)
@@ -51,7 +51,7 @@ class LIRIAPPCENTER_EXPORT ResourceProxy : public QObject
     Q_PROPERTY(quint64 installedSize READ installedSize NOTIFY dataChanged)
     Q_PROPERTY(quint64 size READ size NOTIFY dataChanged)
     Q_PROPERTY(QString changeLog READ changeLog NOTIFY dataChanged)
-    Q_PROPERTY(bool installed READ isInstalled NOTIFY stateChanged)
+    Q_PROPERTY(bool installed READ isInstalled NOTIFY dataChanged)
     Q_PROPERTY(bool localized READ isLocalized NOTIFY dataChanged)
     Q_PROPERTY(SoftwareResource::Kudos kudos READ kudos NOTIFY dataChanged)
     Q_PROPERTY(uint kudosPercentage READ kudosPercentage NOTIFY dataChanged)
@@ -122,7 +122,6 @@ Q_SIGNALS:
     void defaultSourceChanged();
     void selectedResourceChanged();
     void dataChanged();
-    void stateChanged();
 
 private:
     ResourceProxyPrivate *const d_ptr;

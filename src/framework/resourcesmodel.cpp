@@ -25,46 +25,51 @@ void ResourcesModelPrivate::addProxies(QList<ResourceProxy *> list)
 {
     Q_Q(ResourcesModel);
 
-    q->beginResetModel();
-
     for (auto *proxy : qAsConst(list)) {
-        auto connection = QObject::connect(
-                    proxy, &ResourceProxy::dataChanged, q, [this, proxy, q] {
-            auto row = manager->resourceProxies().indexOf(proxy);
-            if (row < 0 || row >= manager->resourceProxies().size())
-                return;
-            auto modelIndex = q->index(row);
-            if (modelIndex.isValid())
-                Q_EMIT q->dataChanged(modelIndex, modelIndex);
+        auto connection = q->connect(proxy, &ResourceProxy::dataChanged, q, [this, proxy] {
+            handleProxyChanged(proxy);
         });
         connections[proxy] = connection;
+        proxies.append(proxy);
+        handleProxyChanged(proxy);
     }
-
-    q->endResetModel();
 }
 
 void ResourcesModelPrivate::handlePopulated(QList<ResourceProxy *> list)
 {
     Q_Q(ResourcesModel);
 
-    // Clear everything
-    q->beginRemoveRows(QModelIndex(), 0, manager->resourceProxies().size() - 1);
-    for (const auto &connection : qAsConst(connections))
-        QObject::disconnect(connection);
-    q->endRemoveRows();
-
-    // Populate
+    q->beginInsertRows(QModelIndex(), proxies.size(), proxies.size() + list.size() - 1);
     addProxies(list);
+    q->endInsertRows();
 }
 
 void ResourcesModelPrivate::handleProxyRemoved(ResourceProxy *proxy)
 {
     Q_Q(ResourcesModel);
 
-    q->beginResetModel();
-    if (connections.contains(proxy))
+    int row = proxies.indexOf(proxy);
+
+    q->beginRemoveRows(QModelIndex(), row, row);
+    if (connections.contains(proxy)) {
         QObject::disconnect(connections[proxy]);
-    q->endResetModel();
+        connections.remove(proxy);
+    }
+    proxies.removeOne(proxy);
+    q->endRemoveRows();
+}
+
+void ResourcesModelPrivate::handleProxyChanged(ResourceProxy *proxy)
+{
+    Q_Q(ResourcesModel);
+
+    auto row = proxies.indexOf(proxy);
+    if (row < 0 || row >= proxies.size())
+        return;
+
+    auto modelIndex = q->index(row);
+    if (modelIndex.isValid())
+        Q_EMIT q->dataChanged(modelIndex, modelIndex);
 }
 
 /*
@@ -109,14 +114,12 @@ void ResourcesModel::setManager(SoftwareManager *manager)
                    this, SLOT(handleProxyRemoved(Liri::AppCenter::ResourceProxy*)));
     }
 
-    beginResetModel();
     d->manager = manager;
     connect(manager, SIGNAL(resourceProxiesAdded(QList<Liri::AppCenter::ResourceProxy*>)),
             this, SLOT(handlePopulated(QList<Liri::AppCenter::ResourceProxy*>)));
     connect(manager, SIGNAL(resourceProxyRemoved(Liri::AppCenter::ResourceProxy*)),
             this, SLOT(handleProxyRemoved(Liri::AppCenter::ResourceProxy*)));
     Q_EMIT managerChanged();
-    endResetModel();
 }
 
 QHash<int, QByteArray> ResourcesModel::roleNames() const
@@ -160,10 +163,7 @@ int ResourcesModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
     Q_D(const ResourcesModel);
-
-    if (d->manager)
-        return d->manager->resourceProxies().size();
-    return 0;
+    return d->proxies.size();
 }
 
 QVariant ResourcesModel::data(const QModelIndex &index, int role) const
@@ -175,7 +175,7 @@ QVariant ResourcesModel::data(const QModelIndex &index, int role) const
     if (!d->manager)
         return QVariant();
 
-    auto proxy = d->manager->resourceProxies().at(index.row());
+    auto proxy = d->proxies.at(index.row());
     if (!proxy)
         return QVariant();
     auto *source = proxy->defaultSource();

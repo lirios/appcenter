@@ -78,17 +78,15 @@ void ResourceProxy::setDefaultSource(SoftwareSource *source)
         Q_EMIT selectedResourceChanged();
 
         if (oldRes)
-            disconnect(oldRes, &SoftwareResource::stateChanged,
-                       this, &ResourceProxy::stateChanged);
+            disconnect(oldRes, &SoftwareResource::dataChanged,
+                       this, &ResourceProxy::dataChanged);
         if (newRes)
-            connect(newRes, &SoftwareResource::stateChanged,
-                    this, &ResourceProxy::stateChanged);
+            connect(newRes, &SoftwareResource::dataChanged,
+                    this, &ResourceProxy::dataChanged);
     }
 
-    if (oldSource != d->defaultSource || oldRes != newRes) {
+    if (oldSource != d->defaultSource || oldRes != newRes)
         Q_EMIT dataChanged();
-        Q_EMIT stateChanged();
-    }
 }
 
 int ResourceProxy::defaultSourceIndex() const
