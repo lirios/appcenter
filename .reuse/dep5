@@ -1,0 +1,39 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: App Center
+Source: https://github.com/lirios/appcenter
+
+Files: .tag
+Copyright: 2020 Pier Luigi Fiorini
+License: CC0-1.0
+
+Files: .tx/config
+Copyright: 2020 Pier Luigi Fiorini
+License: CC0-1.0
+
+Files: .tx/sources.json
+Copyright: 2020 Pier Luigi Fiorini
+License: CC0-1.0
+
+Files: translations/*
+Copyright: 2020 Liri Translators
+License: CC0-1.0
+
+Files: src/app/appcenter.qrc
+Copyright: 2020 Pier Luigi Fiorini
+License: CC0-1.0
+
+Files: src/plugins/flatpak/flatpak.json
+Copyright: 2020 Pier Luigi Fiorini
+License: CC0-1.0
+
+Files: src/plugins/odrs/odrs.json
+Copyright: 2020 Pier Luigi Fiorini
+License: CC0-1.0
+
+Files: src/imports/appcenter/plugins.qmltypes
+Copyright: 2020 Pier Luigi Fiorini
+License: CC0-1.0
+
+Files: src/imports/appcenter/qmldir
+Copyright: 2020 Pier Luigi Fiorini
+License: CC0-1.0
