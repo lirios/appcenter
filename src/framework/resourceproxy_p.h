@@ -35,6 +35,8 @@ public:
     SoftwareResource *selectedResource = nullptr;
     QList<SoftwareResource *> resources;
     SourcesModel *sourcesModel = nullptr;
+    bool isInstalled = false;
+    bool hasUpdatesAvailable = false;
 };
 
 } // namespace AppCenter

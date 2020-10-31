@@ -27,6 +27,9 @@ public:
     enum Roles {
         ProxyRole = Qt::UserRole + 1,
         TypeRole,
+        ProxyStateRole,
+        ProxyUpdatesAvailableRole,
+        ProxyInstalledRole,
         StateRole,
         AppIdRole,
         NameRole,

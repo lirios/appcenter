@@ -36,9 +36,7 @@ SoftwareResource::SoftwareResource(SoftwareManager *manager,
     d_ptr->manager = manager;
     d_ptr->source = source;
 
-    connect(this, &SoftwareResource::stateChanged, this, &SoftwareResource::dataChanged);
     connect(this, &SoftwareResource::versionChanged, this, &SoftwareResource::dataChanged);
-    connect(this, &SoftwareResource::updatesAvailableChanged, this, &SoftwareResource::dataChanged);
     connect(this, &SoftwareResource::kudosChanged, this, &SoftwareResource::dataChanged);
     connect(this, &SoftwareResource::ratingChanged, this, &SoftwareResource::dataChanged);
 }

@@ -61,21 +61,18 @@ bool FilteredResourcesModel::filterAcceptsRow(int source_row, const QModelIndex 
 {
     QModelIndex index = sourceModel()->index(source_row, 0, source_parent);
     auto type = sourceModel()->data(index, ResourcesModel::TypeRole).value<SoftwareResource::Type>();
-    auto state  = sourceModel()->data(index, ResourcesModel::StateRole).value<SoftwareResource::State>();
+    bool isInstalled  = sourceModel()->data(index, ResourcesModel::ProxyInstalledRole).toBool();
+    bool hasUpdatesAvailable  = sourceModel()->data(index, ResourcesModel::ProxyUpdatesAvailableRole).toBool();
 
     switch (m_filter) {
     case AllApps:
         return type == SoftwareResource::App;
     case NotInstalledApps:
-        return type == SoftwareResource::App &&
-                state == SoftwareResource::NotInstalledState;
+        return type == SoftwareResource::App && !isInstalled;
     case InstalledApps:
-        return type == SoftwareResource::App &&
-                (state == SoftwareResource::InstalledState ||
-                 state == SoftwareResource::UpgradableState);
+        return type == SoftwareResource::App && isInstalled;
     case Updates:
-        return type == SoftwareResource::App &&
-                state == SoftwareResource::UpgradableState;
+        return type == SoftwareResource::App && hasUpdatesAvailable;
     }
 
     return false;

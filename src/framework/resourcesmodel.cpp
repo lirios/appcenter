@@ -127,6 +127,9 @@ QHash<int, QByteArray> ResourcesModel::roleNames() const
     QHash<int, QByteArray> roles;
     roles.insert(ProxyRole, "proxy");
     roles.insert(TypeRole, QByteArrayLiteral("type"));
+    roles.insert(ProxyStateRole, "proxyState");
+    roles.insert(ProxyUpdatesAvailableRole, "proxyUpdatesAvailable");
+    roles.insert(ProxyInstalledRole, "proxyInstalled");
     roles.insert(StateRole, QByteArrayLiteral("state"));
     roles.insert(AppIdRole, "appId");
     roles.insert(NameRole, QByteArrayLiteral("name"));
@@ -197,6 +200,12 @@ QVariant ResourcesModel::data(const QModelIndex &index, int role) const
         return QVariant::fromValue<ResourceProxy *>(proxy);
     case TypeRole:
         return resource->type();
+    case ProxyStateRole:
+        return proxy->state();
+    case ProxyUpdatesAvailableRole:
+        return proxy->updatesAvailable();
+    case ProxyInstalledRole:
+        return proxy->isInstalled();
     case StateRole:
         return resource->state();
     case AppIdRole:

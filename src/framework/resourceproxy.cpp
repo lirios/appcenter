@@ -132,8 +132,30 @@ void ResourceProxy::addResource(SoftwareResource *resource)
     if (!d->resources.contains(resource)) {
         d->resources.append(resource);
         d->sourcesModel->addSource(resource->source());
+
+        // Only one resource needs to be installed or upgradable because the proxy
+        // state reflects the overall state of all resources
+        if (resource->isInstalled())
+            d->isInstalled = true;
+        if (resource->updatesAvailable())
+            d->hasUpdatesAvailable = true;
+
         connect(resource, &SoftwareResource::dataChanged,
                 this, &ResourceProxy::dataChanged);
+        connect(resource, &SoftwareResource::stateChanged, this, [this, d, resource] {
+            bool oldIsInstalled = d->isInstalled;
+            bool oldHasUpdatesAvailable = d->hasUpdatesAvailable;
+
+            if (resource->isInstalled())
+                d->isInstalled = true;
+            if (resource->updatesAvailable())
+                d->hasUpdatesAvailable = true;
+
+            bool changed = oldIsInstalled != d->isInstalled ||
+                    oldHasUpdatesAvailable != d->hasUpdatesAvailable;
+            if (changed)
+                Q_EMIT dataChanged();
+        });
     }
 
     if (!d->defaultSource)
@@ -170,9 +192,13 @@ SoftwareResource::State ResourceProxy::state() const
 {
     Q_D(const ResourceProxy);
 
-    if (d->selectedResource)
-        return d->selectedResource->state();
-    return SoftwareResource::BrokenState;
+    if (d->isInstalled) {
+        if (d->hasUpdatesAvailable)
+            return SoftwareResource::UpgradableState;
+        return SoftwareResource::InstalledState;
+    }
+
+    return SoftwareResource::NotInstalledState;
 }
 
 QString ResourceProxy::name() const
@@ -340,10 +366,7 @@ QString ResourceProxy::availableVersion() const
 bool ResourceProxy::updatesAvailable() const
 {
     Q_D(const ResourceProxy);
-
-    if (d->selectedResource)
-        return d->selectedResource->updatesAvailable();
-    return false;
+    return d->hasUpdatesAvailable;
 }
 
 quint64 ResourceProxy::downloadSize() const
@@ -385,10 +408,7 @@ QString ResourceProxy::changeLog() const
 bool ResourceProxy::isInstalled() const
 {
     Q_D(const ResourceProxy);
-
-    if (d->selectedResource)
-        return d->selectedResource->isInstalled();
-    return false;
+    return d->isInstalled;
 }
 
 bool ResourceProxy::isLocalized() const
@@ -396,7 +416,7 @@ bool ResourceProxy::isLocalized() const
     Q_D(const ResourceProxy);
 
     if (d->selectedResource)
-        return d->selectedResource->isInstalled();
+        return d->selectedResource->isLocalized();
     return false;
 }
 
