@@ -455,6 +455,9 @@ void FlatpakResource::setFlatpakType(FlatpakRefKind kind)
 
 void FlatpakResource::setState(Liri::AppCenter::SoftwareResource::State state)
 {
+    if (m_state == state)
+        return;
+
     m_state = state;
     Q_EMIT stateChanged();
 }
