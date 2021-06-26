@@ -1,7 +1,3 @@
-# SPDX-FileCopyrightText: 2020 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
-#
-# SPDX-License-Identifier: MIT
-
 cmake_minimum_required(VERSION 3.10.0)
 
 project("AppCenter"

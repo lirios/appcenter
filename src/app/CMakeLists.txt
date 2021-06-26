@@ -1,7 +1,3 @@
-# SPDX-FileCopyrightText: 2020 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
-#
-# SPDX-License-Identifier: MIT
-
 # Translations
 file(GLOB LiriAppCenter_TRANSLATIONS "${CMAKE_SOURCE_DIR}/translations/app/*_*.ts")
 qt5_add_translation(LiriAppCenter_QM_FILES ${LiriAppCenter_TRANSLATIONS})

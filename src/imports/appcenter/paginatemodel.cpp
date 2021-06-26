@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2014 Aleix Pol Gonzalez <aleixpol@blue-systems.com>
 //
-// SPDX-License-Identifier: LGPL-2.0-or-later
+// SPDX-License-Identifier: LGPL-3.0-or-later
 
 #include <QtMath>
 

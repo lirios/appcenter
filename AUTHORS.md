@@ -1,9 +1,3 @@
-<!--
-SPDX-FileCopyrightText: 2020 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
-
-SPDX-License-Identifier: CC0-1.0
--->
-
 App Center
 ==========
 

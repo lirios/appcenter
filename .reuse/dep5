@@ -3,37 +3,61 @@ Upstream-Name: App Center
 Source: https://github.com/lirios/appcenter
 
 Files: .tag
-Copyright: 2020 Pier Luigi Fiorini
+Copyright: none
 License: CC0-1.0
 
-Files: .tx/config
-Copyright: 2020 Pier Luigi Fiorini
+Files: .github/workflows/*.yml
+Copyright: none
 License: CC0-1.0
 
-Files: .tx/sources.json
-Copyright: 2020 Pier Luigi Fiorini
+Files: .tx/*
+Copyright: none
 License: CC0-1.0
 
 Files: translations/*
 Copyright: 2020 Liri Translators
 License: CC0-1.0
 
-Files: src/app/appcenter.qrc
-Copyright: 2020 Pier Luigi Fiorini
+Files: **/qmldir
+Copyright: none
+License: CC0-1.0
+
+Files: **/*.qmltypes
+Copyright: none
+License: CC0-1.0
+
+Files: **/*.qrc
+Copyright: none
+License: CC0-1.0
+
+Files: **/*.desktop
+Copyright: none
+License: CC0-1.0
+
+Files: **/*.desktop.in
+Copyright: none
+License: CC0-1.0
+
+Files: CMakeLists.txt
+Copyright: 2021 Pier Luigi Fiorini
+License: BSD-3-Clause
+
+Files: **/CMakeLists.txt
+Copyright: 2021 Pier Luigi Fiorini
+License: BSD-3-Clause
+
+Files: AUTHORS.md
+Copyright: 2021 Pier Luigi Fiorini
+License: CC0-1.0
+
+Files: README.md
+Copyright: 2021 Pier Luigi Fiorini
 License: CC0-1.0
 
 Files: src/plugins/flatpak/flatpak.json
-Copyright: 2020 Pier Luigi Fiorini
+Copyright: none
 License: CC0-1.0
 
 Files: src/plugins/odrs/odrs.json
-Copyright: 2020 Pier Luigi Fiorini
-License: CC0-1.0
-
-Files: src/imports/appcenter/plugins.qmltypes
-Copyright: 2020 Pier Luigi Fiorini
-License: CC0-1.0
-
-Files: src/imports/appcenter/qmldir
-Copyright: 2020 Pier Luigi Fiorini
+Copyright: none
 License: CC0-1.0
