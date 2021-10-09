@@ -36,5 +36,7 @@ liri_add_plugin(flatpak
         Liri::AppCenterPrivate
 )
 
+liri_finalize_plugin(flatpak)
+
 install(FILES "io.liri.AppCenter.Flatpak.desktop"
         DESTINATION "${INSTALL_APPLICATIONSDIR}")

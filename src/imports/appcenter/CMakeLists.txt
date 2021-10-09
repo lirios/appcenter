@@ -28,3 +28,5 @@ liri_add_qml_plugin(liriappcenter
         Liri::Models
         Liri::AppCenter
 )
+
+liri_finalize_qml_plugin(liriappcenter)

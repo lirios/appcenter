@@ -47,3 +47,5 @@ liri_add_executable(LiriAppCenterNotifier
         Liri::Notifications
     GUI
 )
+
+liri_finalize_executable(LiriAppCenterNotifier)

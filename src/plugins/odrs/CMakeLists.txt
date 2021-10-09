@@ -23,3 +23,5 @@ liri_add_plugin(odrs
         Liri::AppCenter
         Liri::AppCenterPrivate
 )
+
+liri_finalize_plugin(odrs)

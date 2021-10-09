@@ -12,6 +12,7 @@ liri_add_module(AppCenter
         cachednetworkaccessmanager_p.h
         image.cpp
         image.h
+        image_p.h
         rating.cpp
         rating.h
         rating_p.h
@@ -33,51 +34,24 @@ liri_add_module(AppCenter
         reviewsmodel_p.h
         screenshotsmodel.cpp
         screenshotsmodel.h
+        screenshotsmodel_p.h
         softwaremanager.cpp
         softwaremanager.h
         softwaremanager_p.h
         softwareresource.cpp
         softwareresource.h
+        softwareresource_p.h
         softwaresource.cpp
         softwaresource.h
+        softwaresource_p.h
         sourcesmodel.cpp
         sourcesmodel.h
+        sourcesmodel_p.h
         transaction.cpp
         transaction.h
+        transaction_p.h
         transactionsmanager.cpp
         transactionsmanager.h
-    FORWARDING_HEADERS
-        Backend
-        BackendPlugin
-        Image
-        Rating
-        ResourcesModel
-        ResourceProxy
-        Review
-        ReviewsBackend
-        ReviewsBackendPlugin
-        ReviewsModel
-        ScreenshotsModel
-        SoftwareManager
-        SoftwareResource
-        SoftwareSource
-        SourcesModel
-        Transaction
-        TransactionsManager
-    PRIVATE_HEADERS
-        cachednetworkaccessmanager_p.h
-        image_p.h
-        rating_p.h
-        resourcesmodel_p.h
-        review_p.h
-        reviewsmodel_p.h
-        resourceproxy_p.h
-        screenshotsmodel_p.h
-        softwaremanager_p.h
-        softwareresource_p.h
-        softwaresource_p.h
-        sourcesmodel_p.h
-        transaction_p.h
         transactionsmanager_p.h
     DEFINES
         QT_NO_CAST_FROM_ASCII
@@ -88,3 +62,5 @@ liri_add_module(AppCenter
         AppStreamQt
     NO_PKGCONFIG
 )
+
+liri_finalize_module(AppCenter)
