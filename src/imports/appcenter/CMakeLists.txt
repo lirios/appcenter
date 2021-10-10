@@ -2,9 +2,11 @@ if(NOT TARGET Liri::Models)
     find_package(Liri1Models REQUIRED)
 endif()
 
-liri_add_qml_plugin(liriappcenter
+liri_add_qml_plugin(AppCenterQmlPlugin
     MODULE_PATH
         "Liri/AppCenter"
+    OUTPUT_NAME
+        "liriappcenterplugin"
     VERSION
         "1.0"
     SOURCES
@@ -29,4 +31,4 @@ liri_add_qml_plugin(liriappcenter
         Liri::AppCenter
 )
 
-liri_finalize_qml_plugin(liriappcenter)
+liri_finalize_qml_plugin(AppCenterQmlPlugin)
