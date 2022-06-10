@@ -166,7 +166,7 @@ QUrl FlatpakResource::donationUrl() const
 
 QUrl FlatpakResource::translateUrl() const
 {
-    return m_appdata.url(AppStream::Component::UrlTranslate);
+    return m_appdata.url(AppStream::Component::UrlKindTranslate);
 }
 
 QString FlatpakResource::installedVersion() const
