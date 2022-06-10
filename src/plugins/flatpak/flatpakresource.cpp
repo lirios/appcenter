@@ -14,6 +14,7 @@
 #include <AppStreamQt/image.h>
 #include <AppStreamQt/release.h>
 #include <AppStreamQt/screenshot.h>
+#include <AppStreamQt/version.h>
 
 #include "flatpakplugin.h"
 #include "flatpakresource.h"
@@ -166,7 +167,11 @@ QUrl FlatpakResource::donationUrl() const
 
 QUrl FlatpakResource::translateUrl() const
 {
+#if ASQ_CHECK_VERSION(0, 15, 2)
     return m_appdata.url(AppStream::Component::UrlKindTranslate);
+#else
+    return m_appdata.url(AppStream::Component::UrlTranslate);
+#endif
 }
 
 QString FlatpakResource::installedVersion() const
