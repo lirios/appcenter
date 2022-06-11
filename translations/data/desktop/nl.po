@@ -4,16 +4,15 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>, 2020
+# Heimen Stoffels <vistausss@fastmail.com>, 2022
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-15 00:10+0000\n"
 "PO-Revision-Date: 2020-05-09 13:10+0000\n"
-"Last-Translator: Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>, 2020\n"
+"Last-Translator: Heimen Stoffels <vistausss@fastmail.com>, 2022\n"
 "Language-Team: Dutch (https://www.transifex.com/lirios/teams/71982/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,12 +20,14 @@ msgstr ""
 "Language: nl\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#. (desktop-to-pot) Name
-#: io.liri.AppCenter.desktop.in:2
+#. (desktop-to-pot) "Name" entry
+#: io.liri.AppCenter.desktop.in:6
+msgctxt "Name entry"
 msgid "App Center"
-msgstr "App Center"
+msgstr "Softwarecentrum"
 
-#. (desktop-to-pot) Comment
-#: io.liri.AppCenter.desktop.in:3
+#. (desktop-to-pot) "Comment" entry
+#: io.liri.AppCenter.desktop.in:7
+msgctxt "Comment entry"
 msgid "App Center for Liri"
-msgstr "App Center voor Liri"
+msgstr "Softwarecentrum voor Liri"

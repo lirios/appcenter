@@ -4,17 +4,17 @@
     <message>
         <location filename="../qml/AddSourceDialog.qml" line="32"/>
         <source>Add Source</source>
-        <translation>Bron Toevoegen</translation>
+        <translation>Bron toevoegen</translation>
     </message>
     <message>
         <location filename="../qml/AddSourceDialog.qml" line="47"/>
         <source>Failed to retrieve source</source>
-        <translation>Ophalen van bron mislukt</translation>
+        <translation>De bron kan niet worden opgehaald</translation>
     </message>
     <message>
         <location filename="../qml/AddSourceDialog.qml" line="55"/>
         <source>URL</source>
-        <translation>URL</translation>
+        <translation>Url</translation>
     </message>
 </context>
 <context>
@@ -22,7 +22,7 @@
     <message>
         <location filename="../qml/AllAppsTab.qml" line="30"/>
         <source>All Apps</source>
-        <translation>Alle Apps</translation>
+        <translation>Alle programma&apos;s</translation>
     </message>
 </context>
 <context>
@@ -30,7 +30,7 @@
     <message>
         <location filename="../qml/AppPage.qml" line="130"/>
         <source>Install</source>
-        <translation> Installeren</translation>
+        <translation>Installeren</translation>
     </message>
     <message>
         <location filename="../qml/AppPage.qml" line="144"/>
@@ -45,7 +45,7 @@
     <message>
         <location filename="../qml/AppPage.qml" line="175"/>
         <source>Launch</source>
-        <translation>Start</translation>
+        <translation>Openen</translation>
     </message>
     <message>
         <location filename="../qml/AppPage.qml" line="203"/>
@@ -60,7 +60,7 @@
     <message>
         <location filename="../qml/AppPage.qml" line="275"/>
         <source>Localized in your language</source>
-        <translation>Lokaliseer in u taal</translation>
+        <translation>Beschikbaar in jouw taal</translation>
     </message>
     <message>
         <location filename="../qml/AppPage.qml" line="286"/>
@@ -70,7 +70,7 @@
     <message>
         <location filename="../qml/AppPage.qml" line="297"/>
         <source>Release activity</source>
-        <translation>Release activiteiten</translation>
+        <translation>Uitgavegeschiedenis</translation>
     </message>
     <message>
         <location filename="../qml/AppPage.qml" line="308"/>
@@ -80,7 +80,7 @@
     <message>
         <location filename="../qml/AppPage.qml" line="319"/>
         <source>Sandboxed</source>
-        <translation>Sandboxed</translation>
+        <translation>Gesandboxed</translation>
     </message>
     <message>
         <location filename="../qml/AppPage.qml" line="338"/>
@@ -90,7 +90,7 @@
     <message>
         <location filename="../qml/AppPage.qml" line="348"/>
         <source>Updated</source>
-        <translation>Geupdate</translation>
+        <translation>Geüpdate</translation>
     </message>
     <message>
         <location filename="../qml/AppPage.qml" line="352"/>
@@ -118,12 +118,12 @@
     <message>
         <location filename="../qml/AppPage.qml" line="390"/>
         <source>Installed size</source>
-        <translation>Geïnstalleerde grote</translation>
+        <translation>Installatiegrootte</translation>
     </message>
     <message>
         <location filename="../qml/AppPage.qml" line="390"/>
         <source>Download size</source>
-        <translation>Download grote</translation>
+        <translation>Downloadgrootte</translation>
     </message>
     <message>
         <location filename="../qml/AppPage.qml" line="402"/>
@@ -133,7 +133,7 @@
     <message>
         <location filename="../qml/AppPage.qml" line="409"/>
         <source>Sorry, but reviews are not implemented yet.</source>
-        <translation>Sorry maar recensies zijn nog niet geïmplementeerd</translation>
+        <translation>Het recensiegedeelte is nog niet geïmplementeerd.</translation>
     </message>
 </context>
 <context>
@@ -141,7 +141,7 @@
     <message>
         <location filename="../qml/InstalledAppsTab.qml" line="31"/>
         <source>Installed Apps</source>
-        <translation>Geïnstalleerde Apps</translation>
+        <translation>Geïnstalleerde programma&apos;s</translation>
     </message>
 </context>
 <context>
@@ -154,7 +154,7 @@
     <message>
         <location filename="../qml/SourcesTab.qml" line="36"/>
         <source>Edit %1</source>
-        <translation>Bewerken %1</translation>
+        <translation>%1 bewerken</translation>
     </message>
     <message>
         <location filename="../qml/SourcesTab.qml" line="74"/>
@@ -186,7 +186,7 @@
         <location filename="../qml/main.qml" line="32"/>
         <location filename="../qml/main.qml" line="59"/>
         <source>App Center</source>
-        <translation>App Center</translation>
+        <translation>Softwarecentrum</translation>
     </message>
     <message>
         <location filename="../qml/main.qml" line="64"/>
@@ -202,7 +202,7 @@
         <location filename="../qml/main.qml" line="70"/>
         <location filename="../qml/main.qml" line="71"/>
         <source>Check for updates</source>
-        <translation>Controleer op updates</translation>
+        <translation>Controleren op updates</translation>
     </message>
     <message>
         <location filename="../qml/main.qml" line="76"/>
@@ -212,7 +212,7 @@
     <message>
         <location filename="../qml/main.qml" line="77"/>
         <source>Search apps</source>
-        <translation>Zoek apps</translation>
+        <translation>Zoeken naar programma&apos;s</translation>
     </message>
 </context>
 </TS>

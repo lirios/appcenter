@@ -13,6 +13,7 @@ SPDX-License-Identifier: CC0-1.0
   <name xml:lang="es-MX">Centro de aplicaciones</name>
   <name xml:lang="it-IT">Centro App</name>
   <name xml:lang="ko">앱 센터</name>
+  <name xml:lang="nl">Softwarecentrum</name>
   <name xml:lang="pt-BR">Central de aplicativos</name>
   <name xml:lang="ru">Центр приложений</name>
   <name xml:lang="tr">Uygulama Merkezi</name>
@@ -21,6 +22,7 @@ SPDX-License-Identifier: CC0-1.0
   <summary xml:lang="es-MX">Administrador de aplicaciones para Liri OS</summary>
   <summary xml:lang="it-IT">Gestore applicazioni per Liri OS</summary>
   <summary xml:lang="ko">Liri OS 어플리케이션 관리자</summary>
+  <summary xml:lang="nl">Softwarecentrum voor Liri OS</summary>
   <summary xml:lang="pt-BR">Gerenciador de aplicativos para o Liri OS</summary>
   <summary xml:lang="ru">Менеджер приложений для Liri ОС</summary>
   <summary xml:lang="tr">Liri OS için uygulama yönetici</summary>
@@ -32,6 +34,7 @@ SPDX-License-Identifier: CC0-1.0
     <p xml:lang="es-MX">Centro de aplicaciones le permite buscar e instalar nuevas aplicaciones.</p>
     <p xml:lang="it-IT">Il Centro App ti permette di trovare ed installare nuove applicazioni.</p>
     <p xml:lang="ko">앱 센터는 사용자가 새로운 어플리케이션을 찾고 설치할 수 있도록 해줍니다.</p>
+    <p xml:lang="nl">Met het softwarecentrum kunt je programma's installeren en updaten.</p>
     <p xml:lang="pt-BR">A central de aplicativos permite a você encontrar e instalar novos aplicativos.</p>
     <p xml:lang="ru">Центр приложений позволяет вам найти и установить новые приложения.</p>
     <p xml:lang="tr">Uygulama Merkezi yeni uygulamalar bulmanızı ve kurmanızı sağlar.</p>
