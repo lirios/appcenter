@@ -17,8 +17,8 @@ on:
       - develop
 
 jobs:
-  linux:
-    uses: lirios/.github/.github/workflows/build-linux.yml@master
+  linux-qt5:
+    uses: lirios/.github/.github/workflows/build-linux-qt5.yml@master
     with:
       dependencies: "AppStream libAppStreamQt-devel fwupd-devel libostree-devel flatpak-devel"
-      build_dependencies: "cmake-shared:qtaccountsservice:fluid:libliri"
+      build_dependencies: "cmake-shared qtaccountsservice fluid libliri"
