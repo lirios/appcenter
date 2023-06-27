@@ -642,7 +642,7 @@ void FlatpakBackend::addAppsFromRemote(FlatpakInstallation *installation, Flatpa
 
     // AppStream metadata
     AppStream::Metadata metadata;
-    metadata.setFormatStyle(AppStream::Metadata::FormatStyleCollection);
+    metadata.setFormatStyle(AppStream::Metadata::FormatStyleCatalog);
     AppStream::Metadata::MetadataError error = metadata.parseFile(
                 appstreamFilePath, AppStream::Metadata::FormatKindXml);
     if (error != AppStream::Metadata::MetadataErrorNoError) {
