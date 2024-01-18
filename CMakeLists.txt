@@ -15,6 +15,9 @@ endif()
 ## Add some paths to check for CMake modules:
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
+## Set C++ standard:
+set(CMAKE_CXX_STANDARD 17)
+
 ## Set minimum versions required.
 set(QT_MIN_VERSION "5.10.0")
 
