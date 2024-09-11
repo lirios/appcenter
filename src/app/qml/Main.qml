@@ -2,14 +2,14 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import QtQuick 2.4
-import QtQuick.Layouts 1.0
-import QtQuick.Controls 2.0
-import QtQuick.Controls.Material 2.0
-import Fluid.Controls 1.0 as FluidControls
-import Liri.AppCenter 1.0 as AppCenter
+import QtQuick
+import QtQuick.Layouts
+import QtQuick.Controls
+import QtQuick.Controls.Material
+import Fluid as Fluid
+import Liri.AppCenter as AppCenter
 
-FluidControls.ApplicationWindow {
+Fluid.ApplicationWindow {
     title: qsTr("App Center")
 
     width: 1024
@@ -34,30 +34,30 @@ FluidControls.ApplicationWindow {
         onFailed: snackBar.open(errorMessage)
     }
 
-    FluidControls.SnackBar {
+    Fluid.SnackBar {
         id: snackBar
 
         duration: 5000
     }
 
-    initialPage: FluidControls.TabbedPage {
+    initialPage: Fluid.TabbedPage {
         title: qsTr("App Center")
 
         actions: [
-            FluidControls.Action {
-                icon.source: FluidControls.Utils.iconUrl("content/add")
+            Fluid.Action {
+                icon.source: Fluid.Utils.iconUrl("content/add")
                 text: qsTr("Add source")
                 toolTip: qsTr("Add a new source")
                 onTriggered: addSourceDialog.open()
             },
-            FluidControls.Action {
-                icon.source: FluidControls.Utils.iconUrl("navigation/refresh")
+            Fluid.Action {
+                icon.source: Fluid.Utils.iconUrl("navigation/refresh")
                 text: qsTr("Check for updates")
                 toolTip: qsTr("Check for updates")
                 onTriggered: softwareManager.checkForUpdates()
             },
-            FluidControls.Action {
-                icon.source: FluidControls.Utils.iconUrl("action/search")
+            Fluid.Action {
+                icon.source: Fluid.Utils.iconUrl("action/search")
                 text: qsTr("Search")
                 toolTip: qsTr("Search apps")
             }

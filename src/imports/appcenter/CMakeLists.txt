@@ -2,33 +2,38 @@ if(NOT TARGET Liri::Models)
     find_package(Liri1Models REQUIRED)
 endif()
 
-liri_add_qml_plugin(AppCenterQmlPlugin
-    MODULE_PATH
-        "Liri/AppCenter"
-    OUTPUT_NAME
-        "liriappcenterplugin"
+ecm_add_qml_module(AppCenterQmlPlugin
+    URI
+        "Liri.AppCenter"
     VERSION
         "1.0"
-    SOURCES
-        filteredresourcesmodel.cpp
-        filteredresourcesmodel.h
-        filteredsourcesmodel.cpp
-        filteredsourcesmodel.h
-        filteredreviewsmodel.cpp
-        filteredreviewsmodel.h
-        logging.cpp
-        logging.h
-        paginatemodel.cpp
-        paginatemodel.h
+    NO_GENERATE_PLUGIN_SOURCE
+    DEPENDENCIES
+        "QtQuick"
+        "QtQuick.Controls"
+        "QtQuick.Layouts"
+        "QtQuick.Templates"
+        "QtQuick.Controls.Material"
+        "Liri.Models"
+)
+
+target_sources(AppCenterQmlPlugin
+    PRIVATE
+        filteredresourcesmodel.cpp filteredresourcesmodel.h
+        filteredsourcesmodel.cpp filteredsourcesmodel.h
+        filteredreviewsmodel.cpp filteredreviewsmodel.h
+        logging.cpp logging.h
+        paginatemodel.cpp paginatemodel.h
         plugin.cpp
-    QML_FILES
-        qmldir
-    DEFINES
-        QT_NO_CAST_FROM_ASCII
-        QT_NO_FOREACH
-    PUBLIC_LIBRARIES
+)
+
+target_link_libraries(AppCenterQmlPlugin
+    PUBLIC
+        Qt6::Core
+        Qt6::DBus
+        Qt6::Qml
         Liri::Models
         Liri::AppCenter
 )
 
-liri_finalize_qml_plugin(AppCenterQmlPlugin)
+ecm_finalize_qml_module(AppCenterQmlPlugin)

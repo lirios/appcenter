@@ -2,18 +2,18 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import QtQuick 2.4
-import QtQuick.Controls 2.2
-import QtQuick.Controls.Material 2.2
-import QtQuick.Layouts 1.2
-import Fluid.Controls 1.0 as FluidControls
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Controls.Material
+import QtQuick.Layouts
+import Fluid as Fluid
 import "../ratings" as Ratings
 
 ColumnLayout {
     visible: app.rating
 
     RowLayout {
-        FluidControls.DisplayLabel {
+        Fluid.DisplayLabel {
             level: 1
             text: (app.rating ? app.rating.rating.toFixed(1) : 0.0.toFixed(1)).toLocaleString(Qt.locale())
             color: Material.secondaryTextColor
@@ -35,7 +35,7 @@ ColumnLayout {
         }
     }
 
-    FluidControls.BodyLabel {
+    Fluid.BodyLabel {
         level: 2
         text: qsTr("%1 Ratings").arg(Number(app.rating ? app.rating.numVotes : 0).toFixed(0).toLocaleString(Qt.locale()))
         color: Material.secondaryTextColor

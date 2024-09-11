@@ -27,6 +27,8 @@ class LIRIAPPCENTER_EXPORT SoftwareManager : public QObject
     Q_PROPERTY(uint updatesCount READ updatesCount NOTIFY updatesAvailable)
     Q_DECLARE_PRIVATE(SoftwareManager)
     Q_DISABLE_COPY(SoftwareManager)
+    QML_ELEMENT
+    Q_MOC_INCLUDE("softwareresource.h")
 public:
     explicit SoftwareManager(QObject *parent = nullptr);
     ~SoftwareManager();

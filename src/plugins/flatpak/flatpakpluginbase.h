@@ -7,9 +7,13 @@
 
 #undef signals
 
+#ifdef FLATPAK_EXTERNC_REQUIRED
 extern "C" {
-#include <flatpak/flatpak.h>
+#endif
+#include <flatpak.h>
+#ifdef FLATPAK_EXTERNC_REQUIRED
 }
+#endif
 
 #include <QtCore/qglobal.h>
 

@@ -25,3 +25,5 @@ void ReviewsBackend::initialize()
 } // namespace AppCenter
 
 } // namespace Liri
+
+#include "moc_reviewsbackend.cpp"

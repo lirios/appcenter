@@ -2,11 +2,11 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import QtQuick 2.4
-import QtQuick.Controls 2.2
-import QtQuick.Layouts 1.2
-import Fluid.Controls 1.0 as FluidControls
-import Liri.AppCenter 1.0 as AppCenter
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
+import Fluid as Fluid
+import Liri.AppCenter as AppCenter
 
 RowLayout {
     id: transactionIndicator
@@ -16,7 +16,7 @@ RowLayout {
     Layout.leftMargin: spacing
     Layout.rightMargin: spacing
 
-    spacing: FluidControls.Units.smallSpacing * 2
+    spacing: Fluid.Units.smallSpacing * 2
 
     visible: transaction && transaction.visible
 
@@ -40,7 +40,7 @@ RowLayout {
     }
 
     ColumnLayout {
-        ProgressBar {
+        Fluid.ProgressBar {
             from: 0.0
             to: 100.0
             value: transaction ? transaction.progress : 0.0
@@ -60,7 +60,7 @@ RowLayout {
             Layout.fillWidth: true
         }
 
-        Label {
+        Fluid.Label {
             text: {
                 if (!transaction)
                     return "";
@@ -77,7 +77,7 @@ RowLayout {
         Layout.fillWidth: true
     }
 
-    Button {
+    Fluid.Button {
         text: qsTr("Cancel")
         flat: true
         enabled: {

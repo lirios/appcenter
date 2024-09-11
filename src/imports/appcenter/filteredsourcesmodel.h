@@ -14,6 +14,7 @@ class FilteredSourcesModel : public QSortFilterProxyModel
     Q_OBJECT
     Q_PROPERTY(Liri::AppCenter::SourcesModel *sourcesModel READ sourcesModel WRITE setSourcesModel NOTIFY sourcesModelChanged)
     Q_PROPERTY(bool showDisabled READ showDisabled WRITE setShowDisabled NOTIFY showDisabledChanged)
+    QML_ELEMENT
 public:
     explicit FilteredSourcesModel(QObject *parent = nullptr);
 

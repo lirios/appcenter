@@ -2,14 +2,14 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import QtQuick 2.4
-import QtQuick.Controls 2.2
-import QtQuick.Controls.Material 2.2
-import QtQuick.Layouts 1.2
-import Fluid.Controls 1.0 as FluidControls
-import Liri.AppCenter 1.0 as AppCenter
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Controls.Material
+import QtQuick.Layouts
+import Fluid as Fluid
+import Liri.AppCenter as AppCenter
 
-FluidControls.Page {
+Fluid.Page {
     property var resource
     property int rating: 0
     property int hoverRating: 0
@@ -18,11 +18,11 @@ FluidControls.Page {
 
     title: qsTr("Write a review for %1").arg(resource.name)
 
-    padding: FluidControls.Units.smallSpacing * 2
+    padding: Fluid.Units.smallSpacing * 2
 
     actions: [
-        FluidControls.Action {
-            icon.source: FluidControls.Utils.iconUrl("content/save")
+        Fluid.Action {
+            icon.source: Fluid.Utils.iconUrl("content/save")
 
             toolTip: qsTr("Submit this review")
             text: qsTr("Submit")
@@ -47,9 +47,9 @@ FluidControls.Page {
 
     ColumnLayout {
         anchors.fill: parent
-        spacing: FluidControls.Units.smallSpacing
+        spacing: Fluid.Units.smallSpacing
 
-        Label {
+        Fluid.Label {
             text: qsTr("Find out what data in the <a href=\"#url\">privacy policy</a>")
             onLinkActivated: {
                 Qt.openUrlExternally("https://odrs.gnome.org/privacy");
@@ -58,7 +58,7 @@ FluidControls.Page {
 
         ///
 
-        FluidControls.HeadlineLabel {
+        Fluid.HeadlineLabel {
             text: qsTr("Rating")
         }
 
@@ -68,10 +68,10 @@ FluidControls.Page {
             Repeater {
                 model: 5
 
-                ToolButton {
+                Fluid.ToolButton {
                     property bool full: (hovering && hoverRating >= index + 1) || (!hovering && rating >= index + 1)
 
-                    icon.source: FluidControls.Utils.iconUrl("toggle/star" + (full ? "" : "_border"))
+                    icon.source: Fluid.Utils.iconUrl("toggle/star" + (full ? "" : "_border"))
                     flat: true
                     hoverEnabled: true
                     enabled: !submitted
@@ -94,14 +94,14 @@ FluidControls.Page {
 
         ///
 
-        FluidControls.HeadlineLabel {
+        Fluid.HeadlineLabel {
             text: qsTr("Summary")
         }
 
         ColumnLayout {
             Layout.fillWidth: true
 
-            TextField {
+            Fluid.TextField {
                 Layout.fillWidth: true
 
                 id: summaryField
@@ -111,7 +111,7 @@ FluidControls.Page {
                 enabled: !submitted
             }
 
-            Label {
+            Fluid.Label {
                 text: qsTr("Give a short summary of your review")
                 color: Material.secondaryTextColor
             }
@@ -119,7 +119,7 @@ FluidControls.Page {
 
         ///
 
-        FluidControls.HeadlineLabel {
+        Fluid.HeadlineLabel {
             text: qsTr("Review")
         }
 
@@ -127,7 +127,7 @@ FluidControls.Page {
             Layout.fillWidth: true
             Layout.fillHeight: true
 
-            TextArea {
+            Fluid.TextArea {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
 
@@ -135,7 +135,7 @@ FluidControls.Page {
                 enabled: !submitted
             }
 
-            Label {
+            Fluid.Label {
                 text: qsTr("What do you think of the app?")
                 color: Material.secondaryTextColor
             }

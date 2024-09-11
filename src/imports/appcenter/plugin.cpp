@@ -53,8 +53,6 @@ public:
         qmlRegisterUncreatableType<SoftwareSource>(uri, 1, 0, "SoftwareSource", QLatin1String("Unable to instantiate SoftwareSource"));
         qmlRegisterUncreatableType<Transaction>(uri, 1, 0, "Transaction",
                                                 QLatin1String("Unable to instantiate Transaction"));
-
-        qmlProtectModule(uri, 1);
     }
 };
 

@@ -56,6 +56,10 @@ class LIRIAPPCENTER_EXPORT ResourceProxy : public QObject
     Q_PROPERTY(SoftwareResource::Kudos kudos READ kudos NOTIFY dataChanged)
     Q_PROPERTY(uint kudosPercentage READ kudosPercentage NOTIFY dataChanged)
     Q_PROPERTY(Rating *rating READ rating NOTIFY dataChanged)
+    QML_ELEMENT
+    QML_UNCREATABLE("Unable to instantiate ResourceProxy")
+    Q_MOC_INCLUDE("softwareresource.h")
+    Q_MOC_INCLUDE("transaction.h")
 public:
     explicit ResourceProxy(QObject *parent = nullptr);
     ~ResourceProxy();

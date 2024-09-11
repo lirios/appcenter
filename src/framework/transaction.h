@@ -6,6 +6,7 @@
 #define LIRIAPPCENTERTRANSACTION_H
 
 #include <QObject>
+#include <QtQmlIntegration>
 
 #include <LiriAppCenter/liriappcenterglobal.h>
 
@@ -29,6 +30,8 @@ class LIRIAPPCENTER_EXPORT Transaction : public QObject
     Q_PROPERTY(bool visible READ isVisible CONSTANT)
     Q_DECLARE_PRIVATE(Transaction)
     Q_DISABLE_COPY(Transaction)
+    QML_ELEMENT
+    QML_UNCREATABLE("Unable to instantiate Transaction")
 public:
     enum Type {
         Sources,

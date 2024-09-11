@@ -6,6 +6,7 @@
 #define LIRIAPPCENTERSOURCESMODEL_H
 
 #include <QAbstractListModel>
+#include <QtQmlIntegration>
 
 #include <LiriAppCenter/liriappcenterglobal.h>
 
@@ -21,6 +22,7 @@ class LIRIAPPCENTER_EXPORT SourcesModel : public QAbstractListModel
     Q_OBJECT
     Q_DECLARE_PRIVATE(SourcesModel)
     Q_DISABLE_COPY(SourcesModel)
+    QML_ELEMENT
 public:
     enum Roles {
         SourceRole = Qt::UserRole + 1,

@@ -37,6 +37,10 @@ class LIRIAPPCENTER_EXPORT Review : public QObject
     Q_PROPERTY(bool selfMade READ isSelfMade NOTIFY selfMadeChanged)
     Q_PROPERTY(bool hasAlreadyVoted READ hasAlreadyVoted NOTIFY hasAlreadyVotedChanged)
     Q_PROPERTY(QVariantMap metadata READ metadata NOTIFY metadataChanged)
+    QML_ELEMENT
+    QML_UNCREATABLE("Unable to instantiate Review")
+    Q_MOC_INCLUDE("reviewsbackend.h")
+    Q_MOC_INCLUDE("softwareresource.h")
 public:
     explicit Review(QObject *parent = nullptr);
     ~Review();

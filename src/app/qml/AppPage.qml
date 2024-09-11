@@ -3,15 +3,15 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import QtQuick 2.4
-import QtQuick.Controls 2.2
-import QtQuick.Controls.Material 2.2
-import QtQuick.Layouts 1.2
-import Fluid.Controls 1.0 as FluidControls
-import Liri.AppCenter 1.0 as AppCenter
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Controls.Material
+import QtQuick.Layouts
+import Fluid as FluidC
+import Liri.AppCenter as AppCenter
 import "app" as App
 
-FluidControls.Page {
+Fluid.Page {
     id: appPage
 
     property AppCenter.ResourceProxy app: null
@@ -50,7 +50,7 @@ FluidControls.Page {
         }
     }
 
-    FluidControls.OverlayView {
+    Fluid.OverlayView {
         id: screenshotOverlay
 
         property alias source: screenshot.source
@@ -74,7 +74,7 @@ FluidControls.Page {
             }
         }
 
-        BusyIndicator {
+        Fluid.BusyIndicator {
             anchors.centerIn: parent
             visible: screenshot.status != Image.Ready
         }
@@ -85,7 +85,7 @@ FluidControls.Page {
         }
     }
 
-    ScrollView {
+    Fluid.ScrollView {
         id: scrollView
 
         anchors.fill: parent
@@ -93,18 +93,18 @@ FluidControls.Page {
         contentHeight: pane.height
         clip: true
 
-        Pane {
+        Fluid.Pane {
             id: pane
 
             width: scrollView.width
             height: column.implicitHeight + topPadding + bottomPadding
 
-            padding: FluidControls.Units.smallSpacing * 2
+            padding: Fluid.Units.smallSpacing * 2
 
             ColumnLayout {
                 id: column
 
-                spacing: FluidControls.Units.smallSpacing
+                spacing: Fluid.Units.smallSpacing
                 width: parent.width
 
                 App.Header {}

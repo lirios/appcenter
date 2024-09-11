@@ -2,13 +2,13 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import QtQuick 2.0
-import QtQuick.Controls 2.0
-import QtQuick.Controls.Material 2.0
-import Fluid.Controls 1.0 as FluidControls
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Controls.Material
+import Fluid as Fluid
 
-FluidControls.Icon {
-    source: FluidControls.Utils.iconUrl("toggle/star")
+Fluid.Icon {
+    source: Fluid.Utils.iconUrl("toggle/star")
     size: 18
     color: Material.secondaryTextColor
 }

@@ -98,7 +98,7 @@ QSize ScreenshotsModel::maximumThumbnailSize() const
 
     QSize lastSize, maxSize;
 
-    for (const auto &thumbnail : qAsConst(d->thumbnails)) {
+    for (const auto &thumbnail : std::as_const(d->thumbnails)) {
         if (!lastSize.isValid() && thumbnail.size().width() > lastSize.width() && thumbnail.size().height() > lastSize.height()) {
             maxSize = thumbnail.size();
             break;

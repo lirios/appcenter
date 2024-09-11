@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import QtQuick 2.0
-import Fluid.Controls 1.0 as FluidControls
+import QtQuick
+import Fluid as Fluid
 
 Item {
     id: iconItem
@@ -15,7 +15,7 @@ Item {
     width: iconSize
     height: iconSize
 
-    FluidControls.Icon {
+    Fluid.Icon {
         id: icon
 
         size: iconItem.iconSize

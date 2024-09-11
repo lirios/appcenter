@@ -2,15 +2,15 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import QtQuick 2.4
-import QtQuick.Controls 2.2
-import QtQuick.Controls.Material 2.2
-import Fluid.Controls 1.0 as FluidControls
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Controls.Material
+import Fluid as Fluid
 
 Grid {
     rows: 5
     columns: 2
-    spacing: FluidControls.Units.smallSpacing / 2
+    spacing: Fluid.Units.smallSpacing / 2
     horizontalItemAlignment: Grid.AlignRight
     verticalItemAlignment: Grid.AlignVCenter
 
@@ -22,7 +22,7 @@ Grid {
         }
     }
 
-    ProgressBar {
+    Fluid.ProgressBar {
         from: 0
         to: app.rating ? app.rating.numVotes : 0
         value: app.rating ? app.rating.star5 : 0
@@ -38,7 +38,7 @@ Grid {
         }
     }
 
-    ProgressBar {
+    Fluid.ProgressBar {
         from: 0
         to: app.rating ? app.rating.numVotes : 0
         value: app.rating ? app.rating.star4 : 0
@@ -54,7 +54,7 @@ Grid {
         }
     }
 
-    ProgressBar {
+    Fluid.ProgressBar {
         from: 0
         to: app.rating ? app.rating.numVotes : 0
         value: app.rating ? app.rating.star3 : 0
@@ -70,7 +70,7 @@ Grid {
         }
     }
 
-    ProgressBar {
+    Fluid.ProgressBar {
         from: 0
         to: app.rating ? app.rating.numVotes : 0
         value: app.rating ? app.rating.star2 : 0
@@ -80,7 +80,7 @@ Grid {
 
     StarIcon {}
 
-    ProgressBar {
+    Fluid.ProgressBar {
         from: 0
         to: app.rating ? app.rating.numVotes : 0
         value: app.rating ? app.rating.star1 : 0

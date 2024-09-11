@@ -2,12 +2,12 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import QtQuick 2.4
-import QtQuick.Controls 2.2
-import QtQuick.Controls.Material 2.2
-import QtQuick.Layouts 1.2
-import Fluid.Controls 1.0 as FluidControls
-import Liri.AppCenter 1.0 as AppCenter
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Controls.Material
+import QtQuick.Layouts
+import Fluid as Fluid
+import Liri.AppCenter as AppCenter
 
 ColumnLayout {
     property alias iconSize: icon.iconSize
@@ -16,7 +16,7 @@ ColumnLayout {
         Layout.fillWidth: true
         Layout.alignment: Qt.AlignVCenter
 
-        spacing: FluidControls.Units.smallSpacing
+        spacing: Fluid.Units.smallSpacing
 
         Icon {
             id: icon
@@ -35,16 +35,16 @@ ColumnLayout {
             ColumnLayout {
                 Layout.fillWidth: true
 
-                spacing: FluidControls.Units.smallSpacing
+                spacing: Fluid.Units.smallSpacing
 
-                FluidControls.HeadlineLabel {
+                Fluid.HeadlineLabel {
                     Layout.fillWidth: true
 
                     text: app.name
                     elide: Text.ElideRight
                 }
 
-                FluidControls.SubheadingLabel {
+                Fluid.SubheadingLabel {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
 
@@ -54,7 +54,7 @@ ColumnLayout {
                     elide: Text.ElideRight
                 }
 
-                ComboBox {
+                Fluid.ComboBox {
                     model: AppCenter.FilteredSourcesModel {
                         sourcesModel: app ? app.sourcesModel : null
                         showDisabled: false
@@ -70,7 +70,7 @@ ColumnLayout {
 
                 // FIXME: Finish this once we have the information to show
                 /*
-                    FluidControls.BodyLabel {
+                    Fluid.BodyLabel {
                         text: "<a href=\"www\">Developer</a>"
                         level: 2
                     }
@@ -81,7 +81,7 @@ ColumnLayout {
                 }
             }
 
-            FluidControls.ThinDivider {
+            Fluid.ThinDivider {
                 Layout.fillWidth: true
             }
 

@@ -18,6 +18,7 @@ class SoftwareManager;
 class LIRIAPPCENTER_EXPORT ReviewsBackend : public QObject
 {
     Q_OBJECT
+    Q_MOC_INCLUDE("review.h")
 public:
     explicit ReviewsBackend(SoftwareManager *manager,
                             QObject *parent = nullptr);

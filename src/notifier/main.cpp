@@ -16,8 +16,8 @@ static void loadQtTranslations()
     QString locale = QLocale::system().name();
 
     // Load Qt translations
-    QTranslator *qtTranslator = new QTranslator(QCoreApplication::instance());
-    if (qtTranslator->load(QStringLiteral("qt_%1").arg(locale), QLibraryInfo::location(QLibraryInfo::TranslationsPath))) {
+    QTranslator *qtTranslator = new QTranslator();
+    if (qtTranslator->load(QStringLiteral("qt_%1").arg(locale), QLibraryInfo::path(QLibraryInfo::TranslationsPath))) {
         qApp->installTranslator(qtTranslator);
     } else {
         delete qtTranslator;
@@ -38,11 +38,11 @@ static void loadAppTranslations()
                                QStandardPaths::LocateDirectory);
 
     // Load shell translations
-    QTranslator *appTranslator = new QTranslator(QCoreApplication::instance());
+    QTranslator *appTranslator = new QTranslator();
     if (appTranslator->load(QStringLiteral("%1/notifier_%3").arg(translationsDir, locale))) {
         QCoreApplication::installTranslator(appTranslator);
     } else if (locale == QLatin1String("C") ||
-                locale.startsWith(QLatin1String("en"))) {
+               locale.startsWith(QLatin1String("en"))) {
         // English is the default, it's translated anyway
         delete appTranslator;
     }

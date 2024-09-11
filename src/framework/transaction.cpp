@@ -140,3 +140,5 @@ bool Transaction::isVisible() const
 } // namespace AppCenter
 
 } // namespace Liri
+
+#include "moc_transaction.cpp"

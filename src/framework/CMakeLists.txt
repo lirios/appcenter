@@ -1,64 +1,32 @@
-find_package(AppStreamQt REQUIRED)
-
 liri_add_module(AppCenter
     DESCRIPTION
         "AppCenter library"
     SOURCES
-        backend.cpp
-        backend.h
-        backendplugin.cpp
-        backendplugin.h
-        cachednetworkaccessmanager.cpp
-        cachednetworkaccessmanager_p.h
-        image.cpp
-        image.h
-        image_p.h
-        rating.cpp
-        rating.h
-        rating_p.h
-        resourcesmodel.cpp
-        resourcesmodel.h
-        resourcesmodel_p.h
-        resourceproxy.cpp
-        resourceproxy.h
-        resourceproxy_p.h
-        review.cpp
-        review.h
-        review_p.h
-        reviewsbackend.cpp
-        reviewsbackend.h
-        reviewsbackendplugin.cpp
-        reviewsbackendplugin.h
-        reviewsmodel.cpp
-        reviewsmodel.h
-        reviewsmodel_p.h
-        screenshotsmodel.cpp
-        screenshotsmodel.h
-        screenshotsmodel_p.h
-        softwaremanager.cpp
-        softwaremanager.h
-        softwaremanager_p.h
-        softwareresource.cpp
-        softwareresource.h
-        softwareresource_p.h
-        softwaresource.cpp
-        softwaresource.h
-        softwaresource_p.h
-        sourcesmodel.cpp
-        sourcesmodel.h
-        sourcesmodel_p.h
-        transaction.cpp
-        transaction.h
-        transaction_p.h
-        transactionsmanager.cpp
-        transactionsmanager.h
-        transactionsmanager_p.h
+        backend.cpp backend.h
+        backendplugin.cpp backendplugin.h
+        cachednetworkaccessmanager.cpp cachednetworkaccessmanager_p.h
+        image.cpp image.h image_p.h
+        rating.cpp rating.h rating_p.h
+        resourcesmodel.cpp resourcesmodel.h resourcesmodel_p.h
+        resourceproxy.cpp resourceproxy.h resourceproxy_p.h
+        review.cpp review.h review_p.h
+        reviewsbackend.cpp reviewsbackend.h
+        reviewsbackendplugin.cpp reviewsbackendplugin.h
+        reviewsmodel.cpp reviewsmodel.h reviewsmodel_p.h
+        screenshotsmodel.cpp screenshotsmodel.h screenshotsmodel_p.h
+        softwaremanager.cpp softwaremanager.h softwaremanager_p.h
+        softwareresource.cpp softwareresource.h softwareresource_p.h
+        softwaresource.cpp softwaresource.h softwaresource_p.h
+        sourcesmodel.cpp sourcesmodel.h sourcesmodel_p.h
+        transaction.cpp transaction.h transaction_p.h
+        transactionsmanager.cpp transactionsmanager.h transactionsmanager_p.h
     DEFINES
         QT_NO_CAST_FROM_ASCII
         QT_NO_FOREACH
     PUBLIC_LIBRARIES
-        Qt5::Core
-        Qt5::Network
+        Qt6::Core
+        Qt6::Network
+        Qt6::QmlIntegration
         AppStreamQt
     NO_PKGCONFIG
 )

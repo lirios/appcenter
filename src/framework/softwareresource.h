@@ -8,6 +8,7 @@
 #include <QObject>
 #include <QVariant>
 #include <QVector>
+#include <QtQmlIntegration>
 
 #include <LiriAppCenter/Image>
 
@@ -60,6 +61,9 @@ class LIRIAPPCENTER_EXPORT SoftwareResource : public QObject
     Q_PROPERTY(Rating *rating READ rating NOTIFY ratingChanged)
     Q_DECLARE_PRIVATE(SoftwareResource)
     Q_DISABLE_COPY(SoftwareResource)
+    QML_ELEMENT
+    QML_UNCREATABLE("Unable to instantiate SoftwareResource")
+    Q_MOC_INCLUDE("softwaremanager.h")
 public:
     enum Type {
         Addon,

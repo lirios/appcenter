@@ -17,6 +17,7 @@ class FilteredReviewsModel : public QSortFilterProxyModel
     Q_OBJECT
     Q_PROPERTY(SoftwareResource *resource READ resource WRITE setResource NOTIFY resourceChanged)
     Q_PROPERTY(int count READ rowCount NOTIFY countChanged)
+    QML_ELEMENT
 public:
     explicit FilteredReviewsModel(QObject *parent = nullptr);
 

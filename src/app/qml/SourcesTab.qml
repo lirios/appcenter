@@ -2,23 +2,23 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import QtQuick 2.0
-import QtQuick.Controls 2.2
-import Fluid.Controls 1.0 as FluidControls
+import QtQuick
+import QtQuick.Controls
+import Fluid as Fluid
 
-FluidControls.Tab {
+Fluid.Tab {
     title: qsTr("Sources")
 
-    ScrollView {
+    Fluid.ScrollView {
         anchors.fill: parent
 
         ListView {
             model: softwareManager.sourcesModel
-            section.delegate: FluidControls.Subheader {
+            section.delegate: Fluid.Subheader {
                 text: section
             }
             section.property: "section"
-            delegate: FluidControls.ListItem {
+            delegate: Fluid.ListItem {
                 leftItem: CheckBox {
                     anchors.verticalCenter: parent.verticalCenter
                     checked: model.enabled
@@ -27,8 +27,8 @@ FluidControls.Tab {
                 rightItem: Row {
                     anchors.verticalCenter: parent.verticalCenter
 
-                    ToolButton {
-                        icon.source: FluidControls.Utils.iconUrl("content/remove")
+                    Fluid.ToolButton {
+                        icon.source: Fluid.Utils.iconUrl("content/remove")
                         onClicked: {
                             softwareManager.removeSource(model.source);
                         }

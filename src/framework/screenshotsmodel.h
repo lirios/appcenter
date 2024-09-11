@@ -24,6 +24,7 @@ class LIRIAPPCENTER_EXPORT ScreenshotsModel : public QAbstractListModel
     Q_PROPERTY(int count READ rowCount NOTIFY countChanged)
     Q_DECLARE_PRIVATE(ScreenshotsModel)
     Q_DISABLE_COPY(ScreenshotsModel)
+    QML_ELEMENT
 public:
     enum Roles {
         ThumbnailUrlRole = Qt::UserRole + 1,

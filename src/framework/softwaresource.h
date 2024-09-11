@@ -7,6 +7,7 @@
 
 #include <QObject>
 #include <QUrl>
+#include <QtQmlIntegration>
 
 #include <LiriAppCenter/liriappcenterglobal.h>
 
@@ -35,6 +36,8 @@ class LIRIAPPCENTER_EXPORT SoftwareSource : public QObject
     Q_PROPERTY(int priority READ priority WRITE setPriority NOTIFY priorityChanged)
     Q_DECLARE_PRIVATE(SoftwareSource)
     Q_DISABLE_COPY(SoftwareSource)
+    QML_ELEMENT
+    QML_UNCREATABLE("Unable to instantiate SoftwareSource")
 public:
     explicit SoftwareSource(Backend *backend, QObject *parent = nullptr);
     ~SoftwareSource();

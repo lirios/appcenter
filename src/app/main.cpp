@@ -12,6 +12,9 @@
 #include <QTranslator>
 #include <QtQuickControls2/QQuickStyle>
 
+using namespace Qt::StringLiterals;
+
+#if 0
 static void loadQtTranslations()
 {
 #ifndef QT_NO_TRANSLATION
@@ -50,27 +53,32 @@ static void loadAppTranslations()
     }
 #endif
 }
+#endif
 
 int main(int argc, char *argv[])
 {
     // Set the X11 WML_CLASS so X11 desktops can find the desktop file
     qputenv("RESOURCE_NAME", QByteArrayLiteral("io.liri.AppCenter"));
 
-    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-
     QGuiApplication app(argc, argv);
-    app.setApplicationName(QLatin1String("App Center"));
-    app.setOrganizationDomain(QLatin1String("liri.io"));
-    app.setOrganizationName(QLatin1String("Liri"));
-    app.setDesktopFileName(QLatin1String("io.liri.AppCenter.desktop"));
+    app.setApplicationName("App Center"_L1);
+    app.setOrganizationDomain("liri.io"_L1);
+    app.setOrganizationName("Liri"_L1);
+    app.setDesktopFileName("io.liri.AppCenter"_L1);
 
-    QQuickStyle::setStyle(QLatin1String("Material"));
+    QQuickStyle::setStyle("Material"_L1);
 
+#if 0
     // Load translations
     loadQtTranslations();
     loadAppTranslations();
+#endif
 
-    QQmlApplicationEngine engine(QUrl(QStringLiteral("qrc:/qml/main.qml")));
+    QQmlApplicationEngine engine;
+    QObject::connect(
+            &engine, &QQmlApplicationEngine::objectCreationFailed, &app,
+            []() { QCoreApplication::exit(-1); }, Qt::QueuedConnection);
+    engine.loadFromModule("io.liri.AppCenter", "Main");
 
     return app.exec();
 }

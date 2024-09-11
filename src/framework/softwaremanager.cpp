@@ -117,7 +117,7 @@ bool SoftwareManager::addSource(const QString &name)
 {
     Q_D(SoftwareManager);
 
-    for (auto backend : qAsConst(d->resourcesBackends)) {
+    for (auto backend : std::as_const(d->resourcesBackends)) {
         if (backend->addSource(name))
             return true;
     }
@@ -129,7 +129,7 @@ bool SoftwareManager::removeSource(SoftwareSource *source)
 {
     Q_D(SoftwareManager);
 
-    for (auto backend : qAsConst(d->resourcesBackends)) {
+    for (auto backend : std::as_const(d->resourcesBackends)) {
         if (backend->removeSource(source))
             return true;
     }
@@ -143,7 +143,7 @@ SoftwareResources SoftwareManager::updates() const
 
     SoftwareResources list;
 
-    for (auto backend : qAsConst(d->resourcesBackends))
+    for (auto backend : std::as_const(d->resourcesBackends))
         list += backend->updates();
 
     return list;
@@ -209,7 +209,7 @@ void SoftwareManager::initialize()
 
                     // Add ratings to software resources
                     connect(backend, &ReviewsBackend::ratingsReady, this, [d, backend] {
-                        for (auto *resource : qAsConst(d->resources)) {
+                        for (auto *resource : std::as_const(d->resources)) {
                             auto *rating = backend->ratingForSofwareResource(resource);
                             if (rating)
                                 SoftwareResourcePrivate::get(resource)->setRating(rating);
@@ -227,14 +227,14 @@ void SoftwareManager::initialize()
     }
 
     // Initialize them all
-    for (auto *backend : qAsConst(d->resourcesBackends)) {
+    for (auto *backend : std::as_const(d->resourcesBackends)) {
         backend->initialize();
         backend->listSources();
         backend->listAvailableApps();
         backend->listInstalledApps();
         backend->checkForUpdates();
     }
-    for (auto *backend : qAsConst(d->reviewsBackends)) {
+    for (auto *backend : std::as_const(d->reviewsBackends)) {
         backend->initialize();
         backend->fetchRatings();
     }
@@ -247,10 +247,12 @@ void SoftwareManager::checkForUpdates()
 {
     Q_D(SoftwareManager);
 
-    for (auto backend : qAsConst(d->resourcesBackends))
+    for (auto backend : std::as_const(d->resourcesBackends))
         backend->checkForUpdates();
 }
 
 } // namespace AppCenter
 
 } // namespace Liri
+
+#include "moc_softwaremanager.cpp"

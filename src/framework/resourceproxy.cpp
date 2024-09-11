@@ -67,7 +67,7 @@ void ResourceProxy::setDefaultSource(SoftwareSource *source)
 
     auto *oldRes = d->selectedResource;
     SoftwareResource *newRes = nullptr;
-    for (auto *resource : qAsConst(d->resources)) {
+    for (auto *resource : std::as_const(d->resources)) {
         if (resource->source() == source) {
             newRes = resource;
             break;
@@ -499,3 +499,5 @@ bool ResourceProxy::operator==(const ResourceProxy &other)
 } // namespace AppCenter
 
 } // namespace Liri
+
+#include "moc_resourceproxy.cpp"

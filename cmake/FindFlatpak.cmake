@@ -2,6 +2,6 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
-find_package(PkgConfig)
+find_package(PkgConfig REQUIRED)
 
-pkg_check_modules(Flatpak flatpak REQUIRED IMPORTED_TARGET)
+pkg_check_modules(Flatpak flatpak>=0.11.8 REQUIRED IMPORTED_TARGET)

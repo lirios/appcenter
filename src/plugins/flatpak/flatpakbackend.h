@@ -7,6 +7,8 @@
 
 #include <QLoggingCategory>
 
+#include <AppStreamQt/component-box.h>
+
 #include <LiriAppCenter/Backend>
 #include <LiriAppCenter/SoftwareResource>
 #include <LiriAppCenter/SourcesModel>
@@ -50,8 +52,8 @@ private:
     QList<FlatpakSource *> m_sources;
     QMultiHash<QString, FlatpakResource *> m_resources;
 
-    QList<AppStream::Component> componentsFromInstalledRef(FlatpakInstallation *installation,
-                                                           FlatpakInstalledRef *ref);
+    AppStream::ComponentBox componentsFromInstalledRef(FlatpakInstallation *installation,
+                                                       FlatpakInstalledRef *ref);
 
     FlatpakResource *findRuntimeResource(const QString &runtime);
 

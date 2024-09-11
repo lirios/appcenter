@@ -25,7 +25,7 @@ void ResourcesModelPrivate::addProxies(QList<ResourceProxy *> list)
 {
     Q_Q(ResourcesModel);
 
-    for (auto *proxy : qAsConst(list)) {
+    for (auto *proxy : std::as_const(list)) {
         auto connection = q->connect(proxy, &ResourceProxy::dataChanged, q, [this, proxy] {
             handleProxyChanged(proxy);
         });

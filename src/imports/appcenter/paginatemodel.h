@@ -6,6 +6,7 @@
 #define PAGINATEMODEL_H
 
 #include <QAbstractListModel>
+#include <QQmlEngine>
 
 /**
  * @class PaginateModel
@@ -35,6 +36,8 @@ class PaginateModel : public QAbstractListModel
 
     /** If enabled, ensures that pageCount and pageSize are the same. */
     Q_PROPERTY(bool staticRowCount READ hasStaticRowCount WRITE setStaticRowCount NOTIFY staticRowCountChanged)
+
+    QML_ELEMENT
 
     public:
         explicit PaginateModel(QObject* object = nullptr);

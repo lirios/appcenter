@@ -22,6 +22,8 @@
 #include "flatpaktransaction.h"
 #include "flatpakutils.h"
 
+#include <glib-2.0/glib.h>
+
 static quint64 fetchRemoteSize(FlatpakResource *app, FlatpakRef *ref)
 {
     g_autoptr(GCancellable) cancellable = g_cancellable_new();
@@ -226,7 +228,7 @@ QVector<Liri::AppCenter::Image> FlatpakResource::screenshots() const
 
 bool FlatpakResource::isLocalized() const
 {
-    return m_appdata.language(m_appdata.activeLocale()) > 0;
+    return m_appdata.languages().size() > 0;
 }
 
 bool FlatpakResource::launch() const
@@ -439,7 +441,7 @@ void FlatpakResource::setFlatpakType(FlatpakRefKind kind)
             case AppStream::Component::KindGeneric:
                 m_type = Liri::AppCenter::SoftwareResource::Generic;
                 break;
-            case AppStream::Component::KindInputmethod:
+            case AppStream::Component::KindInputMethod:
                 m_type = Liri::AppCenter::SoftwareResource::InputMethod;
                 break;
             case AppStream::Component::KindLocalization:
@@ -521,7 +523,7 @@ void FlatpakResource::updateComponent()
     }
 
     // Screenshots and thumbnails
-    const auto screenshots = m_appdata.screenshots();
+    const auto screenshots = m_appdata.screenshotsAll();
     for (const auto &screenshot : screenshots) {
         bool thumbnailDone = false;
         bool screenshotDone = false;
@@ -539,7 +541,7 @@ void FlatpakResource::updateComponent()
             }
         }
     }
-    if (m_appdata.screenshots().size() > 0)
+    if (m_appdata.screenshotsAll().size() > 0)
         addKudo(SoftwareResource::HasScreenshotsKudo);
 
     // Package information
@@ -559,7 +561,7 @@ void FlatpakResource::updateComponent()
     }
 
     // Is last build less than a year ago?
-    const auto releases = m_appdata.releases();
+    const auto releases = m_appdata.releasesPlain().entries();
     for (const auto &release : releases) {
         if (release.timestamp().daysTo(QDateTime::currentDateTime()) < 365) {
             addKudo(SoftwareResource::RecentReleaseKudo);

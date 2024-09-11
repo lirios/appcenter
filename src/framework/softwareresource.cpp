@@ -260,7 +260,7 @@ void SoftwareResource::fetchReviews()
     Q_D(SoftwareResource);
 
     const auto list = SoftwareManagerPrivate::get(d->manager)->reviewsBackends;
-    for (auto *backend : qAsConst(list))
+    for (auto *backend : std::as_const(list))
         backend->fetchReviews(this);
 }
 
@@ -271,7 +271,7 @@ void SoftwareResource::submitReview(const QString &summary,
     Q_D(SoftwareResource);
 
     const auto list = SoftwareManagerPrivate::get(d->manager)->reviewsBackends;
-    for (auto *backend : qAsConst(list)) {
+    for (auto *backend : std::as_const(list)) {
         if (backend->submitReview(this, summary, description, rating))
             break;
     }
@@ -287,3 +287,5 @@ bool SoftwareResource::operator==(const SoftwareResource &other) const
 } // namespace AppCenter
 
 } // namespace Liri
+
+#include "moc_softwareresource.cpp"

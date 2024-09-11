@@ -137,7 +137,7 @@ SoftwareSource *SourcesModel::findSource(const QString &name) const
 {
     Q_D(const SourcesModel);
 
-    for (auto source : qAsConst(d->sources)) {
+    for (auto source : std::as_const(d->sources)) {
         if (source->name() == name)
             return source;
     }

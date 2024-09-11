@@ -6,6 +6,7 @@
 #define LIRIAPPCENTERRESOURCESMODEL_H
 
 #include <QAbstractListModel>
+#include <QtQmlIntegration>
 
 #include <LiriAppCenter/liriappcenterglobal.h>
 
@@ -23,6 +24,7 @@ class LIRIAPPCENTER_EXPORT ResourcesModel : public QAbstractListModel
     Q_DECLARE_PRIVATE(ResourcesModel)
     Q_DISABLE_COPY(ResourcesModel)
     Q_PROPERTY(SoftwareManager *manager READ manager WRITE setManager NOTIFY managerChanged)
+    QML_ELEMENT
 public:
     enum Roles {
         ProxyRole = Qt::UserRole + 1,

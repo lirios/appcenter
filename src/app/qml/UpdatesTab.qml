@@ -2,14 +2,14 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import QtQuick 2.0
-import QtQuick.Controls 2.2
-import Fluid.Controls 1.0 as FluidControls
-import Liri.Core 1.0 as LiriCore
-import Liri.AppCenter 1.0 as AppCenter
+import QtQuick
+import QtQuick.Controls
+import Fluid as Fluid
+import Liri.Core as LiriCore
+import Liri.AppCenter as AppCenter
 import "app" as App
 
-FluidControls.Tab {
+Fluid.Tab {
     title: qsTr("Updates")
 
     AppCenter.FilteredResourcesModel {
@@ -19,19 +19,19 @@ FluidControls.Tab {
         filter: AppCenter.FilteredResourcesModel.Updates
     }
 
-    ScrollView {
+    Fluid.ScrollView {
         anchors.fill: parent
         clip: true
 
-        ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+        Fluid.ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
 
         ListView {
-            header: FluidControls.HeadlineLabel {
+            header: Fluid.HeadlineLabel {
                 text: qsTr("To update (%1)").arg(updatesModel.count)
-                padding: FluidControls.Units.smallSpacing * 2
+                padding: Fluid.Units.smallSpacing * 2
             }
             model: updatesModel
-            delegate: FluidControls.ListItem {
+            delegate: Fluid.ListItem {
                 text: model.name
                 subText: model.summary
                 valueText: LiriCore.Formatter.formatByteSize(model.downloadSize)
@@ -41,7 +41,7 @@ FluidControls.Tab {
                     iconUrl: model.iconUrl
                     iconSize: 48
                 }
-                rightItem: Button {
+                rightItem: Fluid.Button {
                     anchors.verticalCenter: parent.verticalCenter
                     flat: true
                     text: qsTr("Update")

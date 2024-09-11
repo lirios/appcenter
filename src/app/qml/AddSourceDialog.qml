@@ -2,10 +2,11 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import QtQuick 2.0
-import QtQuick.Controls 2.1
+import QtQuick
+import QtQuick.Controls
+import Fluid as Fluid
 
-Dialog {
+Fluid.Dialog {
     id: addSourceDialog
 
     signal failed(string errorMessage)
@@ -28,7 +29,7 @@ Dialog {
             addSourceDialog.failed(qsTr("Failed to retrieve source"));
     }
 
-    TextField {
+    Fluid.TextField {
         id: urlField
         anchors.left: parent.left
         anchors.top: parent.top

@@ -15,6 +15,7 @@ class FilteredResourcesModel : public QSortFilterProxyModel
     Q_PROPERTY(Liri::AppCenter::SoftwareManager *manager READ manager WRITE setManager NOTIFY managerChanged)
     Q_PROPERTY(Filter filter READ filter WRITE setFilter NOTIFY modelFilterChanged)
     Q_PROPERTY(int count READ rowCount NOTIFY countChanged)
+    QML_ELEMENT
 public:
     enum Filter {
         AllApps,

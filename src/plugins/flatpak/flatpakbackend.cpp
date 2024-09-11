@@ -123,25 +123,25 @@ void FlatpakBackend::initialize()
 
 void FlatpakBackend::listSources()
 {
-    for (auto *installation : qAsConst(m_installations))
+    for (auto *installation : std::as_const(m_installations))
         extractRepositories(installation);
 }
 
 void FlatpakBackend::listAvailableApps()
 {
-    for (auto *installation : qAsConst(m_installations))
+    for (auto *installation : std::as_const(m_installations))
         listAvailableApps(installation);
 }
 
 void FlatpakBackend::listInstalledApps()
 {
-    for (auto *installation : qAsConst(m_installations))
+    for (auto *installation : std::as_const(m_installations))
         listInstalledApps(installation);
 }
 
 void FlatpakBackend::checkForUpdates()
 {
-    for (auto installation : qAsConst(m_installations)) {
+    for (auto installation : std::as_const(m_installations)) {
         checkLocalUpdatesForInstallation(installation);
         checkUpdatesForInstallation(installation);
     }
@@ -253,22 +253,23 @@ GPtrArray *FlatpakBackend::listUpdates(FlatpakInstallation *installation)
     return refs;
 }
 
-QList<AppStream::Component> FlatpakBackend::componentsFromInstalledRef(FlatpakInstallation *installation,
-                                                                       FlatpakInstalledRef *ref)
+AppStream::ComponentBox
+FlatpakBackend::componentsFromInstalledRef(FlatpakInstallation *installation,
+                                           FlatpakInstalledRef *ref)
 {
     const QString name = QString::fromUtf8(flatpak_ref_get_name(FLATPAK_REF(ref)));
 
     // Ignore special apps
     if (name.endsWith(QLatin1String(".Debug")) || name.endsWith(QLatin1String(".Locale")) ||
             name.endsWith(QLatin1String(".BaseApp")) || name.endsWith(QLatin1String(".Docs")))
-        return QList<AppStream::Component>();
+        return AppStream::ComponentBox(AppStream::ComponentBox::FlagNone);
 
     // Desktop entry
     const QDir exportsDir = FlatpakResource::installationDir(installation).absoluteFilePath(QLatin1String("exports/"));
     const QString desktopFilePath = exportsDir.absoluteFilePath(QLatin1String("share/applications/") +
                                                                 name + QLatin1String(".desktop"));
     if (!QFileInfo::exists(desktopFilePath))
-        return QList<AppStream::Component>();
+        return AppStream::ComponentBox(AppStream::ComponentBox::FlagNone);
 
     // AppStream metadata
     AppStream::Metadata metadata;
@@ -277,7 +278,7 @@ QList<AppStream::Component> FlatpakBackend::componentsFromInstalledRef(FlatpakIn
     if (error != AppStream::Metadata::MetadataErrorNoError) {
         qCWarning(lcFlatpakBackend, "Failed to parse AppStream metadata from %s",
                   desktopFilePath.toUtf8().constData());
-        return QList<AppStream::Component>();
+        return AppStream::ComponentBox(AppStream::ComponentBox::FlagNone);
     }
 
     return metadata.components();
@@ -285,7 +286,7 @@ QList<AppStream::Component> FlatpakBackend::componentsFromInstalledRef(FlatpakIn
 
 FlatpakResource *FlatpakBackend::findRuntimeResource(const QString &runtime)
 {
-    const auto runtimeInfo = runtime.splitRef(QLatin1Char('/'));
+    const auto runtimeInfo = runtime.split(QLatin1Char('/'));
     if (runtimeInfo.count() != 3)
         return nullptr;
 
@@ -457,7 +458,7 @@ FlatpakResource *FlatpakBackend::installFromFlatpakRef(const QString &filePath)
     if (!iconUrl.isEmpty()) {
         AppStream::Icon icon;
         icon.setKind(AppStream::Icon::KindRemote);
-        icon.setUrl(iconUrl);
+        icon.setUrl(QUrl::fromUserInput(iconUrl));
         component.addIcon(icon);
     }
 
@@ -479,7 +480,7 @@ bool FlatpakBackend::addLocalSource(const QString &name, const QUrl &url)
     // Read .flatpakrepo file
     QSettings settings(url.toLocalFile(), QSettings::NativeFormat);
     const QString title = settings.value(QLatin1String("Flatpak Repo/Title")).toString();
-    const QUrl repoUrl = settings.value(QLatin1String("Flatpak Repo/Url")).toString();
+    const QUrl repoUrl = QUrl::fromUserInput(settings.value(QLatin1String("Flatpak Repo/Url")).toString());
     const QByteArray gpgKeyBase64 = settings.value(QLatin1String("Flatpak Repo/GPGKey")).toString().toLocal8Bit();
 
     if (name.isEmpty() || title.isEmpty() || repoUrl.isEmpty() || gpgKeyBase64.isEmpty()) {
@@ -672,7 +673,7 @@ void FlatpakBackend::addAppsFromRemote(FlatpakInstallation *installation, Flatpa
         if (!resource) {
             // Find source
             FlatpakSource *source = nullptr;
-            for (auto *curSource : qAsConst(m_sources)) {
+            for (auto *curSource : std::as_const(m_sources)) {
                 if (curSource->installation() == installation && curSource->name() == name) {
                     source = curSource;
                     break;

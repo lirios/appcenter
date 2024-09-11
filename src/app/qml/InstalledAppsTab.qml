@@ -2,16 +2,16 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import QtQuick 2.3
-import QtQuick.Controls 2.2
-import QtQuick.Controls.Material 2.2
-import QtQuick.Layouts 1.2
-import Fluid.Controls 1.0 as FluidControls
-import Liri.Core 1.0 as LiriCore
-import Liri.AppCenter 1.0 as AppCenter
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Controls.Material
+import QtQuick.Layouts
+import Fluid as Fluid
+import Liri.Core as LiriCore
+import Liri.AppCenter as AppCenter
 import "app" as App
 
-FluidControls.Tab {
+Fluid.Tab {
     title: qsTr("Installed Apps")
 
     AppCenter.FilteredResourcesModel {
@@ -21,19 +21,19 @@ FluidControls.Tab {
         filter: AppCenter.FilteredResourcesModel.InstalledApps
     }
 
-    ScrollView {
+    Fluid.ScrollView {
         anchors.fill: parent
         clip: true
 
-        ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+        Fluid.ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
 
         ListView {
-            header: FluidControls.HeadlineLabel {
+            header: Fluid.HeadlineLabel {
                 text: qsTr("On this device (%1)").arg(installedAppsModel.count)
-                padding: FluidControls.Units.smallSpacing * 2
+                padding: Fluid.Units.smallSpacing * 2
             }
             model: installedAppsModel
-            delegate: FluidControls.ListItem {
+            delegate: Fluid.ListItem {
                 text: model.name
                 subText: model.summary
                 valueText: LiriCore.Formatter.formatByteSize(model.installedSize)

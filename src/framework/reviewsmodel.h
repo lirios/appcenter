@@ -22,6 +22,7 @@ class LIRIAPPCENTER_EXPORT ReviewsModel : public QAbstractListModel
     Q_DISABLE_COPY(ReviewsModel)
     Q_PROPERTY(SoftwareResource *resource READ resource WRITE setResource NOTIFY resourceChanged)
     Q_PROPERTY(int count READ rowCount NOTIFY countChanged)
+    QML_ELEMENT
 public:
     enum Roles {
         ReviewRole = Qt::UserRole + 1,

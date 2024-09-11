@@ -14,7 +14,7 @@
 #include <QNetworkReply>
 #include <QStandardPaths>
 
-#include <Qt5AccountsService/UserAccount>
+#include <Qt6AccountsService/UserAccount>
 
 #include <LiriAppCenter/Rating>
 #include <LiriAppCenter/Review>
@@ -40,9 +40,7 @@ OdrsBackend::OdrsBackend(SoftwareManager *manager, QObject *parent)
     : ReviewsBackend(manager, parent)
     , m_manager(new CachedNetworkAccessManager(QStringLiteral("odrs"), this))
 {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
     m_manager->setAutoDeleteReplies(true);
-#endif
 }
 
 void OdrsBackend::fetchRatings()
@@ -88,12 +86,7 @@ void OdrsBackend::fetchRatings()
                 qCWarning(lcOdrsBackend, "Failed to fetch ratings: %s",
                           qPrintable(reply->errorString()));
         };
-#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
         connect(reply, &QNetworkReply::errorOccurred, errorHandler);
-#else
-        connect(reply, static_cast<void (QNetworkReply::*)(QNetworkReply::NetworkError)>(&QNetworkReply::error),
-                errorHandler);
-#endif
         connect(reply, &QNetworkReply::finished, this, [this, cacheFileName, reply] {
             QFile file(cacheFileName);
             if (file.open(QFile::WriteOnly)) {
@@ -153,12 +146,7 @@ void OdrsBackend::fetchReviews(SoftwareResource *resource)
                       qPrintable(resource->appId()),
                       qPrintable(reply->errorString()));
     };
-#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
     connect(reply, &QNetworkReply::errorOccurred, errorHandler);
-#else
-    connect(reply, static_cast<void (QNetworkReply::*)(QNetworkReply::NetworkError)>(&QNetworkReply::error),
-            errorHandler);
-#endif
     connect(reply, &QNetworkReply::finished, this, [this, reply] {
         // We deal with errors in the appropriate slot
         if (reply->error() != QNetworkReply::NoError)
@@ -378,12 +366,7 @@ void OdrsBackend::postReview(ReviewAction action, Review *review)
             }
         }
     };
-#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
     connect(reply, &QNetworkReply::errorOccurred, errorHandler);
-#else
-    connect(reply, static_cast<void (QNetworkReply::*)(QNetworkReply::NetworkError)>(&QNetworkReply::error),
-            errorHandler);
-#endif
     connect(reply, &QNetworkReply::finished, this, [this, reply, action] {
         // We deal with errors in the appropriate slot
         if (reply->error() != QNetworkReply::NoError)
@@ -466,7 +449,7 @@ void OdrsBackend::parseReviews(const QJsonDocument &json, SoftwareResource *reso
                 Review *review = nullptr;
 
                 if (reviewId > 0) {
-                    for (auto *curReview : qAsConst(m_reviews)) {
+                    for (auto *curReview : std::as_const(m_reviews)) {
                         if (curReview->backend() == this && curReview->id() == reviewId) {
                             alreadyExisting = true;
                             review = curReview;

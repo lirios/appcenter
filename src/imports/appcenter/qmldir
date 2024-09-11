@@ -1,3 +1,0 @@
-module Liri.AppCenter
-plugin liriappcenterplugin
-classname LiriAppCenterPlugin

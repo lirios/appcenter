@@ -2,10 +2,10 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import QtQuick 2.0
-import QtQuick.Controls 2.0
-import QtQuick.Controls.Material 2.0
-import Fluid.Controls 1.0 as FluidControls
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Controls.Material
+import Fluid as Fluid
 
 StarIcon {
     property int star: 1
@@ -19,6 +19,6 @@ StarIcon {
         return false;
     }
 
-    source: FluidControls.Utils.iconUrl("toggle/star" + (half ? "_half" : full ? "" : "_border"))
+    source: Fluid.Utils.iconUrl("toggle/star" + (half ? "_half" : full ? "" : "_border"))
     color: full || half ? Material.accentColor : Material.secondaryTextColor
 }

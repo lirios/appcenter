@@ -6,6 +6,7 @@
 #define LIRI_APPCENTER_RATING_H
 
 #include <QObject>
+#include <QtQmlIntegration>
 
 #include <LiriAppCenter/liriappcenterglobal.h>
 
@@ -28,6 +29,8 @@ class LIRIAPPCENTER_EXPORT Rating : public QObject
     Q_PROPERTY(quint64 star3 READ star3 CONSTANT)
     Q_PROPERTY(quint64 star4 READ star4 CONSTANT)
     Q_PROPERTY(quint64 star5 READ star5 CONSTANT)
+    QML_ELEMENT
+    QML_UNCREATABLE("Unable to instantiate Rating")
 public:
     explicit Rating(const QString &appId,
                     quint64 numVotes, qreal rating,

@@ -2,15 +2,15 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import QtQuick 2.4
-import QtQuick.Controls 2.2
-import QtQuick.Controls.Material 2.2
-import QtQuick.Layouts 1.2
-import Fluid.Core 1.0 as FluidCore
-import Fluid.Controls 1.0 as FluidControls
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Controls.Material
+import QtQuick.Layouts
+import Fluid.Core as FluidCore
+import Fluid as Fluid
 import "../ratings" as Ratings
 
-Page {
+Fluid.Page {
     readonly property real reviewRating: model.rating
     property bool drawBorder: true
     property bool isLastItem: ListView.view && index + 1 === ListView.view.count
@@ -21,12 +21,12 @@ Page {
         border.color: drawBorder ? Material.dividerColor : "transparent"
     }
 
-    leftPadding: FluidControls.Units.smallSpacing * 2
-    rightPadding: FluidControls.Units.smallSpacing * 2
-    topPadding: FluidControls.Units.smallSpacing * 2
-    bottomPadding: FluidControls.Units.smallSpacing
+    leftPadding: Fluid.Units.smallSpacing * 2
+    rightPadding: Fluid.Units.smallSpacing * 2
+    topPadding: Fluid.Units.smallSpacing * 2
+    bottomPadding: Fluid.Units.smallSpacing
 
-    FluidControls.AlertDialog {
+    Fluid.AlertDialog {
         id: reportDialog
 
         parent: appPage
@@ -45,7 +45,7 @@ Page {
         }
     }
 
-    FluidControls.AlertDialog {
+    Fluid.AlertDialog {
         id: removeDialog
 
         parent: appPage
@@ -67,7 +67,7 @@ Page {
     ColumnLayout {
         anchors.fill: parent
 
-        FluidControls.TitleLabel {
+        Fluid.TitleLabel {
             Layout.fillWidth: true
 
             text: model.summary
@@ -75,9 +75,9 @@ Page {
         }
 
         RowLayout {
-            Layout.preferredHeight: FluidControls.Units.smallSpacing * 4
+            Layout.preferredHeight: Fluid.Units.smallSpacing * 4
 
-            spacing: FluidControls.Units.smallSpacing
+            spacing: Fluid.Units.smallSpacing
 
             Row {
                 Layout.alignment: Qt.AlignVCenter
@@ -94,7 +94,7 @@ Page {
                 }
             }
 
-            FluidControls.BodyLabel {
+            Fluid.BodyLabel {
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignVCenter
 
@@ -106,7 +106,7 @@ Page {
             }
         }
 
-        FluidControls.BodyLabel {
+        Fluid.BodyLabel {
             Layout.fillWidth: true
             Layout.fillHeight: true
 
@@ -115,29 +115,29 @@ Page {
             elide: Text.ElideRight
         }
 
-        Label {
+        Fluid.Label {
             text: qsTr("%n people found this review helpful", "", model.karmaUp)
             color: Material.secondaryTextColor
             visible: model.karmaUp > 0
         }
 
         RowLayout {
-            Layout.maximumHeight: FluidControls.Units.smallSpacing * 6
+            Layout.maximumHeight: Fluid.Units.smallSpacing * 6
 
-            Label {
+            Fluid.Label {
                 Layout.alignment: Qt.AlignVCenter
 
                 text: qsTr("Was this review helpful?")
             }
 
-            ToolButton {
+            Fluid.ToolButton {
                 Layout.alignment: Qt.AlignVCenter
 
-                ToolTip.text: qsTr("Up vote")
-                ToolTip.delay: FluidCore.Device.isMobile ? Qt.styleHints.mousePressAndHoldInterval : 0
-                ToolTip.visible: FluidCore.Device.isMobile ? pressed : hovered
+                Fluid.ToolTip.text: qsTr("Up vote")
+                Fluid.ToolTip.delay: FluidCore.Device.isMobile ? Qt.styleHints.mousePressAndHoldInterval : 0
+                Fluid.ToolTip.visible: FluidCore.Device.isMobile ? pressed : hovered
 
-                icon.source: FluidControls.Utils.iconUrl("action/thumb_up")
+                icon.source: Fluid.Utils.iconUrl("action/thumb_up")
                 icon.width: 18
                 icon.height: 18
 
@@ -149,14 +149,14 @@ Page {
                 }
             }
 
-            ToolButton {
+            Fluid.ToolButton {
                 Layout.alignment: Qt.AlignVCenter
 
-                ToolTip.text: qsTr("Down vote")
-                ToolTip.delay: FluidCore.Device.isMobile ? Qt.styleHints.mousePressAndHoldInterval : 0
-                ToolTip.visible: FluidCore.Device.isMobile ? pressed : hovered
+                Fluid.ToolTip.text: qsTr("Down vote")
+                Fluid.ToolTip.delay: FluidCore.Device.isMobile ? Qt.styleHints.mousePressAndHoldInterval : 0
+                Fluid.ToolTip.visible: FluidCore.Device.isMobile ? pressed : hovered
 
-                icon.source: FluidControls.Utils.iconUrl("action/thumb_down")
+                icon.source: Fluid.Utils.iconUrl("action/thumb_down")
                 icon.width: 18
                 icon.height: 18
 
@@ -172,12 +172,12 @@ Page {
                 Layout.fillWidth: true
             }
 
-            Button {
+            Fluid.Button {
                 Layout.alignment: Qt.AlignVCenter
 
-                ToolTip.text: qsTr("Report this review")
-                ToolTip.delay: FluidCore.Device.isMobile ? Qt.styleHints.mousePressAndHoldInterval : 0
-                ToolTip.visible: FluidCore.Device.isMobile ? pressed : hovered
+                Fluid.ToolTip.text: qsTr("Report this review")
+                Fluid.ToolTip.delay: FluidCore.Device.isMobile ? Qt.styleHints.mousePressAndHoldInterval : 0
+                Fluid.ToolTip.visible: FluidCore.Device.isMobile ? pressed : hovered
 
                 flat: true
                 text: qsTr("Report...")
@@ -188,12 +188,12 @@ Page {
                 }
             }
 
-            Button {
+            Fluid.Button {
                 Layout.alignment: Qt.AlignVCenter
 
-                ToolTip.text: qsTr("Remove this review")
-                ToolTip.delay: FluidCore.Device.isMobile ? Qt.styleHints.mousePressAndHoldInterval : 0
-                ToolTip.visible: FluidCore.Device.isMobile ? pressed : hovered
+                Fluid.ToolTip.text: qsTr("Remove this review")
+                Fluid.ToolTip.delay: FluidCore.Device.isMobile ? Qt.styleHints.mousePressAndHoldInterval : 0
+                Fluid.ToolTip.visible: FluidCore.Device.isMobile ? pressed : hovered
 
                 flat: true
                 text: qsTr("Remove...")
@@ -205,7 +205,7 @@ Page {
             }
         }
 
-        FluidControls.ThinDivider {
+        Fluid.ThinDivider {
             Layout.fillWidth: true
 
             visible: !drawBorder && !isLastItem

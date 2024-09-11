@@ -5,7 +5,7 @@
 #include <QCryptographicHash>
 #include <QFile>
 
-#include <Qt5AccountsService/UserAccount>
+#include <Qt6AccountsService/UserAccount>
 
 #include "odrsutils.h"
 

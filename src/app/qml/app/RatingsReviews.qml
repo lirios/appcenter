@@ -2,13 +2,13 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import QtQuick 2.4
-import QtQuick.Controls 2.2
-import QtQuick.Controls.Material 2.2
-import QtQuick.Layouts 1.2
-import Fluid.Core 1.0 as FluidCore
-import Fluid.Controls 1.0 as FluidControls
-import Liri.AppCenter 1.0 as AppCenter
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Controls.Material
+import QtQuick.Layouts
+import Fluid.Core as FluidCore
+import Fluid as Fluid
+import Liri.AppCenter as AppCenter
 import "../ratings" as Ratings
 
 ColumnLayout {
@@ -19,18 +19,18 @@ ColumnLayout {
     RowLayout {
         Layout.fillWidth: true
 
-        FluidControls.HeadlineLabel {
+        Fluid.HeadlineLabel {
             Layout.fillWidth: true
 
             text: qsTr("Ratings and reviews")
         }
 
-        ToolButton {
-            ToolTip.text: qsTr("Show all reviews")
-            ToolTip.delay: FluidCore.Device.isMobile ? Qt.styleHints.mousePressAndHoldInterval : 0
-            ToolTip.visible: FluidCore.Device.isMobile ? pressed : hovered
+        Fluid.ToolButton {
+            Fluid.ToolTip.text: qsTr("Show all reviews")
+            Fluid.ToolTip.delay: FluidCore.Device.isMobile ? Qt.styleHints.mousePressAndHoldInterval : 0
+            Fluid.ToolTip.visible: FluidCore.Device.isMobile ? pressed : hovered
 
-            icon.source: FluidControls.Utils.iconUrl("navigation/arrow_forward")
+            icon.source: Fluid.Utils.iconUrl("navigation/arrow_forward")
             flat: true
             hoverEnabled: FluidCore.Device.hoverEnabled
 
@@ -43,7 +43,7 @@ ColumnLayout {
     RowLayout {
         Layout.alignment: Qt.AlignHCenter
 
-        spacing: FluidControls.Units.smallSpacing * 2
+        spacing: Fluid.Units.smallSpacing * 2
         visible: app.rating
 
         Ratings.RatingNumber {
@@ -55,7 +55,7 @@ ColumnLayout {
         }
     }
 
-    BusyIndicator {
+    Fluid.BusyIndicator {
         Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
 
         visible: !reviewsModel.fetched
@@ -65,8 +65,8 @@ ColumnLayout {
         Layout.fillWidth: true
         Layout.fillHeight: true
 
-        rowSpacing: FluidControls.Units.smallSpacing
-        columnSpacing: FluidControls.Units.smallSpacing
+        rowSpacing: Fluid.Units.smallSpacing
+        columnSpacing: Fluid.Units.smallSpacing
         flow: appPage.width > appPage.height ? GridLayout.LeftToRight : GridLayout.TopToBottom
         visible: reviewsModel.fetched && reviewsModel.count > 0
 
@@ -88,7 +88,7 @@ ColumnLayout {
             }
 
             Review {
-                Layout.minimumWidth: (appPage.width / paginateModel.pageSize) - (FluidControls.Units.smallSpacing * 3)
+                Layout.minimumWidth: (appPage.width / paginateModel.pageSize) - (Fluid.Units.smallSpacing * 3)
                 Layout.fillWidth: true
                 Layout.fillHeight: true
             }
@@ -96,10 +96,10 @@ ColumnLayout {
     }
 
     RowLayout {
-        Button {
-            ToolTip.text: qsTr("Show all reviews")
-            ToolTip.delay: FluidCore.Device.isMobile ? Qt.styleHints.mousePressAndHoldInterval : 0
-            ToolTip.visible: FluidCore.Device.isMobile ? pressed : hovered
+        Fluid.Button {
+            Fluid.ToolTip.text: qsTr("Show all reviews")
+            Fluid.ToolTip.delay: FluidCore.Device.isMobile ? Qt.styleHints.mousePressAndHoldInterval : 0
+            Fluid.ToolTip.visible: FluidCore.Device.isMobile ? pressed : hovered
 
             text: qsTr("More reviews...")
             flat: true
@@ -111,10 +111,10 @@ ColumnLayout {
             }
         }
 
-        Button {
-            ToolTip.text: qsTr("Post a review of this resource")
-            ToolTip.delay: FluidCore.Device.isMobile ? Qt.styleHints.mousePressAndHoldInterval : 0
-            ToolTip.visible: FluidCore.Device.isMobile ? pressed : hovered
+        Fluid.Button {
+            Fluid.ToolTip.text: qsTr("Post a review of this resource")
+            Fluid.ToolTip.delay: FluidCore.Device.isMobile ? Qt.styleHints.mousePressAndHoldInterval : 0
+            Fluid.ToolTip.visible: FluidCore.Device.isMobile ? pressed : hovered
 
             text: qsTr("Write a review...")
             flat: true
